@@ -167,3 +167,394 @@ task/
     ├── Dockerfile
     ├── test.sh
     └── test_outputs.py
+The separation between the execution environment and the verifier is a core
+part of the benchmark design.
+
+Verifier Isolation
+
+One of the most important design decisions in this repository is the
+separation between the agent environment and the verification environment.
+
+Agent Environment
+
+environment/Dockerfile builds the environment available to the coding agent.
+
+It contains the necessary:
+
+Dependencies
+Source files
+Configuration
+Workloads
+Input artifacts
+
+The agent environment does not receive the verifier implementation or
+reference solution.
+
+For example:
+
+environment/
+├── Dockerfile
+└── data/
+
+The Docker build explicitly copies only the intended environment data.
+
+Verifier Environment
+
+The verifier has its own Dockerfile:
+
+tests/Dockerfile
+
+This image contains:
+
+Pytest
+Verification code
+Test infrastructure
+Verifier-specific dependencies
+
+The verifier environment is built independently from the agent environment.
+
+This prevents the agent from simply inspecting the evaluator implementation
+inside its working environment.
+
+Reference Solutions
+
+Each task contains a reference solution under:
+
+solution/solve.sh
+
+The reference solution is used to establish the intended repaired state and
+validate that the task is solvable.
+
+Reference solutions are kept outside the agent's environment.
+
+They are part of the benchmark repository and evaluation development workflow,
+not part of the runtime environment presented to the agent.
+
+Deterministic Verification
+
+The benchmark uses deterministic automated verification rather than subjective
+evaluation.
+
+Typical verification checks include:
+
+Configuration invariants
+State consistency
+API contracts
+Resource ownership
+Offset correctness
+Synchronization requirements
+Workload preservation
+Message accounting
+Recovery semantics
+Build correctness
+Performance-related constraints
+
+Where possible, tests validate the resulting system state rather than checking
+whether the agent used a particular implementation.
+
+This allows multiple valid solutions while still enforcing the engineering
+contract.
+
+Cross-Artifact Reasoning
+
+A major characteristic of these tasks is cross-artifact reasoning.
+
+Instead of placing the entire bug in one file, related inconsistencies can be
+distributed across several artifacts.
+
+For example:
+
+configuration
+      │
+      ├── generation
+      ├── assignment
+      └── recovery policy
+             │
+             ▼
+       recovery state
+             │
+             ├── checkpoints
+             ├── committed offsets
+             ├── processed offsets
+             └── restart state
+             │
+             ▼
+          workloads
+
+The agent must determine which values represent durable truth and which values
+represent inconsistent runtime state.
+
+This makes the task substantially harder than a simple single-file repair.
+
+Anti-Leakage Design
+
+The benchmark follows several principles intended to prevent shortcut-based
+solutions.
+
+1. Environment / Verifier Separation
+
+Verifier files are not copied into the agent environment.
+
+2. Reference Solution Separation
+
+solution/ is kept outside the agent-visible environment.
+
+3. Artifact Isolation
+
+Only intended task data is copied into the environment image.
+
+4. Canary Tracking
+
+Tasks contain a Harbor canary identifier to help detect accidental artifact
+mixing and task contamination during benchmark development.
+
+5. Contract-Based Verification
+
+Tests focus on behavioral and structural invariants instead of exposing a
+single expected patch.
+
+6. Preservation Constraints
+
+Many tasks explicitly require preserving unrelated state such as:
+
+Existing workloads
+Message counts
+Partition topology
+API contracts
+Resource ownership
+Existing configuration
+
+This prevents trivial destructive solutions.
+
+7. Shortcut Rejection
+
+Tasks can explicitly reject approaches such as:
+
+Resetting state destructively
+Removing workloads
+Disabling the relevant subsystem
+Bypassing recovery logic
+Replacing the intended mechanism with a global synchronization shortcut
+Difficulty Engineering
+
+Task difficulty is treated as an engineering variable rather than simply
+adding more lines of code.
+
+Difficulty can come from:
+
+Multiple interacting artifacts
+Ambiguous local symptoms
+Cross-artifact inconsistencies
+Distributed-state reasoning
+Concurrency semantics
+Hidden dependency relationships
+Preservation requirements
+Multiple plausible but incorrect repairs
+Anti-shortcut constraints
+Deterministic but non-obvious invariants
+
+The goal is to create tasks where an agent must understand the system before
+performing the repair.
+
+Validation Workflow
+
+Tasks are validated through a repeatable development workflow:
+
+Task Design
+    ↓
+Environment Construction
+    ↓
+Reference Solution
+    ↓
+Deterministic Verifier
+    ↓
+Local Docker Validation
+    ↓
+Oracle Validation
+    ↓
+NOP / Baseline Validation
+    ↓
+Leakage Audit
+    ↓
+Harbor Evaluation
+
+A task is not considered ready simply because the reference solution passes.
+
+We also verify that:
+
+The original broken state fails.
+The reference solution repairs the state.
+The verifier passes after repair.
+The agent environment does not contain verifier/reference artifacts.
+A no-op agent does not receive credit for the broken state.
+The final task remains deterministic and reproducible.
+Example: Kafka Consumer Recovery
+
+One representative task models a Kafka consumer recovery regression.
+
+The initial state contains several individually plausible values that become
+inconsistent when considered together.
+
+The agent must reconcile:
+
+Consumer identity
+       ↓
+Partition assignment
+       ↓
+Generation / assignment epoch
+       ↓
+Committed offsets
+       ↓
+Processed offsets
+       ↓
+Checkpoint state
+       ↓
+Restart recovery policy
+
+The correct repair must preserve committed progress and resume from durable
+state without using destructive offset-reset shortcuts.
+
+This illustrates the benchmark philosophy:
+
+The challenge is understanding the system state, not guessing the expected
+file edit.
+
+Example: CUDA Stream/Event Dependency
+
+The CUDA stream/event task models asynchronous execution across multiple CUDA
+streams.
+
+The task requires reasoning about:
+
+Producer Stream
+      │
+      │ producer_done
+      ▼
+Consumer Stream
+      │
+      │ consumer_done
+      ▼
+Finalizer Stream
+
+The repaired configuration must preserve asynchronous execution while
+establishing the required cross-stream event dependencies.
+
+A global synchronization shortcut is explicitly rejected.
+
+This evaluates whether an agent understands CUDA stream/event dependency
+semantics rather than simply inserting a global synchronization primitive.
+
+Reproducibility
+
+Tasks are packaged as Dockerized environments so that the same benchmark
+artifacts can be evaluated consistently.
+
+The benchmark separates:
+
+Agent Environment
+        │
+        └── environment/Dockerfile
+
+
+Verifier Environment
+        │
+        └── tests/Dockerfile
+
+This separation improves reproducibility and makes the evaluation pipeline
+portable across machines and benchmark runners.
+
+Repository Structure
+ai-code-evaluation-benchmarks/
+│
+├── cuda-gpu/
+│   ├── cuda-memory-allocator-008/
+│   ├── cuda-shared-memory-001/
+│   ├── cuda-async-pipeline-005/
+│   ├── cuda-memory-coalescing-006/
+│   ├── cuda-memory-pool-007/
+│   ├── cuda-reduction-race-002/
+│   ├── cuda-stream-event-dependency/
+│   ├── gpu-kernel-build-regression-003/
+│   └── gpu-kernel-performance-regression-004/
+│
+├── backend/
+│   ├── backend-service-recovery/
+│   ├── backend-async-job-recovery/
+│   └── nginx-request-logging/
+│
+├── distributed-systems/
+│   ├── fastapi-gpu-inference-011/
+│   ├── fastapi-idempotency-011/
+│   └── fastapi-async-concurrency-009/
+│
+├── infrastructure/
+│   ├── kubernetes-rollout-recovery-010/
+│   └── kafka-consumer-offset-recovery/
+│
+├── algorithms/
+│   ├── ml-lp-simplex-optimizer/
+│   └── ml-constrained-kkt-optimizer/
+│
+└── arabic-evaluation/
+    └── arabic-count-notification/
+Technology
+
+The benchmark currently uses technologies and concepts including:
+
+Terminal-Bench 3
+Docker
+Python
+Pytest
+FastAPI
+Kafka
+Kubernetes
+CUDA
+GPU memory management
+CUDA streams and events
+Shared memory
+Distributed systems
+Backend infrastructure
+Optimization algorithms
+Arabic language evaluation
+Engineering Philosophy
+
+The benchmark is built around five principles:
+
+Correctness over superficial success
+
+A solution should satisfy the underlying engineering contract.
+
+Reproducibility over environment-specific behavior
+
+Tasks should run consistently in isolated environments.
+
+Reasoning over pattern matching
+
+The agent should understand relationships between artifacts.
+
+Verification over trust
+
+Every successful repair should be independently verified.
+
+Real engineering constraints over toy problems
+
+Tasks should resemble the kinds of failures engineers encounter in production
+systems: recovery bugs, concurrency errors, state inconsistencies, API
+contract violations, infrastructure regressions, and performance problems.
+
+Status
+
+20 tasks currently included.
+
+The repository is being developed as a growing benchmark portfolio for
+AI coding-agent evaluation and software-engineering reasoning.
+
+Future work includes expanding the benchmark across CUDA/GPU systems,
+distributed training, backend infrastructure, Kubernetes, and additional
+multilingual evaluation tasks.
+
+About
+
+Built as an independent software-engineering evaluation benchmark portfolio
+using Terminal-Bench 3–oriented task architecture, Dockerized environments,
+deterministic verification, reference solutions, and anti-leakage principles.
