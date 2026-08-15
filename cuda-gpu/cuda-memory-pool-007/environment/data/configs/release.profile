@@ -1,0 +1,5 @@
+OPT_PROFILE=release
+PROFILE=release
+BUILD_TYPE=Release
+OPT_LEVEL=3
+LTO=1

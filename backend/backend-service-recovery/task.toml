@@ -1,0 +1,29 @@
+schema_version = "1.3"
+artifacts = []
+
+[task]
+name = "mohamedahmed/backend-service-recovery"
+description = "Recover a systemd-managed FastAPI backend and Nginx reverse proxy from a broken Unix-socket deployment."
+authors = ["Mohamed Ahmed"]
+keywords = ["backend", "infrastructure", "nginx", "systemd", "unix-socket"]
+
+[metadata]
+
+[verifier]
+timeout_sec = 600.0
+collect = []
+
+[verifier.env]
+
+[agent]
+timeout_sec = 600.0
+
+[environment]
+network_mode = "public"
+build_timeout_sec = 600.0
+os = "linux"
+mcp_servers = []
+
+[environment.env]
+
+[solution.env]

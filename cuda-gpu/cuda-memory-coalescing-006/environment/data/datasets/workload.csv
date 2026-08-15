@@ -1,0 +1,4 @@
+name,input_size,elements_per_thread
+small,4096,128
+medium,65536,64
+large,1048576,32

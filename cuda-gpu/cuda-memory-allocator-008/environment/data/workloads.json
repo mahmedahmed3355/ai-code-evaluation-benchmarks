@@ -1,0 +1,32 @@
+{
+  "workloads": [
+    {
+      "name": "embedding_batch",
+      "allocations": 8,
+      "bytes_per_allocation": 4096,
+      "producer_stream": 0,
+      "consumer_stream": 0
+    },
+    {
+      "name": "attention_workspace",
+      "allocations": 12,
+      "bytes_per_allocation": 8192,
+      "producer_stream": 0,
+      "consumer_stream": 1
+    },
+    {
+      "name": "vision_workspace",
+      "allocations": 6,
+      "bytes_per_allocation": 16384,
+      "producer_stream": 1,
+      "consumer_stream": 0
+    },
+    {
+      "name": "reduction_workspace",
+      "allocations": 10,
+      "bytes_per_allocation": 2048,
+      "producer_stream": 1,
+      "consumer_stream": 1
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+# Local developer override
+# Intentionally regresses memory-access performance.
+BLOCK_SIZE=128
+VECTOR_WIDTH=1
+COALESCED_ACCESS=0
+ALIGNED_ACCESS=0
+FAST_PATH=0
+CHUNK_SIZE=1024

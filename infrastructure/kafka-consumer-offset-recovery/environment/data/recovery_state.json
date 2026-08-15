@@ -1,0 +1,33 @@
+{
+  "generation": 7,
+  "assignment_epoch": 41,
+  "partitions": {
+    "0": {
+      "assigned_to": "worker-a",
+      "processed_offset": 124,
+      "committed_offset": 120,
+      "last_recovered_offset": 124
+    },
+    "1": {
+      "assigned_to": "worker-a",
+      "processed_offset": 88,
+      "committed_offset": 88,
+      "last_recovered_offset": 88
+    }
+  },
+  "checkpoint": {
+    "generation": 7,
+    "assignment_epoch": 40,
+    "source": "restart",
+    "offsets": {
+      "0": 124,
+      "1": 88
+    }
+  },
+  "restart": {
+    "occurred": true,
+    "recovery_generation": 8,
+    "recovery_epoch": 40,
+    "resume_policy": "resume_from_processed"
+  }
+}

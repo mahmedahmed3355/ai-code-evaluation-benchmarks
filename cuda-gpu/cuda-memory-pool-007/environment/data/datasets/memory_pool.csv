@@ -1,0 +1,6 @@
+workload,input_size,allocations,streams,reuse_ratio
+small,4096,128,4,0.10
+medium,65536,1024,4,0.35
+large,1048576,8192,4,0.80
+burst,262144,4096,8,0.65
+reuse-heavy,131072,16384,8,0.95

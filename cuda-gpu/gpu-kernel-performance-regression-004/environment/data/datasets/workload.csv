@@ -1,0 +1,4 @@
+workload_id,input_size,expected_output,profile
+small,4096,4096,balanced
+medium,65536,65536,balanced
+large,1048576,1048576,release

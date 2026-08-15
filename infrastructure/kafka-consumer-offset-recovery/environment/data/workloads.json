@@ -1,0 +1,51 @@
+{
+  "workloads": [
+    {
+      "name": "embedding_events",
+      "partitions": [
+        0,
+        1
+      ],
+      "messages": 24,
+      "expected_commit_progress": {
+        "0": 12,
+        "1": 12
+      }
+    },
+    {
+      "name": "batch_inference",
+      "partitions": [
+        0
+      ],
+      "messages": 32,
+      "expected_commit_progress": {
+        "0": 16,
+        "1": 16
+      }
+    },
+    {
+      "name": "replay_recovery",
+      "partitions": [
+        0,
+        1
+      ],
+      "messages": 16,
+      "expected_commit_progress": {
+        "0": 8,
+        "1": 8
+      }
+    },
+    {
+      "name": "streaming_updates",
+      "partitions": [
+        0,
+        1
+      ],
+      "messages": 20,
+      "expected_commit_progress": {
+        "0": 10,
+        "1": 10
+      }
+    }
+  ]
+}

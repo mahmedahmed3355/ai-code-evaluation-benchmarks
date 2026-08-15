@@ -1,0 +1,23 @@
+{
+  "streams": {
+    "producer": 0,
+    "consumer": 1,
+    "finalizer": 2
+  },
+  "events": {
+    "producer_completion": {
+      "recorded": true,
+      "event_id": "producer_done"
+    },
+    "consumer_completion": {
+      "recorded": true,
+      "event_id": "consumer_done"
+    }
+  },
+  "dependencies": [],
+  "execution": {
+    "async": true,
+    "global_synchronize": false,
+    "cross_stream_dependencies": true
+  }
+}

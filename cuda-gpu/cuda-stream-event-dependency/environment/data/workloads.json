@@ -1,0 +1,40 @@
+{
+  "workloads": [
+    {
+      "name": "embedding_pipeline",
+      "producer_stream": 0,
+      "consumer_stream": 1,
+      "finalizer_stream": 2,
+      "producer_event": "producer_done",
+      "consumer_event": "consumer_done",
+      "operations": 6
+    },
+    {
+      "name": "attention_pipeline",
+      "producer_stream": 0,
+      "consumer_stream": 1,
+      "finalizer_stream": 2,
+      "producer_event": "producer_done",
+      "consumer_event": "consumer_done",
+      "operations": 10
+    },
+    {
+      "name": "vision_pipeline",
+      "producer_stream": 0,
+      "consumer_stream": 1,
+      "finalizer_stream": 2,
+      "producer_event": "producer_done",
+      "consumer_event": "consumer_done",
+      "operations": 8
+    },
+    {
+      "name": "reduction_pipeline",
+      "producer_stream": 0,
+      "consumer_stream": 1,
+      "finalizer_stream": 2,
+      "producer_event": "producer_done",
+      "consumer_event": "consumer_done",
+      "operations": 12
+    }
+  ]
+}

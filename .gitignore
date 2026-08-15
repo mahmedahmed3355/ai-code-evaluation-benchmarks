@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Terminal-Bench / Harbor runtime artifacts
+jobs/
+local-verifier-*/
+*.log
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/

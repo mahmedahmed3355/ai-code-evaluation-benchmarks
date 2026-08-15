@@ -1,0 +1,8 @@
+{
+  "endpoint": "/work",
+  "method": "POST",
+  "delay_ms": 200,
+  "concurrent_requests": 4,
+  "maximum_expected_elapsed_ms": 500,
+  "response_status": "completed"
+}

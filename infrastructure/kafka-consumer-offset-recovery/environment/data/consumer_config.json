@@ -1,0 +1,22 @@
+{
+  "consumer_group": "inference-workers",
+  "topic": "model-events",
+  "partitions": [0, 1],
+  "assignment": {
+    "generation": 7,
+    "assignment_epoch": 41,
+    "partition_owner": {
+      "0": "worker-a",
+      "1": "worker-a"
+    }
+  },
+  "processing": {
+    "auto_commit": false,
+    "enable_idempotence": true,
+    "commit_mode": "manual"
+  },
+  "recovery": {
+    "on_restart": "resume_from_committed",
+    "on_rebalance": "preserve_committed_offsets"
+  }
+}

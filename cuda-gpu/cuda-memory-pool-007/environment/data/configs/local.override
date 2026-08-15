@@ -1,0 +1,9 @@
+# Local override intentionally contains the regressed memory lifecycle.
+ALLOCATOR=legacy
+MEMORY_POOL=0
+STREAM_ORDERED=0
+REUSE=0
+SYNC_MODE=global
+POOL_CHUNK_SIZE=1024
+MAX_POOL_BLOCKS=32
+ALLOCATION_BATCH=1

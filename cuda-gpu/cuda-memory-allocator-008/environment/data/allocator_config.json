@@ -1,0 +1,15 @@
+{
+  "allocator": {
+    "api": "cudaMallocAsync",
+    "free_api": "cudaFreeAsync",
+    "memory_pool": true,
+    "stream_ordered_free": false,
+    "cross_stream_events": false,
+    "deferred_release": false,
+    "release_threshold": 0
+  },
+  "execution": {
+    "streams": 2,
+    "synchronize_before_release": false
+  }
+}
