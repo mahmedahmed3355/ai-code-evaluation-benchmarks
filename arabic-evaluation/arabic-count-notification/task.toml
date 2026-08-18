@@ -11,6 +11,7 @@ keywords = ["arabic", "grammar", "plural", "dual"]
 [metadata]
 language = "ar"
 author_name = "Mohamed Ahmed"
+author_email = "engmohamedelshrbeny@gmail.com"
 difficulty = "hard"
 category = "Internationalization"
 subcategory = "Locale-based templating"

@@ -4,7 +4,8 @@ artifacts = []
 [task]
 name = "mohamed/ml-lp-simplex-optimizer"
 description = "Implement a self-contained constrained linear-programming solver with validation, active-constraint reporting, and KKT verification."
-authors = ["mohamed"]
+authors = ["mohamed ahmed"]
+author_email = "engmohamedelshrbeny@gmail.com"
 keywords = ["linear-programming", "optimization", "simplex", "kkt", "numerical"]
 
 [metadata]
