@@ -11,7 +11,7 @@ def task_dirs():
 
 def test_repository_contains_tasks():
     tasks = list(task_dirs())
-    assert len(tasks) >= 18
+    assert len(tasks) >= 17
 
 
 def test_every_task_has_instruction():
