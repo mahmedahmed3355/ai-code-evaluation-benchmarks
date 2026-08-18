@@ -8,6 +8,7 @@ authors = ["Mohamed Ahmed"]
 keywords = ["backend", "infrastructure", "nginx", "systemd", "unix-socket"]
 
 [metadata]
+author_email = "engmohamedelshrbeny@gmail.com"
 
 [verifier]
 timeout_sec = 600.0
@@ -27,3 +28,4 @@ mcp_servers = []
 [environment.env]
 
 [solution.env]
+

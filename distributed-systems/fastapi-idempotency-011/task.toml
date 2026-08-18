@@ -18,7 +18,7 @@ keywords = [
 
 [metadata]
 author_name = "Mohamed Ahmed"
-author_email = "mohamed@example.com"
+author_email = "engmohamedelshrbeny@gmail.com"
 author_organization = "Independent"
 difficulty_explanation = "The task requires identifying a race condition in an asynchronous FastAPI endpoint and preserving idempotency semantics across sequential, conflicting, and concurrent requests."
 solution_explanation = "The reference solution serializes the idempotency check, job creation, and result persistence for keyed requests while preserving the existing API behavior."
