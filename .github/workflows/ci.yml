@@ -47,29 +47,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Validate Dockerfile presence
+      - name: Run Hadolint
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: "**/Dockerfile"
+          recursive: true
+          failure-threshold: error
+
+      - name: Install kubeconform
         run: |
-          test "$(find . -type f -name Dockerfile | wc -l)" -gt 0
+          curl -L -o kubeconform.tar.gz             https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz
+          tar -xzf kubeconform.tar.gz
+          sudo mv kubeconform /usr/local/bin/kubeconform
+          kubeconform -v
 
       - name: Validate Kubernetes manifests
         run: |
-          python - <<'PY2'
-          from pathlib import Path
-
-          manifests = list(
-              Path(
-                  "infrastructure/kubernetes-rollout-recovery-010"
-              ).rglob("*.yaml")
-          ) + list(
-              Path(
-                  "infrastructure/kubernetes-rollout-recovery-010"
-              ).rglob("*.yml")
-          )
-
-          if not manifests:
-              raise SystemExit("No Kubernetes manifests found")
-
-          print("Found Kubernetes manifests:")
-          for manifest in manifests:
-              print(manifest)
-          PY2
+          find infrastructure/kubernetes-rollout-recovery-010 \
+            \( -name "*.yaml" -o -name "*.yml" \) \
+            -print0 | xargs -0 -r kubeconform -strict -summary
