@@ -2,7 +2,6 @@
 
 from pathlib import Path
 
-
 ROOT = Path("/app")
 
 CONFIG_DIR = ROOT / "configs"

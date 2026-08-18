@@ -44,7 +44,7 @@ exercises.
 
 # Benchmark Domains
 
-The current portfolio contains **19 evaluation tasks** across six domains.
+The current portfolio contains **18 evaluation tasks** across six domains.
 
 | Domain | Tasks |
 |---|---:|
@@ -483,7 +483,6 @@ ai-code-evaluation-benchmarks/
 │   └── nginx-request-logging/
 │
 ├── distributed-systems/
-│   ├── fastapi-gpu-inference-011/
 │   ├── fastapi-idempotency-011/
 │   └── fastapi-async-concurrency-009/
 │
@@ -557,3 +556,38 @@ About
 Built as an independent software-engineering evaluation benchmark portfolio
 using Terminal-Bench 3–oriented task architecture, Dockerized environments,
 deterministic verification, reference solutions, and anti-leakage principles.
+
+---
+
+# Reproduce Locally
+
+The repository can be validated from a fresh clone with the following workflow.
+
+## 1. Clone the repository
+
+```bash
+git clone https://github.com/mahmedahmed3355/ai-code-evaluation-benchmarks.git
+cd ai-code-evaluation-benchmarks
+2. Create a Python environment
+python3 -m venv .venv
+source .venv/bin/activate
+3. Install reproducible development dependencies
+make install
+
+The repository uses requirements.lock to provide a reproducible dependency set.
+
+4. Run the complete repository quality suite
+make check
+
+This command runs:
+
+Repository tests
+Ruff linting across the repository
+Static type checking
+Dependency vulnerability auditing
+Structural validation of all benchmark tasks
+5. Validate benchmark task structure
+make validate-all
+
+This verifies that every benchmark task contains the required instruction,
+environment, reference solution, verifier, and task metadata.

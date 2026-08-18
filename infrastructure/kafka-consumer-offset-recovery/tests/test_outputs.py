@@ -3,7 +3,6 @@
 import json
 from pathlib import Path
 
-
 CONFIG = Path("/app/data/consumer_config.json")
 RECOVERY = Path("/app/data/recovery_state.json")
 WORKLOADS = Path("/app/data/workloads.json")

@@ -4,7 +4,6 @@ import json
 import subprocess
 from pathlib import Path
 
-
 CONFIG = Path("/app/data/allocator_config.json")
 WORKLOADS = Path("/app/data/workloads.json")
 VALIDATOR = Path("/app/data/validate_allocator.py")

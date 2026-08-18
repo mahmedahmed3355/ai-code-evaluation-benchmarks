@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
-from pathlib import Path
 import csv
 import math
+from pathlib import Path
 
 CONFIG = Path("/app/build/resolved_config.txt")
 DATASET = Path("/app/datasets/memory_pool.csv")

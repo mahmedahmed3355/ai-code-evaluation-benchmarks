@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 
 from pathlib import Path
-import sys
-
 
 ROOT = Path("/app")
 CONFIG_DIR = ROOT / "configs"

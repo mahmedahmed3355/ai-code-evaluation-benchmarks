@@ -4,7 +4,6 @@ from pathlib import Path
 
 import yaml
 
-
 DEPLOYMENT = Path("/app/data/deployment.yaml")
 CONFIG = Path("/app/data/config.yaml")
 

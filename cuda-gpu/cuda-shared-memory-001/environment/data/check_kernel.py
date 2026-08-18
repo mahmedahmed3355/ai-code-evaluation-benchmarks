@@ -6,7 +6,6 @@ import re
 import sys
 from pathlib import Path
 
-
 SOURCE = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(
     "/app/src/broken_kernel.cu"
 )

@@ -4,12 +4,10 @@ import json
 import time
 import uuid
 
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-
 from database import get_connection, init_db
+from fastapi import FastAPI, HTTPException
 from job_queue import enqueue
-
+from pydantic import BaseModel
 
 app = FastAPI(
     title="Durable Async Job Service"

@@ -3,7 +3,6 @@ from pathlib import Path
 
 import pytest
 
-
 APP = Path("/app")
 
 CONFIG_DIR = APP / "configs"

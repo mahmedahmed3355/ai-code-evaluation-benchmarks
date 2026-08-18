@@ -8,7 +8,6 @@ from pathlib import Path
 import pytest
 from httpx import ASGITransport, AsyncClient
 
-
 APP_PATH = Path("/app/data/app.py")
 
 

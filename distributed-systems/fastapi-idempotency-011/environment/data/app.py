@@ -8,7 +8,6 @@ from typing import Any
 from fastapi import FastAPI, Header, HTTPException
 from pydantic import BaseModel
 
-
 app = FastAPI(title="Job API")
 
 _jobs: list[dict[str, Any]] = []

@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 
-from pathlib import Path
 import hashlib
 import sys
-
+from pathlib import Path
 
 ROOT = Path("/app")
 BUILD_DIR = ROOT / "build"

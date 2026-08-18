@@ -1,6 +1,5 @@
-from pathlib import Path
 import subprocess
-
+from pathlib import Path
 
 ROOT = Path("/app")
 SCRIPTS = ROOT / "scripts"

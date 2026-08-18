@@ -6,7 +6,6 @@ import numpy as np
 import pytest
 from scipy.optimize import linprog
 
-
 APP = Path("/app")
 CLI = APP / "cli.py"
 TOL = 2e-6

@@ -1,7 +1,5 @@
-import numpy as np
 
 from problem import LPProblem
-
 
 TOL = 2e-6
 
