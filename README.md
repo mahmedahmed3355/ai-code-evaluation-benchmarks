@@ -44,7 +44,7 @@ exercises.
 
 # Benchmark Domains
 
-The current portfolio contains **20 evaluation tasks** across six domains.
+The current portfolio contains **19 evaluation tasks** across six domains.
 
 | Domain | Tasks |
 |---|---:|
@@ -54,7 +54,7 @@ The current portfolio contains **20 evaluation tasks** across six domains.
 | Infrastructure / Kubernetes / Kafka | 2 |
 | Algorithms / Optimization | 2 |
 | Arabic Language Evaluation | 1 |
-| **Total** | **20** |
+| **Total** | **19** |
 
 ---
 
@@ -493,7 +493,6 @@ ai-code-evaluation-benchmarks/
 │
 ├── algorithms/
 │   ├── ml-lp-simplex-optimizer/
-│   └── ml-constrained-kkt-optimizer/
 │
 └── arabic-evaluation/
     └── arabic-count-notification/
@@ -544,7 +543,7 @@ contract violations, infrastructure regressions, and performance problems.
 
 Status
 
-20 tasks currently included.
+19 tasks currently included.
 
 The repository is being developed as a growing benchmark portfolio for
 AI coding-agent evaluation and software-engineering reasoning.
