@@ -12,3 +12,5 @@ local-verifier-*/
 .DS_Store
 .vscode/
 .idea/
+.venv/
+.pytest_cache/
