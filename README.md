@@ -618,3 +618,42 @@ make validate-all
 
 This provides a reproducible repository-level validation workflow independent
 of the individual task environments.
+
+## Reproducibility and Validation
+
+The repository uses pinned dependency versions in `requirements.lock`.
+
+Install the reproducible development environment with:
+
+```bash
+python -m pip install -r requirements.lock
+Run repository validation:
+
+make validate-all
+
+Run the repository test suite with coverage:
+
+python -m pytest --cov=scripts --cov-report=term tests/ -v
+Structured Logging
+
+Shared repository tooling uses scripts/logging_config.py for structured JSON logs.
+Each log event includes:
+
+timestamp
+level
+logger
+event
+
+This provides a consistent observability pattern for repository-level validation tooling.
+
+Security and IaC Validation
+
+GitHub Actions validates:
+
+Python tests
+Ruff linting
+MyPy type checks
+dependency vulnerabilities with pip-audit
+benchmark task structure
+Docker and Kubernetes artifacts
+Trivy configuration security findings

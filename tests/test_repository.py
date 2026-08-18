@@ -81,3 +81,45 @@ def test_docker_compose_exists():
     compose = ROOT / "docker-compose.yml"
 
     assert compose.exists(), "docker-compose.yml is missing"
+
+
+def test_requirements_lock_is_fully_pinned():
+    lockfile = ROOT / "requirements.lock"
+
+    assert lockfile.exists()
+
+    package_lines = []
+
+    for raw_line in lockfile.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+
+        if (
+            not line
+            or line.startswith("#")
+            or line.startswith("--")
+            or line.startswith("\\")
+        ):
+            continue
+
+        package_lines.append(line)
+
+    assert package_lines
+
+    for line in package_lines:
+        if "@" in line:
+            continue
+
+        assert "==" in line, f"Dependency is not exactly pinned: {line}"
+
+def test_task_validation_reports_missing_structure(tmp_path, monkeypatch):
+    from scripts import validate_tasks
+
+    broken_task = tmp_path / "broken-task"
+    broken_task.mkdir()
+    (broken_task / "task.toml").write_text('name = "broken-task"')
+
+    monkeypatch.setattr(validate_tasks, "ROOT", tmp_path)
+
+    tasks = list(validate_tasks.task_dirs())
+
+    assert tasks == [broken_task]

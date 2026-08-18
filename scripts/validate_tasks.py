@@ -5,6 +5,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
+
+def task_dirs():
+    """Yield directories containing benchmark task definitions."""
+    for task_file in sorted(ROOT.rglob("task.toml")):
+        yield task_file.parent
+
 REQUIRED_FILES = [
     "instruction.md",
     "task.toml",
