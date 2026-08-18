@@ -38,3 +38,38 @@ jobs:
 
       - name: Validate benchmark tasks
         run: make validate-all
+
+  iac-checks:
+    name: Docker and Kubernetes Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate Dockerfile presence
+        run: |
+          test "$(find . -type f -name Dockerfile | wc -l)" -gt 0
+
+      - name: Validate Kubernetes manifests
+        run: |
+          python - <<'PY2'
+          from pathlib import Path
+
+          manifests = list(
+              Path(
+                  "infrastructure/kubernetes-rollout-recovery-010"
+              ).rglob("*.yaml")
+          ) + list(
+              Path(
+                  "infrastructure/kubernetes-rollout-recovery-010"
+              ).rglob("*.yml")
+          )
+
+          if not manifests:
+              raise SystemExit("No Kubernetes manifests found")
+
+          print("Found Kubernetes manifests:")
+          for manifest in manifests:
+              print(manifest)
+          PY2

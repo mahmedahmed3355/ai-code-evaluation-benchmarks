@@ -591,3 +591,30 @@ make validate-all
 
 This verifies that every benchmark task contains the required instruction,
 environment, reference solution, verifier, and task metadata.
+
+---
+
+# Reproducible Repository Validation
+
+The repository can be validated from a fresh clone using the pinned
+`requirements.lock` dependency set.
+
+## Local validation
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.lock
+make validate-all
+Container validation
+
+Build and run the repository validator:
+
+docker compose up --build
+
+The root validation container installs the pinned dependency set and runs:
+
+make validate-all
+
+This provides a reproducible repository-level validation workflow independent
+of the individual task environments.

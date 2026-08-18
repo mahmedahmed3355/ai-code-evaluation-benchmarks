@@ -62,3 +62,22 @@ def test_task_toml_has_name():
             missing.append(str(task.relative_to(ROOT)))
 
     assert not missing, f"Tasks missing name metadata: {missing}"
+
+
+def test_requirements_lock_exists_and_is_not_empty():
+    lockfile = ROOT / "requirements.lock"
+
+    assert lockfile.exists(), "requirements.lock is missing"
+    assert lockfile.stat().st_size > 0, "requirements.lock is empty"
+
+
+def test_root_dockerfile_exists():
+    dockerfile = ROOT / "Dockerfile"
+
+    assert dockerfile.exists(), "Root Dockerfile is missing"
+
+
+def test_docker_compose_exists():
+    compose = ROOT / "docker-compose.yml"
+
+    assert compose.exists(), "docker-compose.yml is missing"

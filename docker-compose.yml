@@ -1,0 +1,7 @@
+services:
+  validator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /workspace
+    command: make validate-all
