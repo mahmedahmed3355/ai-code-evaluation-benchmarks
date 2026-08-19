@@ -2,6 +2,20 @@
 
 All notable changes to this benchmark portfolio are documented in this file.
 
+## [0.3.0]
+
+### Added
+
+- Checkov Kubernetes security scanning in CI.
+- VS Code Dev Container onboarding support.
+- Structured observability documentation.
+- Improved uv dependency group configuration.
+
+### Changed
+
+- Improved CI dependency installation flow using uv dependency groups.
+- Added Kubernetes security validation improvements.
+
 ## [Unreleased]
 
 ### Added
