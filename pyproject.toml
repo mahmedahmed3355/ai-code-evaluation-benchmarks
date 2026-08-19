@@ -2,22 +2,24 @@
 requires = ["setuptools>=69"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools]
+py-modules = []
+
 [project]
 name = "ai-code-evaluation-benchmarks"
 version = "0.1.0"
 description = "Terminal-Bench style AI coding agent evaluation task portfolio"
 requires-python = ">=3.12"
-
 dependencies = []
 
 # Benchmark task environments own their runtime dependencies.
-# Repository-level tooling is declared in the dev extra below.
+# Repository-level development and validation tooling is declared here.
 [project.optional-dependencies]
 dev = [
     "pytest==9.0.3",
-    "pytest-cov>=6,<7",
-    "ruff==0.9.10",
-    "mypy==1.15.0",
+    "pytest-cov==6.3.0",
+    "ruff==0.12.11",
+    "mypy==1.18.2",
     "pip-audit==2.8.0",
 ]
 

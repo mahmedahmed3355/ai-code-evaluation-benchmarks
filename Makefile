@@ -1,43 +1,32 @@
-.PHONY: install validate validate-all test lint typecheck audit \
-	check test-local verify lock lock-check container-check
+.PHONY: install test lint typecheck validate coverage validate-all audit lock-check
 
 install:
-	python3 -m pip install -r requirements.lock
-
-validate:
-	python3 -m scripts.validate_tasks
-
-validate-all: validate
+	uv sync --extra dev --locked
 
 test:
-	python3 -m pytest tests/ -v
-
-coverage:
-	python3 -m pytest tests/ --cov=scripts --cov-report=term-missing
+	uv run python -m pytest tests/ -v
 
 lint:
-	python3 -m ruff check .
+	uv run python -m ruff check .
 
 typecheck:
-	python3 -m mypy scripts tests
+	uv run python -m mypy scripts tests
+
+validate:
+	uv run python -m scripts.validate_tasks
+
+coverage:
+	uv run python -m pytest tests/ \
+		--cov=scripts.logging_config \
+		--cov=scripts.validation_metrics \
+		--cov=scripts.validate_tasks \
+		--cov-report=term-missing \
+		--cov-fail-under=70
 
 audit:
-	python3 -m pip_audit -r requirements-dev.txt
-
-test-local: test lint typecheck audit
-
-check: test-local validate-all
-
-verify: check
-
-lock:
-	python3 -m piptools compile \
-		--generate-hashes \
-		--output-file=requirements.lock \
-		requirements.in
+	uv run pip-audit
 
 lock-check:
-	python3 scripts/check_lockfile.py
+	uv lock --check
 
-container-check:
-	docker compose up --build --abort-on-container-exit --exit-code-from validator
+validate-all: lock-check lint typecheck test validate coverage

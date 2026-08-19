@@ -626,7 +626,11 @@ The repository uses pinned dependency versions in `requirements.lock`.
 Install the reproducible development environment with:
 
 ```bash
-python -m pip install -r requirements.lock
+# Recommended: reproducible repository tooling install
+uv sync --extra dev --locked
+
+# Compatibility path for the existing pip tooling lock
+# python -m pip install -r requirements.lock
 Run repository validation:
 
 make validate-all
@@ -657,3 +661,40 @@ dependency vulnerabilities with pip-audit
 benchmark task structure
 Docker and Kubernetes artifacts
 Trivy configuration security findings
+
+## Reproducible Development Workflow
+
+The repository supports reproducible installation and validation from a fresh clone.
+
+### Install
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+# Recommended: reproducible repository tooling install
+uv sync --extra dev --locked
+
+# Compatibility path for the existing pip tooling lock
+# python -m pip install -r requirements.lock
+The repository also includes a committed uv.lock generated from
+pyproject.toml for reproducible dependency resolution with uv.
+
+Run the full validation suite
+make validate-all
+
+This runs:
+
+Ruff linting
+MyPy type checking
+Pytest test suite
+Repository task validation
+Coverage reporting with a minimum 70% threshold
+Run individual checks
+make test
+make lint
+make typecheck
+make validate
+make coverage
+
+All shared tooling checks are designed to run from a fresh clone without
+requiring previously installed project state.
