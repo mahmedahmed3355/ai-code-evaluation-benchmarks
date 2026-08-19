@@ -853,3 +853,17 @@ uv run pytest tests/
 uv run ruff check .
 uv run mypy scripts tests
 
+
+## Infrastructure Security Validation
+
+Although this repository focuses on AI coding-agent evaluation tasks,
+all benchmark infrastructure artifacts are validated continuously.
+
+CI infrastructure checks include:
+
+- Hadolint validation for Dockerfiles
+- kubeconform validation for Kubernetes manifests
+- Checkov policy scanning for Kubernetes and Docker configurations
+
+These checks ensure benchmark environments remain reproducible,
+secure, and isolated.
