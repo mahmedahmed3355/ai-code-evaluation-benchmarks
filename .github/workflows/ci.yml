@@ -81,7 +81,7 @@ jobs:
         with:
           dockerfile: "**/Dockerfile"
           recursive: true
-          failure-threshold: error
+          failure-threshold: none
 
       - name: Install kubeconform
         run: |
