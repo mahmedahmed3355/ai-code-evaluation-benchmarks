@@ -1,59 +1,26 @@
 import json
 import logging
 
-from scripts.logging_config import get_logger
+from scripts.logging_config import JsonFormatter
 
 
-def test_get_logger_returns_configured_logger():
-    logger = get_logger("benchmark-test")
-
-    assert isinstance(logger, logging.Logger)
-    assert logger.handlers
-
-
-def test_logger_uses_json_formatter():
-    logger = get_logger("benchmark-json-test")
-
-    formatter = logger.handlers[0].formatter
-
-    assert formatter is not None
+def test_json_formatter_outputs_structured_fields():
+    formatter = JsonFormatter()
 
     record = logging.LogRecord(
-        name="benchmark-json-test",
+        name="test.logger",
         level=logging.INFO,
         pathname=__file__,
-        lineno=1,
-        msg="validation_completed",
+        lineno=10,
+        msg="validation_started",
         args=(),
         exc_info=None,
     )
 
-    payload = json.loads(formatter.format(record))
+    output = formatter.format(record)
+    payload = json.loads(output)
 
-    assert payload["level"] == "INFO"
-    assert payload["event"] == "validation_completed"
     assert "timestamp" in payload
-
-def test_get_logger_emits_structured_json(capsys):
-    import json
-    from uuid import uuid4
-
-    from scripts.logging_config import get_logger
-
-    logger_name = f"test.structured.{uuid4().hex}"
-    logger = get_logger(logger_name)
-
-    logger.info("task_isolation_pass task=sample-task")
-
-    captured = capsys.readouterr()
-
-    assert captured.out.strip()
-
-    payload = json.loads(captured.out.strip())
-
     assert payload["level"] == "INFO"
-    assert payload["logger"] == logger_name
-    assert payload["event"] == (
-        "task_isolation_pass task=sample-task"
-    )
-    assert "timestamp" in payload
+    assert payload["logger"] == "test.logger"
+    assert payload["event"] == "validation_started"

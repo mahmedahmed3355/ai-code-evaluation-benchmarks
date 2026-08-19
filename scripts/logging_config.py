@@ -1,3 +1,10 @@
+"""Structured JSON logging utilities for benchmark validation workflows.
+
+This module provides CI-time observability logs for validation tooling.
+It is not a network service health endpoint; logs are emitted to support
+debugging and automated benchmark validation reporting.
+"""
+
 import json
 import logging
 import sys
