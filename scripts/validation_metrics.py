@@ -1,20 +1,31 @@
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 
 
 @dataclass
 class ValidationMetrics:
-    total_tasks: int = 0
-    passed_tasks: int = 0
-    failed_tasks: int = 0
+    total: int = 0
+    passed: int = 0
+    failed: int = 0
 
     @property
     def success_rate(self) -> float:
-        if self.total_tasks == 0:
+        if self.total == 0:
             return 0.0
 
-        return round((self.passed_tasks / self.total_tasks) * 100, 2)
+        return self.passed / self.total
+
+    def record_success(self) -> None:
+        self.total += 1
+        self.passed += 1
+
+    def record_failure(self) -> None:
+        self.total += 1
+        self.failed += 1
 
     def to_dict(self) -> dict[str, int | float]:
-        data = asdict(self)
-        data["success_rate"] = self.success_rate
-        return data
+        return {
+            "total": self.total,
+            "passed": self.passed,
+            "failed": self.failed,
+            "success_rate": self.success_rate,
+        }

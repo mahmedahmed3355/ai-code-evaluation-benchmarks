@@ -4,32 +4,34 @@ from scripts.validation_metrics import ValidationMetrics
 def test_empty_metrics_have_zero_success_rate():
     metrics = ValidationMetrics()
 
-    assert metrics.total_tasks == 0
-    assert metrics.passed_tasks == 0
-    assert metrics.failed_tasks == 0
+    assert metrics.total == 0
+    assert metrics.passed == 0
+    assert metrics.failed == 0
     assert metrics.success_rate == 0.0
 
 
 def test_metrics_calculate_success_rate():
-    metrics = ValidationMetrics(
-        total_tasks=10,
-        passed_tasks=8,
-        failed_tasks=2,
-    )
+    metrics = ValidationMetrics()
 
-    assert metrics.success_rate == 80.0
+    metrics.record_success()
+    metrics.record_success()
+    metrics.record_failure()
+
+    assert metrics.total == 3
+    assert metrics.passed == 2
+    assert metrics.failed == 1
+    assert metrics.success_rate == 2 / 3
 
 
 def test_metrics_export_to_dictionary():
-    metrics = ValidationMetrics(
-        total_tasks=5,
-        passed_tasks=4,
-        failed_tasks=1,
-    )
+    metrics = ValidationMetrics()
 
-    data = metrics.to_dict()
+    metrics.record_success()
+    metrics.record_failure()
 
-    assert data["total_tasks"] == 5
-    assert data["passed_tasks"] == 4
-    assert data["failed_tasks"] == 1
-    assert data["success_rate"] == 80.0
+    assert metrics.to_dict() == {
+        "total": 2,
+        "passed": 1,
+        "failed": 1,
+        "success_rate": 0.5,
+    }

@@ -4,8 +4,11 @@ import sys
 from pathlib import Path
 
 from scripts.logging_config import get_logger
+from scripts.validation_metrics import ValidationMetrics
 
 logger = get_logger(__name__)
+
+metrics = ValidationMetrics()
 
 ROOT = Path(__file__).resolve().parents[1]
 
