@@ -47,16 +47,8 @@ jobs:
       - name: Run test coverage
         run: |
           uv run python -m pytest tests/ \
-            --cov=scripts.logging_config \
-            --cov=scripts.validation_metrics \
-            --cov=scripts.validate_tasks \
-            --cov=scripts.task_isolation \
-            --cov=scripts.task_manifest \
-            --cov=scripts.validate_task_structure \
-            --cov=scripts.validate_task_metadata \
-            --cov=scripts.check_task_deps \
-            --cov-report=term-missing \
-            --cov-fail-under=70
+            --cov=scripts
+--cov-fail-under=70
 
       - name: Run Ruff lint
         run: uv run python -m ruff check .
@@ -82,7 +74,7 @@ jobs:
 
       - name: Dependency audit
         run: |
-          pip-audit -r runtime-requirements.txt
+          uv run pip-audit -r runtime-requirements.txt
 
       - name: Check task dependency pinning
         run: uv run python -m scripts.check_task_deps

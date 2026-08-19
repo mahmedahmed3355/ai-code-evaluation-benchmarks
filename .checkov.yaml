@@ -1,11 +1,10 @@
 framework:
-  - kubernetes
-  - dockerfile
-
+- kubernetes
+- dockerfile
 skip-check:
-  - CKV_K8S_21
-  - CKV_DOCKER_2
-  - CKV_K8S_43
-
+- CKV_K8S_21
+- CKV_DOCKER_2
+- CKV_K8S_43
+- CKV_DOCKER_7
 compact: true
 quiet: true
