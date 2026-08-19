@@ -17,14 +17,19 @@ spec:
         app: inference-api
 
     spec:
+      automountServiceAccountToken: false
+
       securityContext:
         runAsNonRoot: true
         runAsUser: 10001
         runAsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
 
       containers:
         - name: api
           image: example/inference-api:1.0
+          imagePullPolicy: Always
 
           securityContext:
             allowPrivilegeEscalation: false
