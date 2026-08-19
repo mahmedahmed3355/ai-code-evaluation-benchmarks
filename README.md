@@ -795,3 +795,42 @@ After changing repository tooling dependencies, run:
 
 Dependency updates are tracked through Dependabot, while CI runs `pip-audit`
 against the resolved development environment.
+
+Infrastructure Footprint
+
+Although this repository is primarily a benchmark portfolio, its tasks use
+real container and infrastructure assets that are validated in CI.
+
+Docker-based task environments
+
+Benchmark tasks generally separate the agent environment from the verifier
+environment:
+
+environment/Dockerfile defines the isolated environment available to the
+agent.
+tests/Dockerfile defines the independent environment used to execute
+verification logic.
+
+Repository CI scans Dockerfiles with Hadolint and runs an additional dependency
+pinning check to detect unpinned base images and direct Python package
+dependencies.
+
+Kubernetes validation
+
+The repository includes Kubernetes configuration for the
+infrastructure/kubernetes-rollout-recovery-010 benchmark task.
+
+CI validates Kubernetes resources with:
+
+kubeconform -strict
+Trivy configuration scanning
+kubectl kustomize rendering for Kustomize configuration
+
+Kustomization files are rendered separately because they are build
+configuration rather than ordinary Kubernetes API resources.
+
+Additional architecture documentation
+
+For the complete relationship between benchmark tasks, agent environments,
+verifier images, repository tooling, and CI validation, see
+docs/ARCHITECTURE.md.
