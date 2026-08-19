@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 from scripts.logging_config import get_logger
@@ -33,7 +33,7 @@ def report_validation_failure(
         component=component,
         errors=errors,
         metadata={
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
             **metadata,
         },
     )

@@ -11,7 +11,7 @@ def main():
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
 
-    with open(args.problem, "r", encoding="utf-8") as f:
+    with open(args.problem, encoding="utf-8") as f:
         data = json.load(f)
 
     problem = LPProblem.from_json(data)

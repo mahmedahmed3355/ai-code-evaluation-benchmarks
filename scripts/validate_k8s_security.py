@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import yaml
 
@@ -20,14 +20,20 @@ def workload_spec(document: dict[str, Any]) -> dict[str, Any] | None:
     spec = document.get("spec", {})
 
     if kind == "CronJob":
-        return (
-            spec.get("jobTemplate", {})
-            .get("spec", {})
-            .get("template", {})
-            .get("spec")
+        return cast(
+            dict[str, Any] | None,
+            (
+                spec.get("jobTemplate", {})
+                .get("spec", {})
+                .get("template", {})
+                .get("spec")
+            ),
         )
 
-    return spec.get("template", {}).get("spec")
+    return cast(
+        dict[str, Any] | None,
+        spec.get("template", {}).get("spec"),
+    )
 
 
 def validate_document(
