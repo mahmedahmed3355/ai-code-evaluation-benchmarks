@@ -7,7 +7,7 @@ COPY data/reduction_test.cu /app/src/reduction_test.cu
 COPY data/run_reduction.sh /app/run_reduction.sh
 
 RUN chmod +x /app/run_reduction.sh \
-    && pip install --no-cache-dir pytest
+    && pip install --no-cache-dir pytest==8.4.1
 
 # Run as an unprivileged user.
 RUN useradd --create-home --uid 10001 benchmark
