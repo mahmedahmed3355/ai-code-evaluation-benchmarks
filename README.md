@@ -834,3 +834,22 @@ Additional architecture documentation
 For the complete relationship between benchmark tasks, agent environments,
 verifier images, repository tooling, and CI validation, see
 docs/ARCHITECTURE.md.
+
+## Dev Container
+
+This repository supports VS Code Dev Containers.
+
+Open the repository using:
+
+Dev Containers: Open Folder in Container
+
+The container automatically installs development dependencies using:
+
+uv sync --extra dev --locked
+
+After startup:
+
+uv run pytest tests/
+uv run ruff check .
+uv run mypy scripts tests
+
