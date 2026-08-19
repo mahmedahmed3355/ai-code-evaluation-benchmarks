@@ -134,15 +134,23 @@ jobs:
       - name: Validate Kubernetes security policy
         run: uv run python -m scripts.validate_k8s_security
 
-      - name: Run Checkov Kubernetes scan
+      - name: Run Checkov Kubernetes and Docker Policy Scan
         uses: bridgecrewio/checkov-action@v12
         with:
-          directory: infrastructure
+          directory: .
           config_file: .checkov.yaml
-          framework: kubernetes
+          framework: kubernetes,dockerfile
           quiet: true
-          soft_fail: true
+          soft_fail: false
+          output_format: cli,json
+          output_file_path: console,checkov-report.json
 
+
+      - name: Upload Checkov policy report
+        uses: actions/upload-artifact@v4
+        with:
+          name: checkov-policy-report
+          path: checkov-report.json
 
       - name: Validate Kubernetes manifests
         run: |
