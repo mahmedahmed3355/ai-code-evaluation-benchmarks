@@ -48,6 +48,9 @@ jobs:
             --cov=scripts.validate_tasks \
             --cov=scripts.task_isolation \
             --cov=scripts.task_manifest \
+            --cov=scripts.validate_task_structure \
+            --cov=scripts.validate_task_metadata \
+            --cov=scripts.check_task_deps \
             --cov-report=term-missing \
             --cov-fail-under=70
 
