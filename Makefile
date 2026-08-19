@@ -50,3 +50,8 @@ smoke:
 	$(MAKE) validate-all
 	$(MAKE) task-smoke
 	$(MAKE) task-manifest
+
+
+validate-task:
+	@if [ -z "$(TASK)" ]; then 		echo "Usage: make validate-task TASK=<task-path>"; 		exit 1; 	fi
+	uv run python -m scripts.task_isolation --task $(TASK)

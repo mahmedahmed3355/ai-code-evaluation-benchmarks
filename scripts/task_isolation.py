@@ -146,12 +146,31 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Build environment and verifier images after structural validation.",
     )
+
+    parser.add_argument(
+        "--task",
+        type=str,
+        help="Validate a single benchmark task path.",
+    )
+
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
     tasks = task_dirs()
+
+    if args.task:
+        requested = Path(args.task)
+
+        if not requested.is_absolute():
+            requested = ROOT / requested
+
+        tasks = [
+            task
+            for task in tasks
+            if task.resolve() == requested.resolve()
+        ]
 
     if not tasks:
         logger.error("no_benchmark_tasks_found")
