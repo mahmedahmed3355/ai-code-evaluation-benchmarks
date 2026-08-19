@@ -25,7 +25,7 @@ class ManifestValidationResult:
 
 def _is_positive_number(value: Any) -> bool:
     return (
-        isinstance(value, (int, float))
+        isinstance(value, int | float)
         and not isinstance(value, bool)
         and value > 0
     )
