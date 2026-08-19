@@ -28,13 +28,53 @@ jobs:
       - name: Verify locked dependencies
         run: uv lock --check
 
+      - name: Install dependencies
+        run: uv sync --extra dev --locked
+
+      - name: Run pytest
+        run: uv run python -m pytest tests/ -v
+
+      - name: Run test coverage
+        run: |
+          uv run python -m pytest tests/ \
+            --cov=scripts.logging_config \
+            --cov=scripts.validation_metrics \
+            --cov=scripts.validate_tasks \
+            --cov=scripts.task_isolation \
+            --cov=scripts.task_manifest \
+            --cov-report=term-missing \
+            --cov-fail-under=70
+
+      - name: Run Ruff lint
+        run: uv run python -m ruff check .
+
+      - name: Run MyPy type checking
+        run: uv run python -m mypy scripts tests
+
       - name: Fresh clone bootstrap and repository smoke check
         run: |
           rm -rf .venv
           make smoke
 
+      - name: Run MyPy type checking
+        run: uv run python -m mypy scripts tests
+
+      - name: Validate benchmark tasks
+        run: uv run python -m scripts.validate_tasks
+
+      - name: Run task isolation checks
+        run: uv run python -m scripts.task_isolation
+
+      - name: Validate task manifests
+        run: uv run python -m scripts.task_manifest
+
       - name: Dependency audit
         run: uv run pip-audit
+
+      - name: Fresh clone bootstrap and smoke check
+        run: |
+          rm -rf .venv
+          make smoke
 
   iac-checks:
     name: Docker and Kubernetes Validation
@@ -53,26 +93,17 @@ jobs:
 
       - name: Install kubeconform
         run: |
-          curl -L -o kubeconform.tar.gz             https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz
+          curl -L -o kubeconform.tar.gz \
+            https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz
           tar -xzf kubeconform.tar.gz
           sudo mv kubeconform /usr/local/bin/kubeconform
           kubeconform -v
 
-      - name: Run Trivy config scan
+      - name: Run Trivy config scan for repository
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: config
-          scan-ref: infrastructure
-          format: table
-          exit-code: "1"
-          severity: HIGH,CRITICAL
-          ignore-unfixed: true
-
-      - name: Run Trivy config scan for CUDA task environments
-        uses: aquasecurity/trivy-action@v0.36.0
-        with:
-          scan-type: config
-          scan-ref: cuda-gpu
+          scan-ref: .
           format: table
           exit-code: "1"
           severity: HIGH,CRITICAL
