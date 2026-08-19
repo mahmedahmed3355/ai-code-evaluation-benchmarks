@@ -51,14 +51,6 @@ jobs:
       - name: Run MyPy type checking
         run: uv run python -m mypy scripts tests
 
-      - name: Fresh clone bootstrap and repository smoke check
-        run: |
-          rm -rf .venv
-          make smoke
-
-      - name: Run MyPy type checking
-        run: uv run python -m mypy scripts tests
-
       - name: Validate benchmark tasks
         run: uv run python -m scripts.validate_tasks
 
