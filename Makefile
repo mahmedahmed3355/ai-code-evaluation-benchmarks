@@ -63,3 +63,7 @@ smoke-task:
 		exit 1; \
 	fi
 	uv run python -m scripts.task_smoke --task $(TASK)
+
+
+dependency-report:
+	uv run python -m scripts.generate_dependency_inventory

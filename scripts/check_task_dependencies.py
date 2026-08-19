@@ -28,6 +28,14 @@ def check_file(path: Path) -> list[str]:
 
     text = path.read_text(errors="ignore")
 
+    if "pip install" in text:
+        requirements = path.parent / "requirements.txt"
+
+        if not requirements.exists():
+            errors.append(
+                f"{path}: pip dependency manifest requirements.txt missing"
+            )
+
     for line in text.splitlines():
         if "pip install" in line and "--no-cache-dir" not in line:
             errors.append(

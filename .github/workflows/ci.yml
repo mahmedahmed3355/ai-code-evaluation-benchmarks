@@ -37,6 +37,10 @@ jobs:
       - name: Validate benchmark task metadata
         run: uv run python -m scripts.validate_task_metadata
 
+      - name: Generate task dependency inventory
+        run: |
+          uv run python -m scripts.generate_dependency_inventory
+
       - name: Run pytest
         run: uv run python -m pytest tests/ -v
 
