@@ -890,3 +890,14 @@ Run the bootstrap workflow:
 
 This installs locked dependencies and runs the validation suite.
 
+## Dependency Policy
+
+Repository tooling dependencies are managed through:
+
+- pyproject.toml
+- uv.lock
+
+Individual benchmark tasks own their isolated runtime dependencies.
+
+Task dependencies are intentionally separated from repository tooling
+dependencies to preserve benchmark reproducibility and evaluation isolation.
