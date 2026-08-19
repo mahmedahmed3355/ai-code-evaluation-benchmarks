@@ -6,9 +6,7 @@ import re
 import sys
 from pathlib import Path
 
-SOURCE = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(
-    "/app/src/broken_kernel.cu"
-)
+SOURCE = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("/app/src/broken_kernel.cu")
 
 
 def fail(message: str) -> None:
@@ -53,9 +51,7 @@ def main() -> None:
         fail("input accumulation statement not found")
 
     # Locate the final consumption of shared memory.
-    final_consume = source.find(
-        "atomicAdd(&output[bin], histogram[bin]);"
-    )
+    final_consume = source.find("atomicAdd(&output[bin], histogram[bin]);")
 
     if final_consume == -1:
         fail("final histogram accumulation not found")
@@ -68,28 +64,16 @@ def main() -> None:
     barrier = source.find("__syncthreads();", accumulation)
 
     if barrier == -1:
-        fail(
-            "missing __syncthreads() after the shared-memory "
-            "accumulation phase"
-        )
+        fail("missing __syncthreads() after the shared-memory accumulation phase")
 
     if barrier > final_consume:
-        fail(
-            "__syncthreads() occurs after the shared-memory "
-            "consumer phase"
-        )
+        fail("__syncthreads() occurs after the shared-memory consumer phase")
 
     # Ensure the synchronization is not merely the initialization barrier.
-    barriers = [
-        match.start()
-        for match in re.finditer(r"\b__syncthreads\s*\(\s*\)", source)
-    ]
+    barriers = [match.start() for match in re.finditer(r"\b__syncthreads\s*\(\s*\)", source)]
 
     if len(barriers) < 2:
-        fail(
-            "the kernel needs a second synchronization barrier "
-            "between production and consumption"
-        )
+        fail("the kernel needs a second synchronization barrier between production and consumption")
 
     print("PASS: shared-memory synchronization fix detected")
 

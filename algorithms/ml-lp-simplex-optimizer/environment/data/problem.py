@@ -67,34 +67,22 @@ class LPProblem:
             raise ValueError("upper must be one-dimensional")
 
         if self.A_eq.shape[1] != n:
-            raise ValueError(
-                "A_eq column count must match c"
-            )
+            raise ValueError("A_eq column count must match c")
 
         if self.A_ub.shape[1] != n:
-            raise ValueError(
-                "A_ub column count must match c"
-            )
+            raise ValueError("A_ub column count must match c")
 
         if len(self.b_eq) != self.A_eq.shape[0]:
-            raise ValueError(
-                "b_eq length must match A_eq rows"
-            )
+            raise ValueError("b_eq length must match A_eq rows")
 
         if len(self.b_ub) != self.A_ub.shape[0]:
-            raise ValueError(
-                "b_ub length must match A_ub rows"
-            )
+            raise ValueError("b_ub length must match A_ub rows")
 
         if len(self.lower) != n:
-            raise ValueError(
-                "lower length must match c"
-            )
+            raise ValueError("lower length must match c")
 
         if len(self.upper) != n:
-            raise ValueError(
-                "upper length must match c"
-            )
+            raise ValueError("upper length must match c")
 
         arrays = (
             self.c,
@@ -108,11 +96,7 @@ class LPProblem:
 
         for array in arrays:
             if not np.all(np.isfinite(array)):
-                raise ValueError(
-                    "all numerical values must be finite"
-                )
+                raise ValueError("all numerical values must be finite")
 
         if np.any(self.lower > self.upper):
-            raise ValueError(
-                "lower bounds must not exceed upper bounds"
-            )
+            raise ValueError("lower bounds must not exceed upper bounds")

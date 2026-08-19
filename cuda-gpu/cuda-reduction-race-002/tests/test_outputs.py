@@ -31,7 +31,7 @@ def function_body(source, name):
         pos += 1
 
     assert depth == 0, f"Could not parse body of {name}"
-    return source[start:pos - 1]
+    return source[start : pos - 1]
 
 
 def test_cuda_source_exists_and_is_nontrivial():
@@ -179,9 +179,7 @@ def test_cuda_implementation_is_preserved():
     ]
 
     for token in forbidden:
-        assert token not in lowered, (
-            f"Forbidden CPU/high-level replacement detected: {token}"
-        )
+        assert token not in lowered, f"Forbidden CPU/high-level replacement detected: {token}"
 
     assert "__global__" in source
     assert "cudaMalloc" in source

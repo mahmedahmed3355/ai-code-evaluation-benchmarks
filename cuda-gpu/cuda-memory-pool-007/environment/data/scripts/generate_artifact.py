@@ -55,10 +55,7 @@ def main():
                 "STREAMS",
                 "WORK_UNITS",
             ]:
-                out.write(
-                    f"WORKLOAD_{index}_{key}="
-                    f"{plan[f'WORKLOAD_{index}_{key}']}\n"
-                )
+                out.write(f"WORKLOAD_{index}_{key}={plan[f'WORKLOAD_{index}_{key}']}\n")
 
         out.write(f"TOTAL_WORK_UNITS={plan['TOTAL_WORK_UNITS']}\n")
 

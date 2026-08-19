@@ -28,9 +28,7 @@ def test_async_allocator_contract():
     )
 
     assert result.returncode == 0, (
-        f"allocator validation failed:\n"
-        f"stdout:\n{result.stdout}\n"
-        f"stderr:\n{result.stderr}"
+        f"allocator validation failed:\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}"
     )
 
 
@@ -41,9 +39,7 @@ def test_supported_workloads_are_preserved():
 
     assert len(workloads) == 4
 
-    assert {
-        item["name"] for item in workloads
-    } == {
+    assert {item["name"] for item in workloads} == {
         "embedding_batch",
         "attention_workspace",
         "vision_workspace",

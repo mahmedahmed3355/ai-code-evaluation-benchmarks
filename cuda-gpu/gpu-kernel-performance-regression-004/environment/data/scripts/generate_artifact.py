@@ -25,9 +25,7 @@ def parse_key_values(path: Path) -> dict[str, str]:
 
 
 def file_digest(path: Path) -> str:
-    return hashlib.sha256(
-        path.read_bytes()
-    ).hexdigest()
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def generate_artifact() -> Path:
@@ -71,28 +69,18 @@ def generate_artifact() -> Path:
     workload_index = 1
 
     while True:
-        input_key = (
-            f"WORKLOAD_{workload_index}_INPUT_SIZE"
-        )
-        work_key = (
-            f"WORKLOAD_{workload_index}_WORK_UNITS"
-        )
+        input_key = f"WORKLOAD_{workload_index}_INPUT_SIZE"
+        work_key = f"WORKLOAD_{workload_index}_WORK_UNITS"
 
         if input_key not in plan:
             break
 
-        lines.append(
-            f"{input_key}={plan[input_key]}"
-        )
-        lines.append(
-            f"{work_key}={plan[work_key]}"
-        )
+        lines.append(f"{input_key}={plan[input_key]}")
+        lines.append(f"{work_key}={plan[work_key]}")
 
         workload_index += 1
 
-    artifact.write_text(
-        "\n".join(lines) + "\n"
-    )
+    artifact.write_text("\n".join(lines) + "\n")
 
     return artifact
 
@@ -108,9 +96,7 @@ def main() -> int:
         return 1
 
     print(f"Generated artifact: {artifact}")
-    print(
-        f"Artifact SHA256: {file_digest(artifact)}"
-    )
+    print(f"Artifact SHA256: {file_digest(artifact)}")
 
     return 0
 

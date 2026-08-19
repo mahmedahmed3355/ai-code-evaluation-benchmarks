@@ -57,17 +57,12 @@ def print_provenance() -> None:
         values = parse_key_values(CONFIG_DIR / name)
 
         for key, value in values.items():
-            provenance.setdefault(key, []).append(
-                (name, value)
-            )
+            provenance.setdefault(key, []).append((name, value))
 
     for key in sorted(provenance):
         entries = provenance[key]
 
-        rendered = " -> ".join(
-            f"{source}:{value}"
-            for source, value in entries
-        )
+        rendered = " -> ".join(f"{source}:{value}" for source, value in entries)
 
         print(f"{key}: {rendered}")
 

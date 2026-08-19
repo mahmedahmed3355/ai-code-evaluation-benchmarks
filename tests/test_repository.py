@@ -18,10 +18,7 @@ def test_every_task_has_instruction():
     missing = []
 
     for task in task_dirs():
-        if not (
-            (task / "instruction.md").exists()
-            or (task / "instruction_en.md").exists()
-        ):
+        if not ((task / "instruction.md").exists() or (task / "instruction_en.md").exists()):
             missing.append(str(task.relative_to(ROOT)))
 
     assert not missing, f"Tasks missing instructions: {missing}"
@@ -93,12 +90,7 @@ def test_requirements_lock_is_fully_pinned():
     for raw_line in lockfile.read_text(encoding="utf-8").splitlines():
         line = raw_line.strip()
 
-        if (
-            not line
-            or line.startswith("#")
-            or line.startswith("--")
-            or line.startswith("\\")
-        ):
+        if not line or line.startswith("#") or line.startswith("--") or line.startswith("\\"):
             continue
 
         package_lines.append(line)
@@ -110,6 +102,7 @@ def test_requirements_lock_is_fully_pinned():
             continue
 
         assert "==" in line, f"Dependency is not exactly pinned: {line}"
+
 
 def test_task_validation_reports_missing_structure(tmp_path, monkeypatch):
     from scripts import validate_tasks

@@ -97,10 +97,7 @@ def test_artifact_matches_execution_plan():
             "STREAMS",
             "WORK_UNITS",
         ]:
-            assert (
-                artifact[f"WORKLOAD_{index}_{key}"]
-                == plan[f"WORKLOAD_{index}_{key}"]
-            )
+            assert artifact[f"WORKLOAD_{index}_{key}"] == plan[f"WORKLOAD_{index}_{key}"]
 
 
 def test_artifact_contains_memory_pool_settings():
@@ -120,13 +117,9 @@ def test_benchmark_report_matches_final_state():
     assert report["STATUS"] == "PASS"
     assert report["STATUS"] != "REGRESSION"
 
-    assert int(report["TOTAL_WORK_UNITS"]) == int(
-        plan["TOTAL_WORK_UNITS"]
-    )
+    assert int(report["TOTAL_WORK_UNITS"]) == int(plan["TOTAL_WORK_UNITS"])
 
-    assert int(report["TOTAL_WORK_UNITS"]) <= int(
-        report["PERFORMANCE_BUDGET"]
-    )
+    assert int(report["TOTAL_WORK_UNITS"]) <= int(report["PERFORMANCE_BUDGET"])
 
     assert int(report["SCORE"]) == 100
 
@@ -162,17 +155,11 @@ def test_configuration_is_not_satisfied_by_status_text_only():
 
     assert report["STATUS"] == "PASS"
 
-    assert int(report["TOTAL_WORK_UNITS"]) == int(
-        plan["TOTAL_WORK_UNITS"]
-    )
+    assert int(report["TOTAL_WORK_UNITS"]) == int(plan["TOTAL_WORK_UNITS"])
 
-    assert int(artifact["TOTAL_WORK_UNITS"]) == int(
-        plan["TOTAL_WORK_UNITS"]
-    )
+    assert int(artifact["TOTAL_WORK_UNITS"]) == int(plan["TOTAL_WORK_UNITS"])
 
-    assert int(report["TOTAL_WORK_UNITS"]) <= int(
-        report["PERFORMANCE_BUDGET"]
-    )
+    assert int(report["TOTAL_WORK_UNITS"]) <= int(report["PERFORMANCE_BUDGET"])
 
 
 def test_no_trivial_zero_workload_solution():
@@ -185,4 +172,3 @@ def test_no_trivial_zero_workload_solution():
 
     for index in range(1, 6):
         assert int(plan[f"WORKLOAD_{index}_WORK_UNITS"]) > 0
-

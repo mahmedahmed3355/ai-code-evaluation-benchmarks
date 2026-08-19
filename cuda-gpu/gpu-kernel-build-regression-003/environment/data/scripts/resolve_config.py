@@ -46,12 +46,7 @@ def main() -> int:
     # than assuming every source has the same precedence.
     config.update(load_config(CONFIG_DIR / "local.override"))
 
-    OUTPUT.write_text(
-        "".join(
-            f"{key}={value}\n"
-            for key, value in sorted(config.items())
-        )
-    )
+    OUTPUT.write_text("".join(f"{key}={value}\n" for key, value in sorted(config.items())))
 
     print(f"Resolved configuration written to {OUTPUT}")
 

@@ -46,10 +46,7 @@ def main() -> None:
     for key, expected in required.items():
         actual = allocator.get(key)
         if actual != expected:
-            fail(
-                f"allocator.{key} must be {expected!r}, "
-                f"got {actual!r}"
-            )
+            fail(f"allocator.{key} must be {expected!r}, got {actual!r}")
 
     if allocator.get("release_threshold", 0) <= 0:
         fail("allocator.release_threshold must be positive")
@@ -93,10 +90,7 @@ def main() -> None:
 
     # Deterministic simulation of allocation lifetime.
     # Cross-stream consumers require event ordering before release.
-    cross_stream = [
-        item for item in items
-        if item["producer_stream"] != item["consumer_stream"]
-    ]
+    cross_stream = [item for item in items if item["producer_stream"] != item["consumer_stream"]]
 
     if cross_stream and not allocator["cross_stream_events"]:
         fail("cross-stream allocations require event synchronization")

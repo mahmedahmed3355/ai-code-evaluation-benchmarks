@@ -73,15 +73,11 @@ def test_dependency_chain_is_ordered():
     dependencies = data["dependencies"]
 
     producer_to_consumer = [
-        item for item in dependencies
-        if item["from_stream"] == 0
-        and item["to_stream"] == 1
+        item for item in dependencies if item["from_stream"] == 0 and item["to_stream"] == 1
     ]
 
     consumer_to_finalizer = [
-        item for item in dependencies
-        if item["from_stream"] == 1
-        and item["to_stream"] == 2
+        item for item in dependencies if item["from_stream"] == 1 and item["to_stream"] == 2
     ]
 
     assert len(producer_to_consumer) == 1
@@ -116,10 +112,7 @@ def test_no_global_synchronization_shortcut():
 def test_workloads_are_preserved():
     data = load_json(WORKLOADS)
 
-    workloads = {
-        item["name"]: item["operations"]
-        for item in data["workloads"]
-    }
+    workloads = {item["name"]: item["operations"] for item in data["workloads"]}
 
     assert workloads == EXPECTED_WORKLOADS
 
@@ -127,10 +120,7 @@ def test_workloads_are_preserved():
 def test_operation_total():
     data = load_json(WORKLOADS)
 
-    total = sum(
-        item["operations"]
-        for item in data["workloads"]
-    )
+    total = sum(item["operations"] for item in data["workloads"])
 
     assert total == 36
 
@@ -150,16 +140,9 @@ def test_validator_equivalent_contract_without_visible_validator():
     assert execution["async"] is True
     assert execution["global_synchronize"] is False
 
-    event_ids = {
-        event["event_id"]
-        for event in events.values()
-        if event["recorded"]
-    }
+    event_ids = {event["event_id"] for event in events.values() if event["recorded"]}
 
-    waited_events = {
-        dependency["wait_event"]
-        for dependency in dependencies
-    }
+    waited_events = {dependency["wait_event"] for dependency in dependencies}
 
     assert event_ids == {"producer_done", "consumer_done"}
     assert waited_events == event_ids

@@ -88,9 +88,7 @@ def test_repository_structure():
     ]
 
     for path in required:
-        assert path.exists(), (
-            f"Required repository file is missing: {path}"
-        )
+        assert path.exists(), f"Required repository file is missing: {path}"
 
 
 def test_build_produces_artifact():
@@ -110,30 +108,23 @@ def test_build_produces_artifact():
 def test_effective_configuration_matches_contract():
     run_command(str(BUILD_SCRIPT))
 
-    effective = parse_key_values(
-        BUILD_DIR / "effective_config.txt"
-    )
+    effective = parse_key_values(BUILD_DIR / "effective_config.txt")
 
     for key, expected in EXPECTED.items():
         if key == "ARTIFACT_MODE":
             continue
 
         assert effective.get(key) == expected, (
-            f"{key}={effective.get(key)!r}, "
-            f"expected {expected!r}"
+            f"{key}={effective.get(key)!r}, expected {expected!r}"
         )
 
 
 def test_artifact_matches_effective_configuration():
     run_command(str(BUILD_SCRIPT))
 
-    effective = parse_key_values(
-        BUILD_DIR / "effective_config.txt"
-    )
+    effective = parse_key_values(BUILD_DIR / "effective_config.txt")
 
-    artifact = parse_key_values(
-        ARTIFACT_DIR / "kernel_build.artifact"
-    )
+    artifact = parse_key_values(ARTIFACT_DIR / "kernel_build.artifact")
 
     for key in (
         "BUILD_TYPE",
@@ -143,14 +134,9 @@ def test_artifact_matches_effective_configuration():
         "DEBUG_SYMBOLS",
         "LTO",
     ):
-        assert artifact.get(key) == effective.get(key), (
-            f"Artifact/config mismatch for {key}"
-        )
+        assert artifact.get(key) == effective.get(key), f"Artifact/config mismatch for {key}"
 
-    assert (
-        artifact.get("ARTIFACT_MODE")
-        == EXPECTED["ARTIFACT_MODE"]
-    )
+    assert artifact.get("ARTIFACT_MODE") == EXPECTED["ARTIFACT_MODE"]
 
 
 def test_benchmark_passes():
@@ -161,9 +147,7 @@ def test_benchmark_passes():
         check=True,
     )
 
-    report = parse_key_values(
-        REPORT_DIR / "benchmark.txt"
-    )
+    report = parse_key_values(REPORT_DIR / "benchmark.txt")
 
     assert report.get("SCORE") == "100"
     assert report.get("STATUS") == "PASS"
@@ -179,9 +163,7 @@ def test_complete_validation_workflow_passes():
     assert result.returncode == 0
     assert "VALIDATION=PASS" in result.stdout
 
-    report = parse_key_values(
-        REPORT_DIR / "benchmark.txt"
-    )
+    report = parse_key_values(REPORT_DIR / "benchmark.txt")
 
     assert report.get("SCORE") == "100"
     assert report.get("STATUS") == "PASS"
@@ -206,9 +188,7 @@ LTO=0
             check=True,
         )
 
-        effective = parse_key_values(
-            BUILD_DIR / "effective_config.txt"
-        )
+        effective = parse_key_values(BUILD_DIR / "effective_config.txt")
 
         assert effective["OPT_LEVEL"] == "3"
         assert effective["FAST_MATH"] == "1"
@@ -220,9 +200,7 @@ LTO=0
             check=True,
         )
 
-        report = parse_key_values(
-            REPORT_DIR / "benchmark.txt"
-        )
+        report = parse_key_values(REPORT_DIR / "benchmark.txt")
 
         assert report["SCORE"] == "100"
         assert report["STATUS"] == "PASS"

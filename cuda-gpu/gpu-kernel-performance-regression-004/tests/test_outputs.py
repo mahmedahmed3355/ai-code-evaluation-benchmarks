@@ -60,15 +60,9 @@ def test_artifact_matches_execution_plan():
     assert artifact["TOTAL_WORK_UNITS"] == plan["TOTAL_WORK_UNITS"]
 
     for index in range(1, 4):
-        assert (
-            artifact[f"WORKLOAD_{index}_INPUT_SIZE"]
-            == plan[f"WORKLOAD_{index}_INPUT_SIZE"]
-        )
+        assert artifact[f"WORKLOAD_{index}_INPUT_SIZE"] == plan[f"WORKLOAD_{index}_INPUT_SIZE"]
 
-        assert (
-            artifact[f"WORKLOAD_{index}_WORK_UNITS"]
-            == plan[f"WORKLOAD_{index}_WORK_UNITS"]
-        )
+        assert artifact[f"WORKLOAD_{index}_WORK_UNITS"] == plan[f"WORKLOAD_{index}_WORK_UNITS"]
 
 
 def test_final_configuration_uses_performance_contract():
@@ -76,9 +70,7 @@ def test_final_configuration_uses_performance_contract():
 
     assert result.returncode == 0, result.stdout + result.stderr
 
-    config = parse_key_values(
-        ROOT / "build" / "resolved_config.txt"
-    )
+    config = parse_key_values(ROOT / "build" / "resolved_config.txt")
 
     assert config["STRATEGY"] == "blocked"
     assert config["BLOCK_SIZE"] == "256"
@@ -103,6 +95,7 @@ def test_final_validation_passes():
     assert "STATUS=PASS" in result.stdout
     assert "VALIDATION=PASS" in result.stdout
 
+
 def test_benchmark_rejects_over_budget_artifact():
     artifact_values = parse_key_values(ARTIFACT)
 
@@ -126,11 +119,7 @@ def test_benchmark_rejects_over_budget_artifact():
     artifact_values["TOTAL_WORK_UNITS"] = str(total_work)
 
     ARTIFACT.write_text(
-        "\n".join(
-            f"{key}={value}"
-            for key, value in artifact_values.items()
-        )
-        + "\n"
+        "\n".join(f"{key}={value}" for key, value in artifact_values.items()) + "\n"
     )
 
     result = run_script("benchmark.sh")
@@ -141,9 +130,8 @@ def test_benchmark_rejects_over_budget_artifact():
     report = parse_key_values(REPORT)
 
     assert report["STATUS"] == "REGRESSION"
-    assert int(report["TOTAL_WORK_UNITS"]) > int(
-        report["PERFORMANCE_BUDGET"]
-    )
+    assert int(report["TOTAL_WORK_UNITS"]) > int(report["PERFORMANCE_BUDGET"])
+
 
 def test_artifact_cannot_claim_optimized_strategy_with_bad_work():
     artifact = parse_key_values(ARTIFACT)

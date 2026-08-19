@@ -9,9 +9,7 @@ from fastapi import FastAPI, HTTPException
 from job_queue import enqueue
 from pydantic import BaseModel
 
-app = FastAPI(
-    title="Durable Async Job Service"
-)
+app = FastAPI(title="Durable Async Job Service")
 
 
 class JobRequest(BaseModel):

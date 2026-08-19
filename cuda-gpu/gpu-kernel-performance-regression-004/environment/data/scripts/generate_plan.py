@@ -97,12 +97,7 @@ def calculate_work(
     vector_multiplier = max(1, 4 // vector_width)
     fast_multiplier = 1 if fast_path else 2
 
-    return (
-        strategy_work
-        * vector_multiplier
-        * fast_multiplier
-        * work_unit_cost
-    )
+    return strategy_work * vector_multiplier * fast_multiplier * work_unit_cost
 
 
 def build_plan(config: dict[str, str]) -> dict:
@@ -166,14 +161,8 @@ def write_plan(plan: dict) -> Path:
     ]
 
     for index, workload in enumerate(plan["workloads"], start=1):
-        lines.append(
-            f"WORKLOAD_{index}_INPUT_SIZE="
-            f"{workload['input_size']}"
-        )
-        lines.append(
-            f"WORKLOAD_{index}_WORK_UNITS="
-            f"{workload['work_units']}"
-        )
+        lines.append(f"WORKLOAD_{index}_INPUT_SIZE={workload['input_size']}")
+        lines.append(f"WORKLOAD_{index}_WORK_UNITS={workload['work_units']}")
 
     output.write_text("\n".join(lines) + "\n")
 
@@ -198,10 +187,7 @@ def main() -> int:
     print(f"Total work units: {plan['total_work_units']}")
 
     for workload in plan["workloads"]:
-        print(
-            f"input={workload['input_size']} "
-            f"work_units={workload['work_units']}"
-        )
+        print(f"input={workload['input_size']} work_units={workload['work_units']}")
 
     return 0
 

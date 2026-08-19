@@ -53,5 +53,6 @@ HIDDEN_EXPECTED = {
 
 def test_hidden_messages_exact():
     actual = hidden_output_set()
-    assert actual == HIDDEN_EXPECTED, \
+    assert actual == HIDDEN_EXPECTED, (
         f"Missing: {HIDDEN_EXPECTED - actual}, Extra: {actual - HIDDEN_EXPECTED}"
+    )

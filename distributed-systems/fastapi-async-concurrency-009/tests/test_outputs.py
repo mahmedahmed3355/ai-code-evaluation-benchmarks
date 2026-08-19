@@ -56,8 +56,6 @@ def test_blocking_operation_is_preserved():
     assert result == 0
 
 
-
-
 def test_concurrent_work_operations_do_not_serialize():
     module = load_module()
 
@@ -87,6 +85,5 @@ def test_concurrent_work_operations_do_not_serialize():
     # Allow margin for slower CI environments while still rejecting
     # clearly serialized execution.
     assert elapsed < 0.32, (
-        f"Concurrent work took {elapsed:.3f}s; "
-        "blocking operations appear to be serialized."
+        f"Concurrent work took {elapsed:.3f}s; blocking operations appear to be serialized."
     )

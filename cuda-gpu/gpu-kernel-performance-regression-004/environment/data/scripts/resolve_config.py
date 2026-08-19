@@ -42,9 +42,7 @@ def load_all_configs() -> list[tuple[str, dict[str, str]]]:
         path = CONFIG_DIR / name
 
         if path.exists():
-            configs.append(
-                (name, parse_config(path))
-            )
+            configs.append((name, parse_config(path)))
 
     return configs
 
@@ -63,10 +61,7 @@ def write_resolved(values: dict[str, str]) -> Path:
 
     output = BUILD_DIR / "resolved_config.txt"
 
-    lines = [
-        f"{key}={values[key]}"
-        for key in sorted(values)
-    ]
+    lines = [f"{key}={values[key]}" for key in sorted(values)]
 
     output.write_text("\n".join(lines) + "\n")
 
@@ -74,27 +69,18 @@ def write_resolved(values: dict[str, str]) -> Path:
 
 
 def digest(values: dict[str, str]) -> str:
-    payload = "\n".join(
-        f"{key}={values[key]}"
-        for key in sorted(values)
-    )
+    payload = "\n".join(f"{key}={values[key]}" for key in sorted(values))
 
-    return hashlib.sha256(
-        payload.encode()
-    ).hexdigest()
+    return hashlib.sha256(payload.encode()).hexdigest()
 
 
 def main() -> int:
     values = resolve()
     output = write_resolved(values)
 
-    print(
-        f"Resolved configuration written to {output}"
-    )
+    print(f"Resolved configuration written to {output}")
 
-    print(
-        f"Configuration digest: {digest(values)}"
-    )
+    print(f"Configuration digest: {digest(values)}")
 
     for key in sorted(values):
         print(f"{key}={values[key]}")

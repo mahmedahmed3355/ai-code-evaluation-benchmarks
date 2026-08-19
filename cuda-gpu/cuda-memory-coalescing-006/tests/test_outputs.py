@@ -58,22 +58,14 @@ def test_artifact_matches_execution_plan():
     assert artifact["TOTAL_WORK_UNITS"] == plan["TOTAL_WORK_UNITS"]
 
     for index in range(1, 4):
-        assert (
-            artifact[f"WORKLOAD_{index}_INPUT_SIZE"]
-            == plan[f"WORKLOAD_{index}_INPUT_SIZE"]
-        )
+        assert artifact[f"WORKLOAD_{index}_INPUT_SIZE"] == plan[f"WORKLOAD_{index}_INPUT_SIZE"]
 
-        assert (
-            artifact[f"WORKLOAD_{index}_WORK_UNITS"]
-            == plan[f"WORKLOAD_{index}_WORK_UNITS"]
-        )
+        assert artifact[f"WORKLOAD_{index}_WORK_UNITS"] == plan[f"WORKLOAD_{index}_WORK_UNITS"]
 
 
 def test_final_configuration_uses_coalesced_memory_contract():
     """The effective configuration must enable the optimized access path."""
-    config = parse_key_values(
-        ROOT / "build" / "resolved_config.txt"
-    )
+    config = parse_key_values(ROOT / "build" / "resolved_config.txt")
 
     assert config["BLOCK_SIZE"] == "256"
     assert config["VECTOR_WIDTH"] == "4"
@@ -95,9 +87,7 @@ def test_final_benchmark_passes():
     report = parse_key_values(REPORT)
 
     assert report["STATUS"] == "PASS"
-    assert int(report["TOTAL_WORK_UNITS"]) <= int(
-        report["PERFORMANCE_BUDGET"]
-    )
+    assert int(report["TOTAL_WORK_UNITS"]) <= int(report["PERFORMANCE_BUDGET"])
     assert int(report["SCORE"]) == 100
 
 
@@ -153,9 +143,7 @@ def test_bad_configuration_would_exceed_budget():
     if bad_config["FAST_PATH"] == 0:
         penalty *= 2
 
-    baseline_total = (
-        32 + 512 + 8192
-    ) * penalty
+    baseline_total = (32 + 512 + 8192) * penalty
 
     assert baseline_total > 500000
 

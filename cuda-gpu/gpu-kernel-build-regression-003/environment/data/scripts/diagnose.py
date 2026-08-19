@@ -41,9 +41,7 @@ def collect_provenance() -> dict[str, list[tuple[str, str]]]:
         values = parse_key_values(CONFIG_DIR / filename)
 
         for key, value in values.items():
-            provenance.setdefault(key, []).append(
-                (filename, value)
-            )
+            provenance.setdefault(key, []).append((filename, value))
 
     return provenance
 
@@ -68,10 +66,7 @@ def print_provenance() -> None:
     for key in sorted(provenance):
         entries = provenance[key]
 
-        rendered = " -> ".join(
-            f"{source}:{value}"
-            for source, value in entries
-        )
+        rendered = " -> ".join(f"{source}:{value}" for source, value in entries)
 
         print(f"{key}: {rendered}")
 
@@ -116,11 +111,7 @@ def print_artifact() -> None:
 
 
 def print_contract() -> None:
-    contract_path = (
-        ROOT
-        / "reference"
-        / "optimization_contract.txt"
-    )
+    contract_path = ROOT / "reference" / "optimization_contract.txt"
 
     print("\n[Expected contract]")
 

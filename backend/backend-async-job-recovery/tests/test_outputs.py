@@ -127,9 +127,7 @@ def wait_for_status(database, job_id, expected, timeout=5):
 
         time.sleep(0.05)
 
-    pytest.fail(
-        f"job {job_id} did not reach status {expected!r}"
-    )
+    pytest.fail(f"job {job_id} did not reach status {expected!r}")
 
 
 def test_normal_processing(tmp_path):

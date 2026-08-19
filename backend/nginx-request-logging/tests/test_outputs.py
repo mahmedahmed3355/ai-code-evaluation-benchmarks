@@ -20,9 +20,7 @@ def test_nginx_running():
     for i in range(max_retries):
         try:
             response = requests.get("http://localhost:9090", timeout=2)
-            assert response.status_code == 200, (
-                "Nginx is not responding properly on port 9090"
-            )
+            assert response.status_code == 200, "Nginx is not responding properly on port 9090"
             break
         except (requests.ConnectionError, requests.Timeout):
             if i == max_retries - 1:
@@ -59,9 +57,7 @@ def test_custom_404_page():
 def test_nginx_config_syntax():
     """Test that the Nginx configuration is syntactically correct."""
     result = subprocess.run(["nginx", "-t"], capture_output=True, text=True)
-    assert result.returncode == 0, (
-        f"Nginx configuration has syntax errors: {result.stderr}"
-    )
+    assert result.returncode == 0, f"Nginx configuration has syntax errors: {result.stderr}"
 
 
 def test_nginx_config_settings():
@@ -86,9 +82,7 @@ def test_nginx_config_settings():
     assert re.search(r"listen\s+9090", config_content), "Port 9090 is not configured"
 
     # Check document root
-    assert re.search(r"root\s+/srv/docs", config_content), (
-        "Document root is not set to /srv/docs"
-    )
+    assert re.search(r"root\s+/srv/docs", config_content), "Document root is not set to /srv/docs"
 
     config_files = [
         "/etc/nginx/nginx.conf",
@@ -111,9 +105,7 @@ def test_nginx_config_settings():
     has_log_format = "log_format" in config_content
 
     assert has_log_format, "No log_format directive found in nginx configuration"
-    assert not missing_fields, (
-        f"Custom log format missing required fields: {missing_fields}"
-    )
+    assert not missing_fields, f"Custom log format missing required fields: {missing_fields}"
 
     # Check rate limiting
     rate_limit_zone = re.search(r"limit_req_zone.*rate=20r/s", config_content)
@@ -178,7 +170,6 @@ def test_log_file_format():
     assert re.search(user_agent_pattern, log_content), "User agent missing in logs"
 
 
-
 def test_default_site_removed():
     """Ensure the default Nginx site has been disabled."""
     assert not Path("/etc/nginx/sites-enabled/default").exists(), (
@@ -193,9 +184,7 @@ def test_error_log_creation():
 
     error_log = Path("/var/log/nginx/docs-error.log")
 
-    assert error_log.exists(), (
-        "Custom error log was not created"
-    )
+    assert error_log.exists(), "Custom error log was not created"
 
 
 def test_error_page_configuration():
@@ -227,14 +216,12 @@ def test_access_log_configuration():
     ), "Custom access log configuration is missing"
 
 
-
 def test_log_format_name():
     """Verify custom log format name exists."""
     config = Path("/etc/nginx/nginx.conf").read_text()
 
-    assert "log_format docs_detailed" in config, (
-        "docs_detailed log format is missing"
-    )
+    assert "log_format docs_detailed" in config, "docs_detailed log format is missing"
+
 
 def test_custom_user_agent_logged():
     """Verify User-Agent is written to the access log."""
@@ -250,5 +237,3 @@ def test_custom_user_agent_logged():
     log = Path("/var/log/nginx/docs-access.log").read_text()
 
     assert ua in log, "Custom User-Agent was not logged"
-
-

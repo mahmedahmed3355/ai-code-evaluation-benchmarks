@@ -51,10 +51,7 @@ def main() -> int:
         )
         return 1
 
-    canonical = "\n".join(
-        f"{key}={config[key]}"
-        for key in sorted(config)
-    ) + "\n"
+    canonical = "\n".join(f"{key}={config[key]}" for key in sorted(config)) + "\n"
 
     digest = hashlib.sha256(canonical.encode()).hexdigest()
 

@@ -172,9 +172,7 @@ def test_workload_message_accounting():
     data = load_json(WORKLOADS)
 
     for workload in data["workloads"]:
-        expected_total = sum(
-            workload["expected_commit_progress"].values()
-        )
+        expected_total = sum(workload["expected_commit_progress"].values())
 
         assert expected_total == workload["messages"]
 

@@ -39,12 +39,8 @@ def main():
     }
 
     for index in range(1, 4):
-        output[f"WORKLOAD_{index}_INPUT_SIZE"] = plan[
-            f"WORKLOAD_{index}_INPUT_SIZE"
-        ]
-        output[f"WORKLOAD_{index}_WORK_UNITS"] = plan[
-            f"WORKLOAD_{index}_WORK_UNITS"
-        ]
+        output[f"WORKLOAD_{index}_INPUT_SIZE"] = plan[f"WORKLOAD_{index}_INPUT_SIZE"]
+        output[f"WORKLOAD_{index}_WORK_UNITS"] = plan[f"WORKLOAD_{index}_WORK_UNITS"]
 
     with ARTIFACT.open("w") as f:
         for key in sorted(output):

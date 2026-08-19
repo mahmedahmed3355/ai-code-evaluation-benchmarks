@@ -24,9 +24,7 @@ def run_solver(problem, tmp_path):
         timeout=20,
     )
 
-    assert proc.returncode == 0, (
-        f"solver failed\nstdout:\n{proc.stdout}\nstderr:\n{proc.stderr}"
-    )
+    assert proc.returncode == 0, f"solver failed\nstdout:\n{proc.stdout}\nstderr:\n{proc.stderr}"
     assert output_file.exists()
     return json.loads(output_file.read_text(encoding="utf-8"))
 
@@ -81,19 +79,10 @@ def check_solution(problem, result):
     ref = reference(problem)
     assert obj == pytest.approx(float(ref.fun), rel=0, abs=5 * TOL)
 
-    active_ub = [
-        i for i in range(len(A_ub))
-        if abs(A_ub[i] @ x - b_ub[i]) <= TOL
-    ]
+    active_ub = [i for i in range(len(A_ub)) if abs(A_ub[i] @ x - b_ub[i]) <= TOL]
     n = len(x)
-    active_lower = [
-        len(A_ub) + i for i in range(n)
-        if abs(x[i] - lower[i]) <= TOL
-    ]
-    active_upper = [
-        len(A_ub) + n + i for i in range(n)
-        if abs(x[i] - upper[i]) <= TOL
-    ]
+    active_lower = [len(A_ub) + i for i in range(n) if abs(x[i] - lower[i]) <= TOL]
+    active_upper = [len(A_ub) + n + i for i in range(n) if abs(x[i] - upper[i]) <= TOL]
     expected = active_ub + active_lower + active_upper
 
     actual = [int(v) for v in result["active_constraints"]]
