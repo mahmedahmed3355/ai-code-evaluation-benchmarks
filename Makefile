@@ -1,4 +1,5 @@
-.PHONY: validate validate-all test lint typecheck audit check install
+.PHONY: install validate validate-all test lint typecheck audit \
+	check test-local verify lock lock-check container-check
 
 install:
 	python3 -m pip install -r requirements.lock
@@ -20,4 +21,20 @@ typecheck:
 audit:
 	python3 -m pip_audit -r requirements-dev.txt
 
-check: test lint typecheck audit validate-all
+test-local: test lint typecheck audit
+
+check: test-local validate-all
+
+verify: check
+
+lock:
+	python3 -m piptools compile \
+		--generate-hashes \
+		--output-file=requirements.lock \
+		requirements.in
+
+lock-check:
+	python3 scripts/check_lockfile.py
+
+container-check:
+	docker compose up --build --abort-on-container-exit --exit-code-from validator

@@ -24,6 +24,12 @@ jobs:
       - name: Install reproducible dependencies
         run: python -m pip install -r requirements.lock
 
+      - name: Install lockfile tooling
+        run: python -m pip install pip-tools
+
+      - name: Verify dependency lockfile
+        run: python scripts/check_lockfile.py
+
       - name: Run repository tests
         run: python -m pytest tests/ -v
 

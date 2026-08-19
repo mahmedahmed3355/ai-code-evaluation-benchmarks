@@ -123,3 +123,10 @@ def test_task_validation_reports_missing_structure(tmp_path, monkeypatch):
     tasks = list(validate_tasks.task_dirs())
 
     assert tasks == [broken_task]
+
+
+def test_requirements_input_exists():
+    requirements_in = ROOT / "requirements.in"
+
+    assert requirements_in.exists()
+    assert requirements_in.read_text(encoding="utf-8").strip()
