@@ -73,8 +73,16 @@ jobs:
       - name: Validate task manifests
         run: uv run python -m scripts.task_manifest
 
+      - name: Export runtime dependencies
+        run: |
+          uv export \
+            --format requirements-txt \
+            --no-dev \
+            --output-file runtime-requirements.txt
+
       - name: Dependency audit
-        run: uv run pip-audit
+        run: |
+          pip-audit -r runtime-requirements.txt
 
       - name: Check task dependency pinning
         run: uv run python -m scripts.check_task_deps
