@@ -3,7 +3,10 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+from scripts.logging_config import get_logger
+
 ROOT = Path(__file__).resolve().parents[1]
+logger = get_logger(__name__)
 
 FROM_RE = re.compile(
     r"^\s*FROM\s+(?:--platform=\S+\s+)?([^\s]+)",
@@ -134,6 +137,8 @@ def main() -> int:
         if ".git" not in path.parts and ".venv" not in path.parts
     )
 
+    logger.info("task_dependency_scan_started dockerfiles=%d", len(dockerfiles))
+
     unpinned_images: list[str] = []
     unpinned_pip: list[str] = []
 
@@ -171,9 +176,15 @@ def main() -> int:
             print(f"  - {item}")
 
     if unpinned_images or unpinned_pip:
+        logger.error(
+            "task_dependency_scan_failed unpinned_images=%d unpinned_pip=%d",
+            len(unpinned_images),
+            len(unpinned_pip),
+        )
         print("\nDependency pinning check failed.")
         return 1
 
+    logger.info("task_dependency_scan_success dockerfiles=%d", len(dockerfiles))
     print("All task dependency checks passed.")
     return 0
 

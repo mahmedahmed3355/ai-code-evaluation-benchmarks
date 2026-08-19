@@ -4,7 +4,10 @@ import tomllib
 from pathlib import Path
 from typing import Any
 
+from scripts.logging_config import get_logger
+
 ROOT = Path(__file__).resolve().parents[1]
+logger = get_logger(__name__)
 
 
 def task_directories(root: Path = ROOT) -> list[Path]:
@@ -183,7 +186,7 @@ def main() -> int:
     tasks = task_directories()
 
     if not tasks:
-        print("No benchmark tasks discovered.")
+        logger.error("no_benchmark_tasks_discovered")
         return 1
 
     errors: list[str] = []
@@ -192,15 +195,23 @@ def main() -> int:
         errors.extend(validate_task_metadata(task_dir))
 
     if errors:
-        print("Benchmark task metadata validation failed:")
+        logger.error(
+            "task_metadata_validation_failed errors=%d",
+            len(errors),
+        )
 
         for error in errors:
-            print(f"- {error}")
+            logger.error(
+                "task_metadata_invalid detail=%s",
+                error,
+            )
 
         return 1
 
-    print(f"Discovered tasks: {len(tasks)}")
-    print("All benchmark task metadata is valid.")
+    logger.info(
+        "task_metadata_validation_success tasks=%d",
+        len(tasks),
+    )
 
     return 0
 

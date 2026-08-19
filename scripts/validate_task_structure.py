@@ -2,7 +2,10 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from scripts.logging_config import get_logger
+
 ROOT = Path(__file__).resolve().parents[1]
+logger = get_logger(__name__)
 
 REQUIRED_ANY_OF = (
     ("instruction.md", "instruction_en.md"),
@@ -28,6 +31,7 @@ def task_directories(root: Path) -> list[Path]:
             str(path.relative_to(root)),
         ),
     )
+
 
 def validate_task(task_dir: Path) -> list[str]:
     """Return validation errors for one benchmark task."""
@@ -76,7 +80,7 @@ def validate_task(task_dir: Path) -> list[str]:
 def main() -> int:
     tasks = task_directories(ROOT)
 
-    print(f"Discovered tasks: {len(tasks)}")
+    logger.info("benchmark_tasks_discovered count=%d", len(tasks))
 
     failures: list[tuple[Path, list[str]]] = []
 
@@ -87,19 +91,26 @@ def main() -> int:
             failures.append((task_dir, errors))
 
     if failures:
-        print("\nTask structure validation failed:")
+        logger.error(
+            "task_structure_validation_failed failures=%d",
+            len(failures),
+        )
 
         for task_dir, errors in failures:
             relative = task_dir.relative_to(ROOT)
 
-            print(f"\n{relative}")
-
-            for error in errors:
-                print(f"  - {error}")
+            logger.error(
+                "task_structure_invalid task=%s errors=%s",
+                relative,
+                "; ".join(errors),
+            )
 
         return 1
 
-    print("All benchmark task structures are valid.")
+    logger.info(
+        "task_structure_validation_success tasks=%d",
+        len(tasks),
+    )
     return 0
 
 
