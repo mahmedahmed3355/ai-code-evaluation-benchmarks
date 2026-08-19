@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from scripts.logging_config import get_logger
+from scripts.validation_events import ValidationEventLogger
 from scripts.validation_metrics import ValidationMetrics
 from scripts.validation_report import build_validation_report
 
@@ -36,6 +37,7 @@ def main() -> int:
 
     metrics = ValidationMetrics()
     failed = []
+    events = ValidationEventLogger()
 
     print(f"Found {len(task_files)} tasks\n")
 
@@ -49,6 +51,12 @@ def main() -> int:
 
         if missing:
             metrics.record_failure()
+
+            events.task_failed(
+                str(task_dir.relative_to(ROOT)),
+                "missing_required_files",
+            )
+
             failed.append((task_dir.relative_to(ROOT), missing))
 
             print(f"FAIL: {task_dir.relative_to(ROOT)}")
@@ -58,6 +66,11 @@ def main() -> int:
 
         else:
             metrics.record_success()
+
+            events.task_passed(
+                str(task_dir.relative_to(ROOT)),
+            )
+
             print(f"PASS: {task_dir.relative_to(ROOT)}")
 
     print()
@@ -73,6 +86,7 @@ def main() -> int:
     report = build_validation_report(
         metrics,
         errors=len(failed),
+        events=events.report(),
     )
 
     print("\nValidation observability report:")

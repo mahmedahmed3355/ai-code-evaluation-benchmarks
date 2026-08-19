@@ -8,6 +8,7 @@ from scripts.validation_metrics import ValidationMetrics
 def build_validation_report(
     metrics: ValidationMetrics,
     errors: int = 0,
+    events: dict[str, object] | None = None,
 ) -> dict[str, object]:
     return {
         "status": "success" if errors == 0 else "failed",
@@ -15,6 +16,7 @@ def build_validation_report(
         "observability": {
             "health": "healthy",
             "errors": errors,
+            "events": events or {},
         },
     }
 
