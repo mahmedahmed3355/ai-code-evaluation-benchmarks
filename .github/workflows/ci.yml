@@ -76,7 +76,15 @@ jobs:
 
       - name: Dependency audit
         run: |
-          uv run pip-audit --no-deps
+          uv export \
+            --format requirements-txt \
+            --no-hashes \
+            --no-dev \
+            > runtime-requirements.txt
+
+          uv run pip-audit \
+            -r runtime-requirements.txt \
+            --no-deps
 
       - name: Check task dependency pinning
         run: uv run python -m scripts.check_task_deps
