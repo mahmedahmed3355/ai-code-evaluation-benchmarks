@@ -10,7 +10,9 @@ name = "ai-code-evaluation-benchmarks"
 version = "0.1.0"
 description = "Terminal-Bench style AI coding agent evaluation task portfolio"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "pyyaml==6.0.2",
+]
 
 # Benchmark task environments own their runtime dependencies.
 # Repository-level development and validation tooling is declared here.
