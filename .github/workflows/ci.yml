@@ -48,7 +48,9 @@ jobs:
         run: |
           uv run python -m pytest tests/ \
             --cov=scripts \
-            --cov-fail-under=70
+            --cov-report=term-missing \
+            --cov-fail-under=70 \
+            --cov-config=.coveragerc
 
       - name: Run Ruff lint
         run: uv run python -m ruff check .

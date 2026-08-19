@@ -1,0 +1,6 @@
+[run]
+omit =
+    scripts/check_lockfile.py
+    scripts/error_reporting.py
+    scripts/task_smoke.py
+    scripts/task_isolation.py
