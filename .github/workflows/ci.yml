@@ -63,6 +63,9 @@ jobs:
       - name: Dependency audit
         run: uv run pip-audit
 
+      - name: Check task dependency pinning
+        run: uv run python -m scripts.check_task_deps
+
       - name: Fresh clone bootstrap and smoke check
         run: |
           rm -rf .venv
