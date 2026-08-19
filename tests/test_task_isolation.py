@@ -79,7 +79,7 @@ def test_check_task_records_successful_image_builds(tmp_path: Path):
         "scripts.task_isolation.docker_build",
         side_effect=[True, True],
     ) as build:
-        result = check_task(task)
+        result = check_task(task, build_images=True)
 
     assert result.structurally_valid
     assert result.passed
@@ -100,7 +100,7 @@ def test_check_task_records_failed_environment_build(tmp_path: Path):
         "scripts.task_isolation.docker_build",
         side_effect=[False, True],
     ):
-        result = check_task(task)
+        result = check_task(task, build_images=True)
 
     assert result.structurally_valid
     assert not result.passed
@@ -130,3 +130,21 @@ def test_image_tag_is_stable_for_external_task(tmp_path: Path):
     assert first == second
     assert first.startswith("benchmark-smoke-sample-task-")
     assert first.endswith("-environment")
+
+
+def test_check_task_defaults_to_structural_only(tmp_path):
+    task = tmp_path / "task"
+    task.mkdir()
+
+    for relative in REQUIRED_FILES:
+        target = task / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text("", encoding="utf-8")
+
+    result = check_task(task)
+
+    assert result.passed
+    assert result.environment.attempted is False
+    assert result.environment.succeeded is None
+    assert result.tests.attempted is False
+    assert result.tests.succeeded is None

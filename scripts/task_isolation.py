@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import hashlib
 import subprocess
 from dataclasses import dataclass
@@ -81,17 +82,18 @@ def image_tag(task: Path, kind: str) -> str:
         name = f"{task.name}-{path_hash}"
 
     safe_name = "".join(
-        character if character.isalnum() or character in "-_" else "-"
+        character if character.isalnum() or character in "-_"
+        else "-"
         for character in name
     )
     return f"benchmark-smoke-{safe_name}-{kind}"
 
 
-def check_task(task: Path, *, build_images: bool = True) -> TaskIsolationResult:
+def check_task(task: Path, *, build_images: bool = False) -> TaskIsolationResult:
     missing = missing_assets(task)
+    not_attempted = ImageBuildResult(attempted=False, succeeded=None)
 
     if missing:
-        not_attempted = ImageBuildResult(attempted=False, succeeded=None)
         return TaskIsolationResult(
             task=task,
             missing=missing,
@@ -100,7 +102,6 @@ def check_task(task: Path, *, build_images: bool = True) -> TaskIsolationResult:
         )
 
     if not build_images:
-        not_attempted = ImageBuildResult(attempted=False, succeeded=None)
         return TaskIsolationResult(
             task=task,
             missing=(),
@@ -123,12 +124,31 @@ def check_task(task: Path, *, build_images: bool = True) -> TaskIsolationResult:
     return TaskIsolationResult(
         task=task,
         missing=(),
-        environment=ImageBuildResult(attempted=True, succeeded=environment_ok),
-        tests=ImageBuildResult(attempted=True, succeeded=tests_ok),
+        environment=ImageBuildResult(
+            attempted=True,
+            succeeded=environment_ok,
+        ),
+        tests=ImageBuildResult(
+            attempted=True,
+            succeeded=tests_ok,
+        ),
     )
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Validate benchmark task isolation and optionally build task images."
+    )
+    parser.add_argument(
+        "--build-images",
+        action="store_true",
+        help="Build environment and verifier images after structural validation.",
+    )
+    return parser.parse_args()
+
+
 def main() -> int:
+    args = parse_args()
     tasks = task_dirs()
 
     if not tasks:
@@ -137,10 +157,13 @@ def main() -> int:
 
     failures = 0
 
-    print(f"Checking isolation for {len(tasks)} tasks\n")
+    if args.build_images:
+        print(f"Checking isolation and building images for {len(tasks)} tasks\n")
+    else:
+        print(f"Checking structural isolation for {len(tasks)} tasks\n")
 
     for task in tasks:
-        result = check_task(task)
+        result = check_task(task, build_images=args.build_images)
         relative = task.relative_to(ROOT)
 
         if result.passed:
@@ -164,7 +187,11 @@ def main() -> int:
         print(f"\nFAILED: {failures} task(s) did not satisfy isolation checks.")
         return 1
 
-    print(f"\nSUCCESS: All {len(tasks)} tasks passed isolation checks.")
+    if args.build_images:
+        print(f"\nSUCCESS: All {len(tasks)} tasks passed isolation and image build checks.")
+    else:
+        print(f"\nSUCCESS: All {len(tasks)} tasks passed structural isolation checks.")
+
     return 0
 
 

@@ -1,4 +1,7 @@
-.PHONY: install test lint typecheck validate coverage validate-all audit lock-check
+.PHONY: setup install test lint typecheck validate coverage validate-all audit lock-check smoke task-smoke task-build task-manifest
+
+setup:
+	uv sync --extra dev --locked
 
 install:
 	uv sync --extra dev --locked
@@ -15,11 +18,22 @@ typecheck:
 validate:
 	uv run python -m scripts.validate_tasks
 
+task-smoke:
+	uv run python -m scripts.task_isolation
+
+task-build:
+	uv run python -m scripts.task_isolation --build-images
+
+task-manifest:
+	uv run python -m scripts.task_manifest
+
 coverage:
 	uv run python -m pytest tests/ \
 		--cov=scripts.logging_config \
 		--cov=scripts.validation_metrics \
 		--cov=scripts.validate_tasks \
+		--cov=scripts.task_isolation \
+		--cov=scripts.task_manifest \
 		--cov-report=term-missing \
 		--cov-fail-under=70
 
@@ -30,3 +44,9 @@ lock-check:
 	uv lock --check
 
 validate-all: lock-check lint typecheck test validate coverage
+
+smoke:
+	uv sync --extra dev --locked
+	$(MAKE) validate-all
+	$(MAKE) task-smoke
+	$(MAKE) task-manifest
