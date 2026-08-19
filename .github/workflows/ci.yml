@@ -18,36 +18,23 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-          cache: pip
-          cache-dependency-path: requirements.lock
 
-      - name: Install reproducible dependencies
-        run: python -m pip install -r requirements.lock
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
 
-      - name: Install lockfile tooling
-        run: python -m pip install pip-tools
+      - name: Verify locked dependencies
+        run: uv lock --check
 
-      - name: Verify dependency lockfile
-        run: python scripts/check_lockfile.py
-
-      - name: Run repository tests
-        run: python -m pytest tests/ -v
-
-      - name: Run shared tooling coverage
+      - name: Fresh clone bootstrap and repository smoke check
         run: |
-          python -m pytest tests/             --cov=scripts             --cov-report=term-missing
-
-      - name: Run lint
-        run: python -m ruff check .
-
-      - name: Run type checks
-        run: python -m mypy scripts tests
+          rm -rf .venv
+          make smoke
 
       - name: Dependency audit
-        run: python -m pip_audit -r requirements-dev.txt
-
-      - name: Validate benchmark tasks
-        run: make validate-all
+        run: uv run pip-audit
 
   iac-checks:
     name: Docker and Kubernetes Validation

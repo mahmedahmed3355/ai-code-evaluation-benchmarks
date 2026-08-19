@@ -698,3 +698,79 @@ make coverage
 
 All shared tooling checks are designed to run from a fresh clone without
 requiring previously installed project state.
+
+## Fresh Clone Setup
+
+For a reproducible development environment from a clean checkout:
+
+    git clone <repository-url>
+    cd ai-code-evaluation-benchmarks
+    make setup
+
+The setup command installs the locked development environment using `uv.lock`.
+
+Verify the repository from a fresh environment:
+
+    make smoke
+
+This runs the repository test suite and the full quality and task validation pipeline.
+
+## Running a Single Task in Isolation
+
+Each benchmark task keeps its environment, oracle solution, and verifier assets separated:
+
+    task/
+    ├── environment/Dockerfile
+    ├── solution/solve.sh
+    └── tests/
+        ├── test.sh
+        └── test_outputs.py
+
+To verify that benchmark tasks contain the required isolation assets:
+
+    make task-smoke
+
+The repository-level structural validator can also be run with:
+
+    make validate
+
+Tasks are designed so that task-specific dependencies belong to the task environment rather than the repository-level development environment. Hardware-dependent or distributed tasks may require their own container/runtime capabilities when executing the actual benchmark workload.
+
+## Task Container Isolation Verification
+
+Every benchmark task is independently packaged with separate environment and verifier
+containers:
+
+```text
+task/
+├── environment/
+│   └── Dockerfile
+├── solution/
+│   └── solve.sh
+└── tests/
+    ├── Dockerfile
+    ├── test.sh
+    └── test_outputs.py
+```
+
+The repository verifies this isolation with:
+
+make task-smoke
+
+The isolation smoke check discovers every benchmark task and verifies the required
+task isolation assets without building task container images:
+
+    make task-smoke
+
+To explicitly build both the task environment image and verifier image for every task,
+run:
+
+    make task-build
+
+The structural smoke check is intentionally separate from image builds because some
+benchmark tasks require specialized runtimes, external base images, or hardware-specific
+dependencies that are not available in a standard repository development environment.
+
+Hardware-specific workloads are not executed during repository-level structural
+validation. CUDA, distributed, Kubernetes, and Kafka tasks retain their task-specific
+runtime requirements inside their isolated environments and verifiers.
