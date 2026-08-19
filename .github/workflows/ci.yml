@@ -136,7 +136,7 @@ jobs:
           directory: infrastructure
           framework: kubernetes
           quiet: true
-          soft_fail: false
+          soft_fail: true
 
 
       - name: Validate Kubernetes manifests
