@@ -24,6 +24,19 @@ def valid_deployment() -> dict:
                             "securityContext": {
                                 "allowPrivilegeEscalation": False,
                                 "privileged": False,
+                                "capabilities": {
+                                    "drop": ["NET_RAW"],
+                                },
+                            },
+                            "resources": {
+                                "requests": {
+                                    "cpu": "100m",
+                                    "memory": "128Mi",
+                                },
+                                "limits": {
+                                    "cpu": "500m",
+                                    "memory": "512Mi",
+                                },
                             },
                         }
                     ],

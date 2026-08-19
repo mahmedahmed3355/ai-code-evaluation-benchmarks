@@ -74,6 +74,31 @@ def validate_document(
                 "allowPrivilegeEscalation=false"
             )
 
+        capabilities = container_security.get("capabilities", {})
+        dropped_capabilities = capabilities.get("drop", [])
+
+        if "ALL" not in dropped_capabilities and "NET_RAW" not in dropped_capabilities:
+            errors.append(
+                f"{source}: container {name} should drop NET_RAW capability"
+            )
+
+        resources = container.get("resources", {})
+        if not resources.get("limits"):
+            errors.append(
+                f"{source}: container {name} must define resource limits"
+            )
+
+        if not resources.get("requests"):
+            errors.append(
+                f"{source}: container {name} must define resource requests"
+            )
+
+        image = container.get("image", "")
+        if image.endswith(":latest"):
+            errors.append(
+                f"{source}: container {name} must not use latest image tag"
+            )
+
     return errors
 
 
