@@ -3,7 +3,7 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-RUN pip install --no-cache-dir numpy
+RUN pip install --no-cache-dir numpy==2.3.2
 
 COPY data/ /app/
 
