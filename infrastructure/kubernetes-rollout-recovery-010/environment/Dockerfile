@@ -17,3 +17,8 @@ for name in ["deployment.yaml", "config.yaml"]:
 
 print("Kubernetes manifests parsed successfully")
 PY
+
+RUN useradd --create-home --uid 10001 appuser \
+    && chown -R appuser:appuser /app
+
+USER appuser
