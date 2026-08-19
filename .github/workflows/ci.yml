@@ -31,6 +31,9 @@ jobs:
       - name: Install dependencies
         run: uv sync --extra dev --locked
 
+      - name: Validate benchmark task structure
+        run: uv run python -m scripts.validate_task_structure
+
       - name: Run pytest
         run: uv run python -m pytest tests/ -v
 
