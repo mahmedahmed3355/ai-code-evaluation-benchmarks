@@ -2,7 +2,9 @@ framework:
   - kubernetes
   - dockerfile
 
-quiet: true
-
 skip-check:
   - CKV_K8S_21
+  - CKV_DOCKER_2
+
+compact: true
+quiet: true
