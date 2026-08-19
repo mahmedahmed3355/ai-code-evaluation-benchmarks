@@ -72,7 +72,7 @@ jobs:
           kubeconform -v
 
       - name: Run Trivy config scan
-        uses: aquasecurity/trivy-action@0.33.1
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: config
           scan-ref: infrastructure
@@ -82,7 +82,7 @@ jobs:
           ignore-unfixed: true
 
       - name: Run Trivy config scan for CUDA task environments
-        uses: aquasecurity/trivy-action@0.33.1
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: config
           scan-ref: cuda-gpu

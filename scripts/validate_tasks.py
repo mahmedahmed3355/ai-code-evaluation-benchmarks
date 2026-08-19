@@ -1,22 +1,13 @@
 #!/usr/bin/env python3
 
-import sys
 from pathlib import Path
 
 from scripts.logging_config import get_logger
 from scripts.validation_metrics import ValidationMetrics
 
-logger = get_logger(__name__)
-
-metrics = ValidationMetrics()
-
 ROOT = Path(__file__).resolve().parents[1]
 
-
-def task_dirs():
-    """Yield directories containing benchmark task definitions."""
-    for task_file in sorted(ROOT.rglob("task.toml")):
-        yield task_file.parent
+logger = get_logger(__name__)
 
 REQUIRED_FILES = [
     "instruction.md",
@@ -27,43 +18,63 @@ REQUIRED_FILES = [
     "tests/test_outputs.py",
 ]
 
-OPTIONAL_FILES = [
-    "README.md",
-    "tests/Dockerfile",
-]
 
-task_files = sorted(
-    ROOT.glob("*/*/task.toml")
-)
+def task_dirs():
+    """Yield directories containing benchmark task definitions."""
+    for task_file in sorted(ROOT.rglob("task.toml")):
+        yield task_file.parent
 
-if not task_files:
-    print("ERROR: No tasks found.")
-    sys.exit(1)
 
-failed = []
+def main() -> int:
+    task_files = sorted(ROOT.glob("*/*/task.toml"))
 
-print(f"Found {len(task_files)} tasks\n")
+    if not task_files:
+        print("ERROR: No tasks found.")
+        return 1
 
-for task_toml in task_files:
-    task_dir = task_toml.parent
-    missing = []
+    metrics = ValidationMetrics()
+    failed = []
 
-    for required in REQUIRED_FILES:
-        if not (task_dir / required).is_file():
-            missing.append(required)
+    print(f"Found {len(task_files)} tasks\n")
 
-    if missing:
-        failed.append((task_dir.relative_to(ROOT), missing))
-        print(f"FAIL: {task_dir.relative_to(ROOT)}")
-        for item in missing:
-            print(f"  missing: {item}")
-    else:
-        print(f"PASS: {task_dir.relative_to(ROOT)}")
+    for task_toml in task_files:
+        task_dir = task_toml.parent
+        missing = []
 
-print()
+        for required in REQUIRED_FILES:
+            if not (task_dir / required).is_file():
+                missing.append(required)
 
-if failed:
-    print(f"Validation failed: {len(failed)} task(s) have missing files.")
-    sys.exit(1)
+        if missing:
+            metrics.record_failure()
+            failed.append((task_dir.relative_to(ROOT), missing))
 
-print(f"SUCCESS: All {len(task_files)} tasks have the required structure.")
+            print(f"FAIL: {task_dir.relative_to(ROOT)}")
+
+            for item in missing:
+                print(f"  missing: {item}")
+
+        else:
+            metrics.record_success()
+            print(f"PASS: {task_dir.relative_to(ROOT)}")
+
+    print()
+
+    print(
+        "Validation metrics: "
+        f"total={metrics.total}, "
+        f"passed={metrics.passed}, "
+        f"failed={metrics.failed}, "
+        f"success_rate={metrics.success_rate:.2%}"
+    )
+
+    if failed:
+        print(f"\nValidation failed: {len(failed)} task(s) have missing files.")
+        return 1
+
+    print(f"\nSUCCESS: All {len(task_files)} tasks have the required structure.")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
