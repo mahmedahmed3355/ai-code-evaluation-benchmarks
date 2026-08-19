@@ -879,3 +879,14 @@ Repository tooling dependencies are managed through:
 
 Task-specific runtime dependencies remain inside each benchmark environment
 to preserve evaluation isolation.
+
+## Fresh Clone Setup
+
+For a clean environment:
+
+Run the bootstrap workflow:
+
+    ./scripts/bootstrap.sh
+
+This installs locked dependencies and runs the validation suite.
+
