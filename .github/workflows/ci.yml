@@ -148,3 +148,36 @@ jobs:
             -print0 | xargs -0 -r kubeconform -strict -summary
 
           kubectl kustomize infrastructure/kubernetes-rollout-recovery-010/base >/dev/null
+
+
+  task-smoke-validation:
+    name: Representative Task Smoke Validation
+    runs-on: ubuntu-latest
+    needs: quality
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --group dev --locked
+
+      - name: Validate CUDA task
+        run: |
+          uv run python -m scripts.task_smoke \
+            --task cuda-gpu/cuda-shared-memory-001
+
+      - name: Validate backend task
+        run: |
+          uv run python -m scripts.task_smoke \
+            --task backend/backend-async-job-recovery
+
+      - name: Validate algorithm task
+        run: |
+          uv run python -m scripts.task_smoke \
+            --task algorithms/ml-lp-simplex-optimizer
