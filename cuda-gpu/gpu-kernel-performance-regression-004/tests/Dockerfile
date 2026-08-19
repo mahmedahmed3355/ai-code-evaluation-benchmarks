@@ -14,3 +14,7 @@ RUN mkdir -p \
     /app/reports
 
 WORKDIR /app
+
+# Run as an unprivileged user.
+RUN useradd --create-home --uid 10001 benchmark
+USER benchmark

@@ -33,3 +33,7 @@ RUN chmod +x /app/scripts/*.sh /app/scripts/*.py
 WORKDIR /app
 
 CMD ["/bin/bash"]
+
+# Run as an unprivileged user.
+RUN useradd --create-home --uid 10001 benchmark
+USER benchmark
