@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
+import json
 from pathlib import Path
 
 from scripts.logging_config import get_logger
 from scripts.validation_metrics import ValidationMetrics
+from scripts.validation_report import build_validation_report
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -67,6 +69,14 @@ def main() -> int:
         f"failed={metrics.failed}, "
         f"success_rate={metrics.success_rate:.2%}"
     )
+
+    report = build_validation_report(
+        metrics,
+        errors=len(failed),
+    )
+
+    print("\nValidation observability report:")
+    print(json.dumps(report, indent=2))
 
     if failed:
         print(f"\nValidation failed: {len(failed)} task(s) have missing files.")
