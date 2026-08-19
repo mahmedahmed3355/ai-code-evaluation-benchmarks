@@ -55,3 +55,11 @@ smoke:
 validate-task:
 	@if [ -z "$(TASK)" ]; then 		echo "Usage: make validate-task TASK=<task-path>"; 		exit 1; 	fi
 	uv run python -m scripts.task_isolation --task $(TASK)
+
+
+smoke-task:
+	@if [ -z "$(TASK)" ]; then \
+		echo "Usage: make smoke-task TASK=<task-path>"; \
+		exit 1; \
+	fi
+	uv run python -m scripts.task_smoke --task $(TASK)
