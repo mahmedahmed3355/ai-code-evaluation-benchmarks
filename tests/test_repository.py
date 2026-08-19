@@ -130,3 +130,10 @@ def test_requirements_input_exists():
 
     assert requirements_in.exists()
     assert requirements_in.read_text(encoding="utf-8").strip()
+
+
+def test_validation_metrics_module_exists():
+    metrics_module = ROOT / "scripts" / "validation_metrics.py"
+
+    assert metrics_module.exists()
+    assert metrics_module.read_text(encoding="utf-8").strip()

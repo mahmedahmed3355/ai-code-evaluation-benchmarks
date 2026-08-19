@@ -3,6 +3,10 @@
 import sys
 from pathlib import Path
 
+from scripts.logging_config import get_logger
+
+logger = get_logger(__name__)
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
