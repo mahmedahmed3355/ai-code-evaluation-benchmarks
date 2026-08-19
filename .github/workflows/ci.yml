@@ -105,6 +105,9 @@ jobs:
           severity: HIGH,CRITICAL
           ignore-unfixed: true
 
+      - name: Validate Kubernetes security policy
+        run: uv run python -m scripts.validate_k8s_security
+
       - name: Validate Kubernetes manifests
         run: |
           find infrastructure/kubernetes-rollout-recovery-010 \

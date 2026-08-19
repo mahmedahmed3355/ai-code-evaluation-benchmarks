@@ -23,6 +23,12 @@ dev = [
     "pip-audit==2.8.0",
 ]
 
+[dependency-groups]
+dev = [
+    "pyyaml==6.0.2",
+    "types-pyyaml>=6.0.12.20260815",
+]
+
 [tool.ruff]
 target-version = "py312"
 line-length = 100
