@@ -867,3 +867,15 @@ CI infrastructure checks include:
 
 These checks ensure benchmark environments remain reproducible,
 secure, and isolated.
+
+## Task Dependency Model
+
+Benchmark tasks use isolated dependency environments.
+
+Repository tooling dependencies are managed through:
+
+- pyproject.toml
+- uv.lock
+
+Task-specific runtime dependencies remain inside each benchmark environment
+to preserve evaluation isolation.
