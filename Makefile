@@ -5,12 +5,15 @@ install:
 	python3 -m pip install -r requirements.lock
 
 validate:
-	python3 scripts/validate_tasks.py
+	python3 -m scripts.validate_tasks
 
 validate-all: validate
 
 test:
 	python3 -m pytest tests/ -v
+
+coverage:
+	python3 -m pytest tests/ --cov=scripts --cov-report=term-missing
 
 lint:
 	python3 -m ruff check .

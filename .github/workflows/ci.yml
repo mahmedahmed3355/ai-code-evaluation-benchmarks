@@ -33,6 +33,10 @@ jobs:
       - name: Run repository tests
         run: python -m pytest tests/ -v
 
+      - name: Run shared tooling coverage
+        run: |
+          python -m pytest tests/             --cov=scripts             --cov-report=term-missing
+
       - name: Run lint
         run: python -m ruff check .
 
@@ -66,6 +70,26 @@ jobs:
           tar -xzf kubeconform.tar.gz
           sudo mv kubeconform /usr/local/bin/kubeconform
           kubeconform -v
+
+      - name: Run Trivy config scan
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          scan-type: config
+          scan-ref: infrastructure
+          format: table
+          exit-code: "1"
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+
+      - name: Run Trivy config scan for CUDA task environments
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          scan-type: config
+          scan-ref: cuda-gpu
+          format: table
+          exit-code: "1"
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
 
       - name: Validate Kubernetes manifests
         run: |
