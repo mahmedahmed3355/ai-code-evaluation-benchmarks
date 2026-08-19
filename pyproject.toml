@@ -14,33 +14,11 @@ dependencies = []
 
 # Benchmark task environments own their runtime dependencies.
 # Repository-level development and validation tooling is declared here.
-[project.optional-dependencies]
-dev = [
-    "pytest==9.0.3",
-    "pytest-cov==6.3.0",
-    "ruff==0.12.11",
-    "mypy==1.18.2",
-    "pip-audit==2.8.0",
-]
 
 [dependency-groups]
-dev = [
-    "pyyaml==6.0.2",
-    "types-pyyaml>=6.0.12.20260815",
-]
 
-[tool.ruff]
-target-version = "py312"
-line-length = 100
 
-[tool.ruff.lint]
-select = ["E", "F", "I"]
 
-[tool.pytest.ini_options]
-addopts = "-ra"
-testpaths = ["tests"]
-pythonpath = ["."]
-
-[tool.mypy]
-python_version = "3.12"
-explicit_package_bases = true
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["scripts*"]

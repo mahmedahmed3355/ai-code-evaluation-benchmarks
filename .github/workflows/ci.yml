@@ -130,6 +130,15 @@ jobs:
       - name: Validate Kubernetes security policy
         run: uv run python -m scripts.validate_k8s_security
 
+      - name: Run Checkov Kubernetes scan
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: infrastructure
+          framework: kubernetes
+          quiet: true
+          soft_fail: false
+
+
       - name: Validate Kubernetes manifests
         run: |
           find infrastructure/kubernetes-rollout-recovery-010 \
