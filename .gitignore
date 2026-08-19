@@ -16,3 +16,5 @@ local-verifier-*/
 .pytest_cache/
 .coverage
 coverage.xml
+
+ai_code_evaluation_benchmarks.egg-info/

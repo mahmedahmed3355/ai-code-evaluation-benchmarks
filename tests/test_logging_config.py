@@ -33,3 +33,27 @@ def test_logger_uses_json_formatter():
     assert payload["level"] == "INFO"
     assert payload["event"] == "validation_completed"
     assert "timestamp" in payload
+
+def test_get_logger_emits_structured_json(capsys):
+    import json
+    from uuid import uuid4
+
+    from scripts.logging_config import get_logger
+
+    logger_name = f"test.structured.{uuid4().hex}"
+    logger = get_logger(logger_name)
+
+    logger.info("task_isolation_pass task=sample-task")
+
+    captured = capsys.readouterr()
+
+    assert captured.out.strip()
+
+    payload = json.loads(captured.out.strip())
+
+    assert payload["level"] == "INFO"
+    assert payload["logger"] == logger_name
+    assert payload["event"] == (
+        "task_isolation_pass task=sample-task"
+    )
+    assert "timestamp" in payload

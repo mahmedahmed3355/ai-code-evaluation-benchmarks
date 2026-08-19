@@ -6,6 +6,10 @@ import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 
+from scripts.logging_config import get_logger
+
+logger = get_logger(__name__)
+
 ROOT = Path(__file__).resolve().parents[1]
 
 REQUIRED_FILES = (
@@ -82,9 +86,7 @@ def image_tag(task: Path, kind: str) -> str:
         name = f"{task.name}-{path_hash}"
 
     safe_name = "".join(
-        character if character.isalnum() or character in "-_"
-        else "-"
-        for character in name
+        character if character.isalnum() or character in "-_" else "-" for character in name
     )
     return f"benchmark-smoke-{safe_name}-{kind}"
 
@@ -152,45 +154,45 @@ def main() -> int:
     tasks = task_dirs()
 
     if not tasks:
-        print("ERROR: No benchmark tasks found.")
+        logger.error("no_benchmark_tasks_found")
         return 1
 
     failures = 0
 
     if args.build_images:
-        print(f"Checking isolation and building images for {len(tasks)} tasks\n")
+        logger.info("checking_isolation_and_building_images tasks=%d", len(tasks))
     else:
-        print(f"Checking structural isolation for {len(tasks)} tasks\n")
+        logger.info("checking_structural_isolation tasks=%d", len(tasks))
 
     for task in tasks:
         result = check_task(task, build_images=args.build_images)
         relative = task.relative_to(ROOT)
 
         if result.passed:
-            print(f"PASS: {relative}")
+            logger.info("task_isolation_pass task=%s", relative)
             continue
 
         failures += 1
-        print(f"FAIL: {relative}")
+        logger.error("task_isolation_fail task=%s", relative)
 
         for item in result.missing:
-            print(f"  missing: {item}")
+            logger.error("task_asset_missing task=%s asset=%s", relative, item)
 
         if not result.missing:
             if result.environment.attempted and result.environment.succeeded is False:
-                print("  environment image build failed")
+                logger.error("environment_image_build_failed task=%s", relative)
 
             if result.tests.attempted and result.tests.succeeded is False:
-                print("  tests image build failed")
+                logger.error("tests_image_build_failed task=%s", relative)
 
     if failures:
-        print(f"\nFAILED: {failures} task(s) did not satisfy isolation checks.")
+        logger.error("task_isolation_failed failures=%d", failures)
         return 1
 
     if args.build_images:
-        print(f"\nSUCCESS: All {len(tasks)} tasks passed isolation and image build checks.")
+        logger.info("task_isolation_success tasks=%d mode=image_build", len(tasks))
     else:
-        print(f"\nSUCCESS: All {len(tasks)} tasks passed structural isolation checks.")
+        logger.info("task_isolation_success tasks=%d mode=structural", len(tasks))
 
     return 0
 

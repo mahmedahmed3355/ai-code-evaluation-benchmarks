@@ -774,3 +774,24 @@ dependencies that are not available in a standard repository development environ
 Hardware-specific workloads are not executed during repository-level structural
 validation. CUDA, distributed, Kubernetes, and Kafka tasks retain their task-specific
 runtime requirements inside their isolated environments and verifiers.
+
+
+## Dependency Management
+
+The repository intentionally has no root runtime dependencies. Each benchmark
+task owns its execution environment and runtime dependencies inside its own
+`environment/Dockerfile` and `tests/Dockerfile`.
+
+Repository-level development and validation tooling is isolated in the `dev`
+dependency group in `pyproject.toml` and locked by `uv.lock`. This keeps the
+portfolio tooling reproducible without forcing unrelated benchmark task
+environments to share one global runtime dependency graph.
+
+After changing repository tooling dependencies, run:
+
+    uv lock
+    uv lock --check
+    uv sync --extra dev --locked
+
+Dependency updates are tracked through Dependabot, while CI runs `pip-audit`
+against the resolved development environment.
