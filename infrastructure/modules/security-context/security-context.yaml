@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: benchmark-security-defaults
+data:
+  securityContext.yaml: |
+    runAsNonRoot: "true"
+    allowPrivilegeEscalation: "false"
+    readOnlyRootFilesystem: "true"
