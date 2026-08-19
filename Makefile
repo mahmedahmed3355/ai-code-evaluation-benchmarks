@@ -1,10 +1,10 @@
 .PHONY: setup install test lint typecheck validate coverage validate-all audit lock-check smoke task-smoke task-build task-manifest
 
 setup:
-	uv sync --extra dev --locked
+	uv sync --group dev --locked
 
 install:
-	uv sync --extra dev --locked
+	uv sync --group dev --locked
 
 test:
 	uv run python -m pytest tests/ -v
@@ -46,7 +46,7 @@ lock-check:
 validate-all: lock-check lint typecheck test validate coverage
 
 smoke:
-	uv sync --extra dev --locked
+	uv sync --group dev --locked
 	$(MAKE) validate-all
 	$(MAKE) task-smoke
 	$(MAKE) task-manifest

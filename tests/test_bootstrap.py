@@ -7,7 +7,7 @@ def test_makefile_exposes_setup_target():
     content = (ROOT / "Makefile").read_text(encoding="utf-8")
 
     assert "setup:" in content
-    assert "uv sync --extra dev --locked" in content
+    assert "uv sync --group dev --locked" in content
 
 
 def test_makefile_exposes_smoke_target():

@@ -14,7 +14,7 @@ def test_makefile_uses_locked_uv_install():
     makefile = ROOT / "Makefile"
     content = makefile.read_text(encoding="utf-8")
 
-    assert "uv sync --extra dev --locked" in content
+    assert "uv sync --group dev --locked" in content
     assert "validate-all:" in content
     assert "lock-check:" in content
 
