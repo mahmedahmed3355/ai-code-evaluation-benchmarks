@@ -34,6 +34,9 @@ jobs:
       - name: Validate benchmark task structure
         run: uv run python -m scripts.validate_task_structure
 
+      - name: Validate benchmark task metadata
+        run: uv run python -m scripts.validate_task_metadata
+
       - name: Run pytest
         run: uv run python -m pytest tests/ -v
 
