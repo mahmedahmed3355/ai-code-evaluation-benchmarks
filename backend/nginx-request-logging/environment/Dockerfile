@@ -5,3 +5,8 @@ WORKDIR /app
 RUN pip install requests==2.32.4
 
 RUN apt-get update && apt-get install -y curl
+
+# Run as an unprivileged user.
+RUN useradd --create-home --uid 10001 benchmark
+USER benchmark
+

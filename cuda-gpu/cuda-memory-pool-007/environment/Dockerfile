@@ -29,3 +29,8 @@ COPY data/scripts/ /app/scripts/
 RUN chmod +x /app/scripts/*.sh /app/scripts/*.py 2>/dev/null || true
 
 WORKDIR /app
+
+# Run as an unprivileged user.
+RUN useradd --create-home --uid 10001 benchmark
+USER benchmark
+

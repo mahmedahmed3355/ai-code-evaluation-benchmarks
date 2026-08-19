@@ -34,3 +34,8 @@ RUN ln -sf /etc/nginx/sites-available/backend \
 WORKDIR /app
 
 CMD ["/lib/systemd/systemd"]
+
+# Run as an unprivileged user.
+RUN useradd --create-home --uid 10001 benchmark
+USER benchmark
+

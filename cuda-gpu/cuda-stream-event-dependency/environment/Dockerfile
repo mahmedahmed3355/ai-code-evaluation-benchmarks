@@ -8,3 +8,8 @@ COPY data/ /app/data/
 
 RUN python3 -m json.tool /app/data/stream_config.json >/dev/null \
     && python3 -m json.tool /app/data/workloads.json >/dev/null
+
+# Run as an unprivileged user.
+RUN useradd --create-home --uid 10001 benchmark
+USER benchmark
+

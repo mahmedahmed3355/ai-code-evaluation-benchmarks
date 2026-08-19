@@ -6,3 +6,8 @@ WORKDIR /app
 RUN pip install --no-cache-dir numpy
 
 COPY data/ /app/
+
+# Run as an unprivileged user.
+RUN useradd --create-home --uid 10001 benchmark
+USER benchmark
+

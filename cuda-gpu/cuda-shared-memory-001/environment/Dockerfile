@@ -44,3 +44,8 @@ RUN chmod +x /app/run_tests.sh
 WORKDIR /app
 
 CMD ["/bin/bash"]
+
+# Run as an unprivileged user.
+RUN useradd --create-home --uid 10001 benchmark
+USER benchmark
+

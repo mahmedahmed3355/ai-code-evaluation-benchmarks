@@ -8,3 +8,8 @@ RUN pip install --no-cache-dir -r requirements.lock
 COPY . .
 
 CMD ["make", "validate-all"]
+
+# Run as an unprivileged user.
+RUN useradd --create-home --uid 10001 benchmark
+USER benchmark
+

@@ -9,3 +9,8 @@ RUN pip install --no-cache-dir \
 COPY . /tests/
 
 RUN mkdir -p /logs/verifier
+
+# Run as an unprivileged user.
+RUN useradd --create-home --uid 10001 benchmark
+USER benchmark
+

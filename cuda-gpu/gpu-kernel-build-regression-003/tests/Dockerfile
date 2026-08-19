@@ -15,3 +15,8 @@ COPY test.sh /tests/test.sh
 RUN chmod +x /tests/test.sh
 
 CMD ["/tests/test.sh"]
+
+# Run as an unprivileged user.
+RUN useradd --create-home --uid 10001 benchmark
+USER benchmark
+

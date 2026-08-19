@@ -14,3 +14,8 @@ RUN mkdir -p /data
 
 ENV PYTHONUNBUFFERED=1
 ENV JOB_DB_PATH=/data/jobs.db
+
+# Run as an unprivileged user.
+RUN useradd --create-home --uid 10001 benchmark
+USER benchmark
+
