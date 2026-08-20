@@ -21,7 +21,6 @@ dev = [
     { name = "pip-audit" },
     { name = "pytest" },
     { name = "pytest-cov" },
-    { name = "pyyaml" },
     { name = "ruff" },
     { name = "types-pyyaml" },
 ]
@@ -36,7 +35,6 @@ dev = [
     { name = "pip-audit", specifier = "==2.8.0" },
     { name = "pytest", specifier = "==9.0.3" },
     { name = "pytest-cov", specifier = "==6.3.0" },
-    { name = "pyyaml", specifier = "==6.0.2" },
     { name = "ruff", specifier = "==0.12.11" },
     { name = "types-pyyaml", specifier = ">=6.0.12.20260815" },
 ]

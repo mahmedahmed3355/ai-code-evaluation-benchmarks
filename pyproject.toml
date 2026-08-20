@@ -24,7 +24,6 @@ dev = [
     "ruff==0.12.11",
     "mypy==1.18.2",
     "pip-audit==2.8.0",
-    "pyyaml==6.0.2",
     "types-pyyaml>=6.0.12.20260815",
     "checkov>=3.3.12",
 ]
@@ -33,6 +32,14 @@ dev = [
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["scripts*"]
+
+
+[tool.coverage.run]
+source = ["scripts"]
+
+[tool.coverage.report]
+fail_under = 70
+show_missing = true
 
 [tool.ruff]
 line-length = 100
