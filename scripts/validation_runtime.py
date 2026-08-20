@@ -30,7 +30,7 @@ class ValidationRuntime:
             metadata=metadata,
         )
 
-    def to_dict(self) -> dict[str, object]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "metrics": self.metrics.to_dict(),
             "errors": self.errors.to_dict(),

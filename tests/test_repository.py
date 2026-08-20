@@ -132,11 +132,12 @@ def test_validation_metrics_module_exists():
     assert metrics_module.read_text(encoding="utf-8").strip()
 
 
-def test_validator_uses_validation_metrics():
+def test_validator_uses_validation_runtime():
     validator = ROOT / "scripts" / "validate_tasks.py"
 
     content = validator.read_text(encoding="utf-8")
 
+    assert "ValidationRuntime" in content
+    assert "runtime.record_success()" in content
+    assert "runtime.record_failure(" in content
     assert "ValidationMetrics" in content
-    assert "record_success()" in content
-    assert "record_failure()" in content

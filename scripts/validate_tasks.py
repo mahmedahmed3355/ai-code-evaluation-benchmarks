@@ -5,6 +5,7 @@ from pathlib import Path
 
 from scripts.logging_config import get_logger
 from scripts.validation_events import ValidationEventLogger
+from scripts.validation_metrics import ValidationMetrics
 from scripts.validation_report import build_validation_report
 from scripts.validation_runtime import ValidationRuntime
 
@@ -76,7 +77,7 @@ def main() -> int:
 
             print(f"PASS: {task_name}")
 
-    metrics = runtime.metrics
+    metrics: ValidationMetrics = runtime.metrics
 
     print()
 

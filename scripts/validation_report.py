@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from typing import Any
 
 from scripts.validation_runtime import ValidationRuntime, get_validation_runtime
 
@@ -8,7 +9,7 @@ from scripts.validation_runtime import ValidationRuntime, get_validation_runtime
 def build_validation_report(
     runtime: ValidationRuntime | None = None,
     events: dict[str, object] | None = None,
-) -> dict[str, object]:
+) -> dict[str, Any]:
     active_runtime = runtime or get_validation_runtime()
 
     metrics = active_runtime.metrics.to_dict()

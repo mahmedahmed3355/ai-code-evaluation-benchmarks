@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import json
+from typing import Any
 
 from scripts.validation_runtime import get_validation_runtime
 
 
-def health_status() -> dict[str, object]:
+def health_status() -> dict[str, Any]:
     runtime = get_validation_runtime()
 
     return {
