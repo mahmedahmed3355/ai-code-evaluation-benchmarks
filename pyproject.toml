@@ -22,7 +22,7 @@ dev = [
     "pytest==9.0.3",
     "pytest-cov==6.3.0",
     "ruff==0.12.11",
-    "mypy==1.18.2",
+    "mypy==2.3.1",
     "pip-audit==2.8.0",
     "types-pyyaml>=6.0.12.20260815",
     "checkov>=3.3.12",
