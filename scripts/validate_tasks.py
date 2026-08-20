@@ -5,8 +5,8 @@ from pathlib import Path
 
 from scripts.logging_config import get_logger
 from scripts.validation_events import ValidationEventLogger
-from scripts.validation_metrics import ValidationMetrics
 from scripts.validation_report import build_validation_report
+from scripts.validation_runtime import ValidationRuntime
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -35,8 +35,7 @@ def main() -> int:
         print("ERROR: No tasks found.")
         return 1
 
-    metrics = ValidationMetrics()
-    failed = []
+    runtime = ValidationRuntime()
     events = ValidationEventLogger()
 
     print(f"Found {len(task_files)} tasks\n")
@@ -44,34 +43,40 @@ def main() -> int:
     for task_toml in task_files:
         task_dir = task_toml.parent
         missing = []
+        task_name = str(task_dir.relative_to(ROOT))
 
         for required in REQUIRED_FILES:
             if not (task_dir / required).is_file():
                 missing.append(required)
 
         if missing:
-            metrics.record_failure()
+            runtime.record_failure(
+                event="missing_required_files",
+                message="benchmark task is missing required files",
+                metadata={
+                    "task": task_name,
+                    "missing": missing,
+                },
+            )
 
             events.task_failed(
-                str(task_dir.relative_to(ROOT)),
+                task_name,
                 "missing_required_files",
             )
 
-            failed.append((task_dir.relative_to(ROOT), missing))
-
-            print(f"FAIL: {task_dir.relative_to(ROOT)}")
+            print(f"FAIL: {task_name}")
 
             for item in missing:
                 print(f"  missing: {item}")
 
         else:
-            metrics.record_success()
+            runtime.record_success()
 
-            events.task_passed(
-                str(task_dir.relative_to(ROOT)),
-            )
+            events.task_passed(task_name)
 
-            print(f"PASS: {task_dir.relative_to(ROOT)}")
+            print(f"PASS: {task_name}")
+
+    metrics = runtime.metrics
 
     print()
 
@@ -84,16 +89,18 @@ def main() -> int:
     )
 
     report = build_validation_report(
-        metrics,
-        errors=len(failed),
+        runtime,
         events=events.report(),
     )
 
     print("\nValidation observability report:")
     print(json.dumps(report, indent=2))
 
-    if failed:
-        print(f"\nValidation failed: {len(failed)} task(s) have missing files.")
+    if metrics.failed:
+        print(
+            f"\nValidation failed: "
+            f"{metrics.failed} task(s) have missing files."
+        )
         return 1
 
     print(f"\nSUCCESS: All {len(task_files)} tasks have the required structure.")
