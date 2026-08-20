@@ -904,27 +904,23 @@ dependencies to preserve benchmark reproducibility and evaluation isolation.
 
 ## Quickstart
 
-Clone the repository and run:
+From a fresh clone:
 
-```bash
-uv sync --group dev --locked
-make smoke
-cat >> README.md <<'EOF'
-## Quickstart
+    uv sync --group dev --locked
+    ./scripts/bootstrap.sh
+    make smoke
+    uv run pytest tests/ -v
 
-Clone the repository and run:
+This reproduces the repository validation workflow using locked dependencies.
 
-uv sync --group dev --locked
-make smoke
-
-This reproduces the same validation workflow used by CI.
-
+No cloud account, production credentials, or external infrastructure configuration
+is required for the repository tooling and validation workflow.
 
 ## Observability
 
 Validation tooling provides deterministic execution visibility through:
 
-- structured logging via `scripts/logging_config.py`
+- structured logging via scripts/logging_config.py
 - validation metrics collection
 - machine-readable validation reports
 - explicit process exit codes for CI integration
@@ -932,15 +928,20 @@ Validation tooling provides deterministic execution visibility through:
 Failures are surfaced through CI logs and validation reports to simplify
 benchmark debugging and task maintenance.
 
-
 ## Dependency Inventory
 
-Per-task runtime dependencies are tracked separately from repository tooling dependencies.
+Per-task runtime dependencies are tracked separately from repository tooling.
 
 The generated inventory is available at:
 
 - docs/dependency-inventory.md
 
 Repository tooling dependencies are managed through:
+
 - pyproject.toml
 - uv.lock
+
+## Security
+
+Security, task isolation, secret handling, and infrastructure security expectations
+are documented in SECURITY.md.

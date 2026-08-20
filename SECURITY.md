@@ -1,32 +1,57 @@
 # Security Policy
 
-## Secret Management
+## Security Model
 
-This repository does not store credentials, API keys, or production secrets.
+This repository contains benchmark tasks for evaluating AI coding agents.
 
-Benchmark tasks must provide secrets through runtime configuration only.
-Secrets must never be committed into task environments, Docker images, or
-validation artifacts.
+Task environments are designed to isolate agents from:
 
-For Kubernetes-based tasks, secrets should be provided through Kubernetes
-Secrets or equivalent external secret mechanisms.
+- Hidden verifier logic
+- Reference solutions
+- Evaluation secrets
+- Host credentials
+- Production infrastructure
 
-## Threat Model
+No benchmark task should contain production credentials, API keys, private tokens, or real infrastructure secrets.
 
-The benchmark architecture separates:
+## Secret Handling
 
-- agent execution environments
-- verifier environments
-- reference solutions
-- hidden evaluation data
+Secrets must never be committed to the repository.
 
-Agents should only access the files and resources explicitly provided by
-the task environment.
+Where a task requires configuration resembling credentials, use one of:
 
-Verifier logic, hidden tests, and reference solutions must remain isolated
-from agent-visible environments.
+- Environment variables
+- `.env.example` placeholders
+- Test-only dummy values
+- Kubernetes Secret resources containing non-production values
 
-## Reporting Issues
+Real secrets must be supplied externally by the execution environment.
 
-Security-related issues should be reported privately through the repository
-maintainer contact channel before public disclosure.
+## Verifier Isolation
+
+Reference solutions and hidden evaluation logic must remain outside the agent-visible environment.
+
+Task environment Dockerfiles must not copy:
+
+- `solution/`
+- Hidden verifier data
+- Private test fixtures
+
+Verification is performed separately from the agent execution environment.
+
+## Infrastructure Security
+
+Infrastructure-oriented assets are validated in CI.
+
+Contributors should avoid:
+
+- Privileged containers
+- Hardcoded credentials
+- Unnecessary host access
+- Production infrastructure configuration
+
+## Reporting Security Issues
+
+If you discover a security issue in repository tooling or task isolation, report it privately with enough information to reproduce the issue.
+
+Do not include real credentials or sensitive data in public issues.
