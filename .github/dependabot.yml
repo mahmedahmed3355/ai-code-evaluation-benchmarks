@@ -6,24 +6,7 @@ updates:
     schedule:
       interval: "weekly"
 
-  - package-ecosystem: "docker"
+  - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "monthly"
-
-  - package-ecosystem: "docker"
-    directory: "/cuda-gpu"
-    schedule:
-      interval: "monthly"
-    ignore:
-      - dependency-name: "*"
-
-  - package-ecosystem: "docker"
-    directory: "/backend"
-    schedule:
-      interval: "monthly"
-
-  - package-ecosystem: "docker"
-    directory: "/infrastructure"
-    schedule:
-      interval: "monthly"
+      interval: "weekly"
