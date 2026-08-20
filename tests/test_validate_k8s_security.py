@@ -113,3 +113,14 @@ def test_non_workload_resource_is_ignored() -> None:
     }
 
     assert validate_document(document, SOURCE) == []
+
+
+def test_kustomize_base_includes_network_policy() -> None:
+    kustomization = Path(
+        "infrastructure/kubernetes-rollout-recovery-010/base/kustomization.yaml"
+    )
+
+    text = kustomization.read_text()
+
+    assert "deployment.yaml" in text
+    assert "network-policy.yaml" in text
