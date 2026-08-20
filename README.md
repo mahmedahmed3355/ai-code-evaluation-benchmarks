@@ -945,3 +945,18 @@ Repository tooling dependencies are managed through:
 
 Security, task isolation, secret handling, and infrastructure security expectations
 are documented in SECURITY.md.
+
+## Task Validation Levels
+
+The repository distinguishes between structural validation and full task image
+build validation.
+
+Structural validation verifies that benchmark tasks contain the required files
+and metadata needed by the evaluation framework.
+
+For deeper local validation, run the task-build Make target.
+
+This target attempts to build task environment and verifier images. Individual
+historical or experimental tasks may require additional maintenance before their
+container images build successfully. These task-specific build failures are
+reported separately from repository-wide source validation and CI quality checks.

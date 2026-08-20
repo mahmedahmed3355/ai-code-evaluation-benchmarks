@@ -67,3 +67,19 @@ together, preventing metrics and error state from diverging.
 runtime state rather than constructing independent observability snapshots.
 This creates a single in-process contract for validation metrics, structured
 errors, health reporting, and CI diagnostics.
+
+## Task Build Validation
+
+Repository task validation has two distinct levels.
+
+Structural validation checks that benchmark tasks contain the required task
+definition, environment, solution, and verification files. This validation is
+used by the normal repository quality workflow.
+
+The optional `make task-build` target performs a deeper local check by building
+task environment and verifier images. Some historical or experimental benchmark
+tasks may not currently build successfully because they depend on unavailable,
+legacy, or task-specific container requirements.
+
+A failed task image build therefore identifies a task environment issue and does
+not by itself indicate a repository-wide CI or source-quality regression.

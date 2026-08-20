@@ -40,7 +40,7 @@ The metrics layer tracks validation outcomes produced by repository tooling.
 Validation failures are collected through:
 
 
-- `scripts/error_reporting.py`
+- `scripts/error_tracking.py`
 
 
 The module provides structured error records that can be consumed by future reporting integrations.
