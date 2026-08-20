@@ -1,4 +1,4 @@
-.PHONY: setup install test lint typecheck validate coverage validate-all audit lock-check smoke task-smoke task-build task-manifest
+.PHONY: setup install test lint lint-iac typecheck validate coverage validate-all audit lock-check smoke task-smoke task-build task-manifest
 
 setup:
 	uv sync --group dev --locked
@@ -11,6 +11,11 @@ test:
 
 lint:
 	uv run python -m ruff check .
+
+lint-iac:
+	uv run python -m scripts.validate_k8s_security
+	command -v kubectl >/dev/null || { echo "kubectl is required for lint-iac"; exit 1; }
+	kubectl kustomize infrastructure/kubernetes-rollout-recovery-010/base >/dev/null
 
 typecheck:
 	uv run python -m mypy scripts tests
