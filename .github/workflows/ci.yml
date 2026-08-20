@@ -31,6 +31,12 @@ jobs:
       - name: Install dependencies
         run: uv sync --group dev --locked
 
+      - name: Validate declared runtime dependencies
+        run: uv run python -m scripts.check_runtime_dependencies
+
+      - name: Inspect resolved dependency tree
+        run: uv tree
+
       - name: Validate benchmark task structure
         run: uv run python -m scripts.validate_task_structure
 

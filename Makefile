@@ -1,4 +1,4 @@
-.PHONY: setup install test lint lint-iac typecheck validate coverage validate-all audit lock-check smoke task-smoke task-build task-manifest
+.PHONY: setup install test lint lint-iac typecheck validate coverage validate-all audit lock-check runtime-deps smoke task-smoke task-build task-manifest
 
 setup:
 	uv sync --group dev --locked
@@ -47,6 +47,9 @@ audit:
 
 lock-check:
 	uv lock --check
+
+runtime-deps:
+	uv run python -m scripts.check_runtime_dependencies
 
 validate-all: lock-check lint typecheck test validate coverage
 
