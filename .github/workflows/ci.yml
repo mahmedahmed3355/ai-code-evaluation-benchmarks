@@ -144,7 +144,7 @@ jobs:
       - name: Validate Kubernetes security policy
         run: uv run python -m scripts.validate_k8s_security
 
-      - name: Run Checkov Kubernetes and Docker Policy Scan
+      - name: "iac: checkov kubernetes docker policy scan"
         uses: bridgecrewio/checkov-action@v12
         with:
           directory: .
