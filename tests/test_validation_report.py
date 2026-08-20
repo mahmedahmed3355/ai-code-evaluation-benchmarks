@@ -34,7 +34,7 @@ def test_validation_report_failed_state_with_events() -> None:
     metrics.record_success()
     metrics.record_failure()
 
-    events = {
+    events: dict[str, object] = {
         "validation_started": 1,
         "validation_failed": 1,
     }
