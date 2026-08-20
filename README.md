@@ -901,3 +901,33 @@ Individual benchmark tasks own their isolated runtime dependencies.
 
 Task dependencies are intentionally separated from repository tooling
 dependencies to preserve benchmark reproducibility and evaluation isolation.
+
+## Quickstart
+
+Clone the repository and run:
+
+```bash
+uv sync --group dev --locked
+make smoke
+cat >> README.md <<'EOF'
+## Quickstart
+
+Clone the repository and run:
+
+uv sync --group dev --locked
+make smoke
+
+This reproduces the same validation workflow used by CI.
+
+
+## Observability
+
+Validation tooling provides deterministic execution visibility through:
+
+- structured logging via `scripts/logging_config.py`
+- validation metrics collection
+- machine-readable validation reports
+- explicit process exit codes for CI integration
+
+Failures are surfaced through CI logs and validation reports to simplify
+benchmark debugging and task maintenance.
