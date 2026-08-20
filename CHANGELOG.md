@@ -1,3 +1,12 @@
+
+## v0.4.0
+
+### Added
+
+- Added generated task dependency inventory documentation.
+- Added dependency inventory reference in README.
+- Improved clean clone validation documentation.
+
 # Changelog
 
 All notable changes to this benchmark portfolio are documented in this file.
