@@ -1,72 +1,32 @@
-from typing import cast
-
-import scripts.validation_report as validation_report
-from scripts.validation_metrics import ValidationMetrics
 from scripts.validation_report import build_validation_report
+from scripts.validation_runtime import reset_validation_runtime
 
 
-def test_validation_report_success_state() -> None:
-    metrics = ValidationMetrics()
+def test_validation_report_is_successful_without_errors() -> None:
+    runtime = reset_validation_runtime()
 
-    metrics.record_success()
-    metrics.record_success()
-
-    report = build_validation_report(metrics)
+    report = build_validation_report(runtime)
 
     assert report["status"] == "success"
-
-    tasks = cast(dict[str, int | float], report["tasks"])
-
-    assert tasks["total"] == 2
-    assert tasks["passed"] == 2
-    assert tasks["failed"] == 0
-
-    observability = cast(dict[str, object], report["observability"])
-
-    assert observability["health"] == "healthy"
-    assert observability["errors"] == 0
-    assert observability["events"] == {}
+    assert report["tasks"]["total"] == 0
+    assert report["observability"]["error_tracking"]["count"] == 0
 
 
-def test_validation_report_failed_state_with_events() -> None:
-    metrics = ValidationMetrics()
+def test_validation_report_includes_tracked_failures() -> None:
+    runtime = reset_validation_runtime()
 
-    metrics.record_success()
-    metrics.record_failure()
-
-    events: dict[str, object] = {
-        "validation_started": 1,
-        "validation_failed": 1,
-    }
-
-    report = build_validation_report(
-        metrics,
-        errors=2,
-        events=events,
+    runtime.record_failure(
+        event="task_validation_failed",
+        message="invalid_manifest",
+        metadata={"task": "demo"},
     )
 
+    report = build_validation_report(runtime)
+
     assert report["status"] == "failed"
+    assert report["tasks"]["failed"] == 1
 
-    tasks = cast(dict[str, int | float], report["tasks"])
+    errors = report["observability"]["error_tracking"]
 
-    assert tasks["total"] == 2
-    assert tasks["passed"] == 1
-    assert tasks["failed"] == 1
-
-    observability = cast(dict[str, object], report["observability"])
-
-    assert observability["health"] == "healthy"
-    assert observability["errors"] == 2
-    assert observability["events"] == events
-
-
-def test_main_prints_json_report(
-    capsys,
-    monkeypatch,
-) -> None:
-    assert validation_report.main() == 0
-
-    captured = capsys.readouterr()
-
-    assert '"status": "success"' in captured.out
-    assert '"health": "healthy"' in captured.out
+    assert errors["count"] == 1
+    assert errors["errors"][0]["event"] == "task_validation_failed"

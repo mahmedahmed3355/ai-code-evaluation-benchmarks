@@ -2,16 +2,17 @@ from __future__ import annotations
 
 import json
 
-from scripts.validation_metrics import ValidationMetrics
+from scripts.validation_runtime import get_validation_runtime
 
 
 def health_status() -> dict[str, object]:
-    metrics = ValidationMetrics()
+    runtime = get_validation_runtime()
 
     return {
         "status": "healthy",
         "component": "benchmark-validation-tooling",
-        "metrics": metrics.to_dict(),
+        "metrics": runtime.metrics.to_dict(),
+        "error_tracking": runtime.errors.to_dict(),
     }
 
 

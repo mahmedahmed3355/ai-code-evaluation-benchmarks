@@ -61,3 +61,28 @@ GitHub Actions provides execution visibility through:
 
 
 The repository intentionally avoids external runtime monitoring dependencies because benchmark tasks execute as isolated evaluation environments.
+
+## Validation Runtime
+
+Repository validation uses an in-process observability runtime implemented in:
+
+- `scripts/validation_runtime.py`
+
+The runtime composes:
+
+- validation outcome metrics
+- structured error tracking
+- health status reporting
+- validation report generation
+
+Validation tools can record successful and failed operations through the
+shared runtime. Failed operations increment validation failure metrics and
+create structured error records containing an event, message, metadata, and
+timestamp.
+
+The health and reporting commands expose the same runtime state, providing a
+consistent observability contract for CI-time validation workflows.
+
+This error tracking is intentionally local and dependency-free. Benchmark
+validation does not require an external SaaS error-tracking service or network
+credentials.

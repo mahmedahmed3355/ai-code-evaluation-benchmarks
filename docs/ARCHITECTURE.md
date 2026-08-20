@@ -53,3 +53,17 @@ Logging and metrics utilities provide CI-time validation observability.
 
 They support benchmark execution reporting and debugging,
 not a production API service.
+
+### Validation Observability Runtime
+
+Validation observability is coordinated through
+`scripts/validation_runtime.py`.
+
+The runtime owns a `ValidationMetrics` instance and an `ErrorTracker`
+instance. Validation success and failure events update these components
+together, preventing metrics and error state from diverging.
+
+`scripts/health.py` and `scripts/validation_report.py` consume the shared
+runtime state rather than constructing independent observability snapshots.
+This creates a single in-process contract for validation metrics, structured
+errors, health reporting, and CI diagnostics.
