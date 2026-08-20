@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import tomllib
 from pathlib import Path
 
 from scripts.logging_config import get_logger
@@ -24,6 +25,27 @@ def find_requirements(task: Path) -> list[str]:
     return sorted(set(requirements))
 
 
+
+
+def find_repository_dependencies() -> tuple[list[str], list[str]]:
+    pyproject = ROOT / "pyproject.toml"
+
+    if not pyproject.exists():
+        return [], []
+
+    with pyproject.open("rb") as f:
+        data = tomllib.load(f)
+
+    runtime = data.get("project", {}).get("dependencies", [])
+
+    dev = (
+        data.get("dependency-groups", {})
+        .get("dev", [])
+    )
+
+    return sorted(runtime), sorted(dev)
+
+
 def generate() -> Path:
     lines = [
         "# Task Dependency Inventory",
@@ -31,6 +53,30 @@ def generate() -> Path:
         "Generated dependency inventory for benchmark task environments.",
         "",
     ]
+
+    runtime_deps, dev_deps = find_repository_dependencies()
+
+    if runtime_deps:
+        lines.extend([
+            "## Repository Runtime Dependencies",
+            "",
+        ])
+
+        for dep in runtime_deps:
+            lines.append(f"- `{dep}`")
+
+        lines.append("")
+
+    if dev_deps:
+        lines.extend([
+            "## Repository Development Dependencies",
+            "",
+        ])
+
+        for dep in dev_deps:
+            lines.append(f"- `{dep}`")
+
+        lines.append("")
 
     found = False
 
