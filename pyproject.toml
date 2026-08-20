@@ -23,7 +23,7 @@ dev = [
     "pytest-cov==6.3.0",
     "ruff==0.12.11",
     "mypy==1.18.2",
-    "pip-audit==2.8.0",
+    "pip-audit==2.10.1",
     "types-pyyaml>=6.0.12.20260815",
     "checkov>=3.3.12",
 ]
