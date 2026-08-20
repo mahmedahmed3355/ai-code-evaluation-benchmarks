@@ -18,3 +18,10 @@ local-verifier-*/
 coverage.xml
 
 ai_code_evaluation_benchmarks.egg-info/
+
+# Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
