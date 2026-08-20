@@ -21,7 +21,7 @@ dependencies = [
 dev = [
     "pytest==9.0.3",
     "pytest-cov==6.3.0",
-    "ruff==0.12.11",
+    "ruff==0.16.3",
     "mypy==1.18.2",
     "pip-audit==2.8.0",
     "types-pyyaml>=6.0.12.20260815",
