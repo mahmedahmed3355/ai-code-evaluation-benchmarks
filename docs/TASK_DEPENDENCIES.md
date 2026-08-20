@@ -13,7 +13,6 @@ Generated dependency inventory for benchmark task environments.
 - `pip-audit==2.8.0`
 - `pytest-cov==6.3.0`
 - `pytest==9.0.3`
-- `pyyaml==6.0.2`
 - `ruff==0.12.11`
 - `types-pyyaml>=6.0.12.20260815`
 
