@@ -931,3 +931,16 @@ Validation tooling provides deterministic execution visibility through:
 
 Failures are surfaced through CI logs and validation reports to simplify
 benchmark debugging and task maintenance.
+
+
+## Dependency Inventory
+
+Per-task runtime dependencies are tracked separately from repository tooling dependencies.
+
+The generated inventory is available at:
+
+- docs/dependency-inventory.md
+
+Repository tooling dependencies are managed through:
+- pyproject.toml
+- uv.lock
