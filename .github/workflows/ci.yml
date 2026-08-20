@@ -41,7 +41,7 @@ jobs:
         run: |
           uv run python -m scripts.generate_dependency_inventory
 
-      - name: test: pytest
+      - name: "test: pytest"
         run: uv run python -m pytest tests/ -v
 
       - name: Run test coverage
@@ -52,10 +52,10 @@ jobs:
             --cov-fail-under=70 \
             --cov-config=.coveragerc
 
-      - name: lint: ruff
+      - name: "lint: ruff"
         run: uv run python -m ruff check .
 
-      - name: typecheck: mypy
+      - name: "typecheck: mypy"
         run: uv run python -m mypy scripts tests
 
       - name: Validate benchmark tasks
