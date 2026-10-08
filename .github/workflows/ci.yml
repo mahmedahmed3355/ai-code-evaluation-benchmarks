@@ -115,7 +115,7 @@ jobs:
           output_format: cli,json
           output_file_path: console,checkov-report.json
       - name: Upload Checkov policy report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: checkov-policy-report
           path: checkov-report.json
