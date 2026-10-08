@@ -1,0 +1,15 @@
+[task]
+name = "data-cdc-sink-recovery-019"
+version = "1.0"
+description = "Production CDC sink with per-partition checkpoints, idempotent replay, crash recovery, gap detection, tombstones, partial updates, and additive schema evolution."
+difficulty = "hard"
+
+[environment]
+dockerfile = "environment/Dockerfile"
+
+[tests]
+dockerfile = "tests/Dockerfile"
+command = "pytest -q /tests/test_outputs.py"
+
+[solution]
+command = "/solution/solve.sh"

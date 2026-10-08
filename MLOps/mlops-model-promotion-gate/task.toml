@@ -1,0 +1,27 @@
+version = "1.0"
+[metadata]
+author_name = "Mohamed Ahmed"
+author_email = "engmohamedelshrbeny@gmail.com"
+author_organization = "Forge Bench"
+difficulty_explanation = "A production model registry gate must validate artifact integrity, lineage, schema compatibility, evaluation thresholds, regression budgets, dataset freshness, approval requirements, and stage transition rules. Hidden cases target conflicting metrics and malicious metadata."
+solution_explanation = "The reference gate performs independent validation and emits a deterministic promotion decision without trusting candidate-supplied aggregate fields."
+verification_explanation = "The verifier recomputes checksums and metrics from supplied evidence, validates stage transitions, and checks that rejection reasons are precise and deterministic."
+category = "mlops"
+tags = ["mlops", "model-registry", "promotion-gate", "lineage", "evaluation", "governance"]
+expert_time_estimate_hours = 2.5
+relevant_experience = "I build and evaluate containerized backend, infrastructure, CUDA/GPU, and AI-system engineering tasks using Harbor and Terminal-Bench workflows."
+
+[verifier]
+timeout_sec = 300.0
+environment_mode = "separate"
+
+[agent]
+timeout_sec = 1200.0
+
+[environment]
+build_timeout_sec = 600.0
+cpus = 2
+memory_mb = 2048
+storage_mb = 10240
+gpus = 0
+allow_internet = false

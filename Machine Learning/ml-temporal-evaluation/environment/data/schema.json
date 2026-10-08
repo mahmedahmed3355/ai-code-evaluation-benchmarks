@@ -1,0 +1,17 @@
+{
+  "timestamp_column": "timestamp",
+  "id_column": "event_id",
+  "target_column": "target",
+  "train_end": "2025-01-10T23:59:59",
+  "validation_end": "2025-01-20T23:59:59",
+  "features": [
+    "income",
+    "balance",
+    "events_30d"
+  ],
+  "transforms": {
+    "income": "log1p",
+    "balance": "signed_log1p",
+    "events_30d": "sqrt"
+  }
+}

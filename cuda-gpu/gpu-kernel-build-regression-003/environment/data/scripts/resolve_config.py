@@ -1,58 +1,53 @@
 #!/usr/bin/env python3
-
 from pathlib import Path
 
 ROOT = Path("/app")
 CONFIG_DIR = ROOT / "configs"
 OUTPUT = ROOT / "build" / "resolved_config.txt"
 
+PROTECTED = {
+    "BUILD_TYPE",
+    "OPT_LEVEL",
+    "FAST_MATH",
+    "VECTOR_WIDTH",
+    "DEBUG_SYMBOLS",
+    "LTO",
+    "ARTIFACT_MODE",
+}
+
 
 def load_config(path: Path) -> dict[str, str]:
-    values = {}
-
+    values: dict[str, str] = {}
     if not path.exists():
         return values
-
     for raw in path.read_text().splitlines():
         line = raw.strip()
-
-        if not line or line.startswith("#") or "=" not in line:
-            continue
-
-        key, value = line.split("=", 1)
-        values[key.strip()] = value.strip()
-
+        if line and not line.startswith("#") and "=" in line:
+            key, value = line.split("=", 1)
+            values[key.strip()] = value.strip()
     return values
 
 
 def main() -> int:
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
 
-    config = {}
+    base = load_config(CONFIG_DIR / "build.conf")
+    profile = load_config(CONFIG_DIR / "release.profile")
+    benchmark = load_config(CONFIG_DIR / "benchmark.conf")
+    local = load_config(CONFIG_DIR / "local.override")
 
-    # Base contract.
-    config.update(load_config(CONFIG_DIR / "build.conf"))
+    config = dict(base)
+    config.update(profile)
 
-    # Selected release profile.
-    config.update(load_config(CONFIG_DIR / "release.profile"))
+    for key, value in local.items():
+        if key not in PROTECTED:
+            config[key] = value
 
-    # Benchmark-specific requirements.
-    config.update(load_config(CONFIG_DIR / "benchmark.conf"))
-
-    # Compatibility settings are intentionally loaded last.
-    #
-    # The task's regression is related to how configuration sources
-    # are resolved. Investigate the resulting effective state rather
-    # than assuming every source has the same precedence.
-    config.update(load_config(CONFIG_DIR / "local.override"))
+    for key in benchmark:
+        if key not in config:
+            config[key] = benchmark[key]
 
     OUTPUT.write_text("".join(f"{key}={value}\n" for key, value in sorted(config.items())))
-
-    print(f"Resolved configuration written to {OUTPUT}")
-
-    for key in sorted(config):
-        print(f"{key}={config[key]}")
-
     return 0
 
 

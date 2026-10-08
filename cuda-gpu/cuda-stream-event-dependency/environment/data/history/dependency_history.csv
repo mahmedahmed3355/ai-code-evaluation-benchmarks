@@ -1,0 +1,4 @@
+incident_id,config_snapshot,producer_to_consumer,consumer_to_finalizer,global_synchronize,status
+baseline-2026-09,stream_config.json,missing,missing,false,REGRESSION
+known-good-2026-09-15,stream_config.json,producer_done,consumer_done,false,PASS
+incident-2026-10-07,stream_config.json,missing,missing,false,REGRESSION

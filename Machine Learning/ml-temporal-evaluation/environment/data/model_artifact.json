@@ -1,0 +1,32 @@
+{
+  "feature_order": [
+    "income",
+    "balance",
+    "events_30d"
+  ],
+  "imputation": {
+    "income": 55000.0,
+    "balance": 1200.0,
+    "events_30d": 8.0
+  },
+  "scale_mean": {
+    "income": 10.906711545694623,
+    "balance": 2.8265418463800076,
+    "events_30d": 2.964380262089855
+  },
+  "scale_std": {
+    "income": 0.16237530796804212,
+    "balance": 6.868893396613125,
+    "events_30d": 0.528314611191807
+  },
+  "weights": [
+    1.8,
+    -0.7,
+    0.9
+  ],
+  "bias": -0.35,
+  "calibration": {
+    "temperature": 1.25,
+    "bias": 0.08
+  }
+}

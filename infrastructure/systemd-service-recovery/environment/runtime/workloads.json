@@ -1,0 +1,6 @@
+{
+  "normal": {"WORKER_MEMORY_MB": "512", "mode": "normal"},
+  "alternate": {"WORKER_MEMORY_MB": "256", "mode": "normal"},
+  "transient": {"WORKER_MEMORY_MB": "512", "mode": "transient-failure"},
+  "clean_stop": {"WORKER_MEMORY_MB": "512", "mode": "clean-stop"}
+}

@@ -1,0 +1,10 @@
+{
+  "consumer_group": "inference-workers",
+  "topic": "model-events",
+  "generation": 7,
+  "assignment_epoch": 41,
+  "commits": [
+    {"partition": 0, "offset": 120, "committed_at_sequence": 901},
+    {"partition": 1, "offset": 88, "committed_at_sequence": 902}
+  ]
+}

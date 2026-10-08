@@ -1,0 +1,39 @@
+name = "data-stream-window-recovery-018"
+version = "1.0"
+category = "data-engineering/streaming"
+difficulty = "hard"
+runtime = "cpu"
+network = false
+
+[task]
+title = "Repair event-time streaming recovery and idempotent window aggregation"
+entrypoint = "python -m streaming.cli"
+
+[task.contract]
+windowing = "event-time"
+watermark = "max_event_time_seen_minus_allowed_lateness"
+delivery = "at-least-once"
+dedupe_key = "event_id"
+late_after_finalization = "dead_letter"
+commit_order = "state_then_offset"
+output = "finalized_windows_only"
+reentrant = true
+
+[environment]
+dockerfile = "environment/Dockerfile"
+workdir = "/app"
+
+[solution]
+script = "solution/solve.sh"
+
+[tests]
+dockerfile = "tests/Dockerfile"
+script = "tests/test.sh"
+public = "tests/test_outputs.py"
+hidden = "tests/hidden_tests.py"
+verifier = "tests/verify.py"
+
+[scoring]
+public_invariants = 25
+hidden_adversarial = 40
+independent_verifier = 1

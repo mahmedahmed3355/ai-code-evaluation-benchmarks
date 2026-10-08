@@ -1,0 +1,29 @@
+{
+  "contract_version": "promo-v1",
+  "group_column": "group_id",
+  "target": "label",
+  "id_column": "row_id",
+  "features": [
+    "x1",
+    "x2",
+    "x3"
+  ],
+  "seed": 31,
+  "train_fraction": 0.6,
+  "validation_fraction": 0.2,
+  "cost_false_positive": 1.0,
+  "cost_false_negative": 3.0,
+  "threshold_grid_size": 101,
+  "learning_rate": 0.08,
+  "epochs": 180,
+  "checkpoint_every": 30,
+  "temperature_grid": [
+    0.25,
+    0.5,
+    0.75,
+    1.0,
+    1.5,
+    2.0,
+    3.0
+  ]
+}

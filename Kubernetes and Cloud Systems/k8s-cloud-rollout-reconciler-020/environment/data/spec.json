@@ -1,0 +1,35 @@
+{
+  "workload": {
+    "name": "payments",
+    "namespace": "prod",
+    "replicas": 4,
+    "max_unavailable": 1,
+    "max_surge": 1,
+    "min_ready_seconds": 5,
+    "revision": "r2",
+    "rollback_revision": "r1"
+  },
+  "pod_template": {
+    "labels": {
+      "app": "payments"
+    },
+    "requests": {
+      "cpu_m": 500,
+      "memory_mib": 512
+    },
+    "readiness": {
+      "required": true
+    }
+  },
+  "pdb": {
+    "min_available": 3
+  },
+  "topology": {
+    "key": "zone",
+    "max_skew": 1
+  },
+  "policy": {
+    "allow_preemption": false,
+    "allow_rollback": true
+  }
+}

@@ -1,0 +1,2 @@
+{"stage": "prepare", "status": "STARTED", "attempt": 1}
+{"stage": "prepare", "status": "SUCCEEDED", "attempt": 1, "artifact_sha256": "203209d8f3cda59454a32d0b5ed7ed78c7a7e460c5774154bef5d80f49a8a272"}

@@ -1,0 +1,32 @@
+{
+  "normal": {
+    "lock": null,
+    "pid_alive": false,
+    "generation": "g-100",
+    "mode": "success"
+  },
+  "live_owner": {
+    "lock": "g-200,4242",
+    "pid_alive": true,
+    "generation": "g-201",
+    "mode": "success"
+  },
+  "stale_owner": {
+    "lock": "g-300,5151",
+    "pid_alive": false,
+    "generation": "g-301",
+    "mode": "success"
+  },
+  "failed_run": {
+    "lock": null,
+    "pid_alive": false,
+    "generation": "g-400",
+    "mode": "fail"
+  },
+  "alternate_generation": {
+    "lock": "g-alt-old,7777",
+    "pid_alive": false,
+    "generation": "g-alt-new",
+    "mode": "success"
+  }
+}

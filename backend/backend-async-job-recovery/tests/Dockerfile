@@ -4,13 +4,12 @@ WORKDIR /tests
 
 RUN pip install --no-cache-dir \
     pytest==8.4.1 \
-    httpx==0.28.1
+    pytest-json-ctrf==0.3.5
 
 COPY . /tests/
 
-RUN mkdir -p /logs/verifier
+RUN mkdir -p /logs/verifier \
+    && useradd --create-home --uid 10001 benchmark \
+    && chown -R benchmark:benchmark /tests /logs/verifier
 
-# Run as an unprivileged user.
-RUN useradd --create-home --uid 10001 benchmark
 USER benchmark
-

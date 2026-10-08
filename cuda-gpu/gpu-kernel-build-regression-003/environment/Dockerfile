@@ -5,22 +5,9 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    bash \
-    coreutils \
-    grep \
-    sed \
-    diffutils \
-    findutils \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends     bash     coreutils     grep     sed     diffutils     findutils     && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p \
-    /app/configs \
-    /app/scripts \
-    /app/logs \
-    /app/build \
-    /app/artifacts \
-    /app/reports
+RUN mkdir -p     /app/configs     /app/scripts     /app/logs     /app/build     /app/artifacts     /app/reports
 
 COPY data/configs/ /app/configs/
 COPY data/scripts/ /app/scripts/
@@ -28,14 +15,10 @@ COPY data/logs/ /app/logs/
 COPY data/build/ /app/build/
 COPY data/artifacts/ /app/artifacts/
 COPY data/reports/ /app/reports/
+COPY data/reference/ /app/reference/
 
-RUN chmod +x /app/scripts/*.sh /app/scripts/*.py
+RUN useradd --create-home --uid 10001 benchmark     && chown -R benchmark:benchmark /app     && chmod +x /app/scripts/*.sh /app/scripts/*.py
 
-WORKDIR /app
-
-CMD ["/bin/bash"]
-
-# Run as an unprivileged user.
-RUN useradd --create-home --uid 10001 benchmark
 USER benchmark
 
+CMD ["/bin/bash"]

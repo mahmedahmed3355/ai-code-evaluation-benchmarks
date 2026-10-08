@@ -1,0 +1,75 @@
+{
+  "version": "1.0",
+  "feature_schema": [
+    "age",
+    "income",
+    "balance",
+    "tenure",
+    "transactions",
+    "utilization"
+  ],
+  "preprocessing": {
+    "impute_mean": [
+      40.0,
+      60000.0,
+      15000.0,
+      5.0,
+      18.0,
+      0.45
+    ],
+    "transform": [
+      "identity",
+      "log1p",
+      "signed_log1p",
+      "identity",
+      "log1p",
+      "identity"
+    ],
+    "clip_low": [
+      18.0,
+      9.0,
+      -10.0,
+      0.0,
+      0.0,
+      0.02
+    ],
+    "clip_high": [
+      80.0,
+      13.0,
+      10.0,
+      20.0,
+      4.2,
+      0.98
+    ],
+    "scale_mean": [
+      45.0,
+      11.0,
+      8.0,
+      5.0,
+      2.5,
+      0.5
+    ],
+    "scale_std": [
+      12.0,
+      0.8,
+      1.0,
+      3.0,
+      0.7,
+      0.2
+    ]
+  },
+  "weights": [
+    -0.2,
+    0.55,
+    0.35,
+    0.45,
+    0.3,
+    0.5,
+    -0.75
+  ],
+  "calibration": {
+    "temperature": 1.25,
+    "bias": -0.1
+  },
+  "fit_source": "training-snapshot-2026-09-15"
+}

@@ -1,0 +1,11 @@
+[Unit]
+Description=Forge maintenance schedule
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=1h
+Persistent=no
+Unit=forge-maintenance.service
+
+[Install]
+WantedBy=timers.target

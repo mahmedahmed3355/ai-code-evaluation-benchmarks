@@ -1,0 +1,7 @@
+{
+  "window_seconds": 300,
+  "allowed_lateness_seconds": 120,
+  "delivery_semantics": "at_least_once",
+  "aggregation": "sum_and_count",
+  "dedupe_key": "event_id"
+}

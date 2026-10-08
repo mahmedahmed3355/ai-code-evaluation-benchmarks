@@ -1,0 +1,24 @@
+[task]
+id = "distributed-sharded-checkpoint-011"
+title = "Atomic Distributed Checkpoint Commit and Recovery"
+authors = [
+    { name = "mohamed ahmed", email = "engmohamedelshrbeny@gmail.com" }
+]
+organization = "Forge Bench"
+difficulty = "hard"
+tags = ["distributed-systems", "distributed-training", "checkpointing", "fault-tolerance", "python", "recovery"]
+time_limit_minutes = 60
+cpu_only = true
+network_access = false
+
+[task.description]
+summary = "Repair a distributed sharded-checkpoint commit and recovery protocol so partial or corrupt checkpoints can never be selected as the latest valid state."
+difficulty_rationale = "Difficulty comes from interacting distributed-state invariants: atomic shard publication, manifest commit semantics, complete-set validation, recovery across failed newer commits, and opaque payload handling."
+solution_rationale = "A correct solution requires changing the publication and recovery protocol rather than hard-coding fixture data or selecting the largest step."
+verification_rationale = "The verifier exercises complete, partial, corrupt, stale-manifest, extra-shard, and newer-incomplete checkpoint states with alternate steps, world sizes, and payloads."
+
+[task.runtime]
+image = "python:3.11-slim"
+
+[task.files]
+entrypoint = "/app/validate.sh"

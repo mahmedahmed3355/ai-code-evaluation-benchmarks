@@ -1,0 +1,13 @@
+{"event_id": "e001", "event_time": "2026-01-01T00:00:10Z", "key": "us", "value": 10, "delivery_duplicate": false}
+{"event_id": "e002", "event_time": "2026-01-01T00:00:20Z", "key": "eu", "value": 20, "delivery_duplicate": false}
+{"event_id": "e003", "event_time": "2026-01-01T00:01:20Z", "key": "us", "value": 5, "delivery_duplicate": false}
+{"event_id": "e002", "event_time": "2026-01-01T00:00:20Z", "key": "eu", "value": 20, "delivery_duplicate": true}
+{"event_id": "e004", "event_time": "2026-01-01T00:05:05Z", "key": "us", "value": 7, "delivery_duplicate": false}
+{"event_id": "e005", "event_time": "2026-01-01T00:05:30Z", "key": "eu", "value": 3, "delivery_duplicate": false}
+{"event_id": "e006", "event_time": "2026-01-01T00:03:30Z", "key": "us", "value": 4, "delivery_duplicate": false}
+{"event_id": "e007", "event_time": "2026-01-01T00:10:10Z", "key": "us", "value": 9, "delivery_duplicate": false}
+{"event_id": "e008", "event_time": "2026-01-01T00:10:25Z", "key": "eu", "value": 6, "delivery_duplicate": false}
+{"event_id": "e009", "event_time": "2026-01-01T00:01:40Z", "key": "us", "value": 8, "delivery_duplicate": false}
+{"event_id": "e010", "event_time": "2026-01-01T00:15:40Z", "key": "eu", "value": 11, "delivery_duplicate": false}
+{"event_id": "e011", "event_time": "2026-01-01T00:02:01Z", "key": "eu", "value": 2, "delivery_duplicate": false}
+{"event_id": "e003", "event_time": "2026-01-01T00:01:20Z", "key": "us", "value": 500, "delivery_duplicate": true}

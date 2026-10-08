@@ -1,48 +1,67 @@
-# Kafka Consumer Recovery Repair
+# Kafka Consumer Offset Recovery — Infrastructure Benchmark
 
-## Overview
+A realistic infrastructure/debugging task for an AI coding agent.
 
-This task evaluates an agent's ability to diagnose and repair a deterministic Kafka consumer recovery-state regression.
+## Scenario
 
-The scenario involves a consumer group processing multiple partitions with explicit offset commits. A restart/rebalance has left several pieces of recovery state inconsistent across the supplied configuration and recovery artifacts.
+An inference consumer group restarted during a rebalance. Several lifecycle artifacts were persisted independently:
 
-The agent must inspect the available state, reason about the recovery contract, and make a minimal coherent repair while preserving the existing processing semantics.
+- active consumer assignment
+- restart metadata
+- checkpoint
+- per-partition processing state
+- durable commit journal
+- workload accounting
 
-## What the Task Tests
+The incident is subtle because the processed position is ahead of the durable committed position on one partition, while generation/epoch metadata is inconsistent across artifacts.
 
-The task evaluates reasoning about:
+The correct repair is to reconstruct the recovery contract from the persisted state and repair only the corrupted recovery metadata.
 
-- Kafka consumer-group state
-- Manual offset commit semantics
-- Processed versus durable committed offsets
-- Consumer generation consistency
-- Assignment epoch consistency
-- Partition ownership
-- Restart recovery state
-- Recovery checkpoints
-- Cross-artifact state consistency
-- Preservation of workload accounting
+## What this evaluates
 
-## Constraints
+- Kafka consumer-group recovery reasoning
+- committed vs processed offset semantics
+- generation/assignment-epoch consistency
+- partition ownership
+- checkpoint correctness
+- crash/restart recovery
+- durable commit evidence
+- preservation of workload/accounting state
+- avoidance of destructive offset-reset shortcuts
 
-The repair must preserve:
+## Why it is difficult
 
-- Consumer identity
-- Topic and partition topology
-- Manual commit behavior
-- Existing partition ownership
-- Existing workloads
-- Existing message and commit accounting
-- Recovery semantics
+No single value tells the whole story. Several individually plausible values conflict across files. A naive agent can easily:
 
-Destructive offset resets and recovery bypasses are not valid solutions.
+- resume from a processed-but-uncommitted offset
+- accept stale generation/epoch metadata
+- rewrite historical processed/committed state
+- reset to latest/earliest
+- delete a partition to remove the inconsistency
+- modify workloads to make accounting pass
 
-## Verification
+Those repairs are explicitly invalid.
 
-The verifier checks the repaired state through independent invariants spanning the supplied artifacts. It validates recovery consistency, partition ownership, durable progress, workload preservation, and safe recovery behavior.
+## Validation
 
-The environment intentionally does not expose the verifier implementation or reference solution to the agent.
+The task includes:
 
-## Difficulty
+- a reference/oracle solution
+- deterministic independent verifier
+- hidden adversarial checks
+- baseline regression checks
+- cross-artifact invariants
+- preservation checks
 
-The task is designed as a distributed-state debugging problem rather than a single-value configuration edit. Correct repair requires correlating multiple artifacts and preserving invariants across the recovery state.
+No Kafka service or external network is required.
+
+## Deliverable
+
+The agent edits only the persisted recovery state and leaves the consumer contract and workload artifacts intact.
+
+## Benchmark metadata
+
+**Category:** Infrastructure / Distributed Systems  
+**Runtime:** CPU-only, deterministic  
+**Difficulty:** Hard  
+**Expected expert time:** ~45–75 minutes

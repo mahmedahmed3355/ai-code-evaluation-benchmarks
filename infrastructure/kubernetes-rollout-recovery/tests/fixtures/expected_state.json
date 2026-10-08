@@ -1,0 +1,16 @@
+{
+  "identity": {
+    "app": "inference-api",
+    "track": "stable",
+    "release": "2026-10"
+  },
+  "replicas": 3,
+  "minReadySeconds": 10,
+  "maxUnavailable": 1,
+  "maxSurge": 1,
+  "servicePort": 80,
+  "targetPort": 8080,
+  "pdbMinAvailable": 2,
+  "containerPort": 8080,
+  "configPort": "8080"
+}

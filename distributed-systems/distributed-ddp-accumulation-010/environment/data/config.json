@@ -1,0 +1,11 @@
+{
+  "seed": 17,
+  "world_size": 2,
+  "input_dim": 4,
+  "hidden_dim": 7,
+  "output_dim": 2,
+  "learning_rate": 0.03,
+  "accumulation_steps": 3,
+  "total_optimizer_updates": 2,
+  "checkpoint_after_updates": 1
+}

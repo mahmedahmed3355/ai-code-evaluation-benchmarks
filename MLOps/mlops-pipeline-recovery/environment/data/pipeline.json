@@ -1,0 +1,38 @@
+{
+  "stages": [
+    {
+      "name": "prepare",
+      "depends_on": [],
+      "retry_limit": 2,
+      "artifact": {
+        "path": "/app/data/prepare.bin",
+        "sha256": "203209d8f3cda59454a32d0b5ed7ed78c7a7e460c5774154bef5d80f49a8a272"
+      },
+      "timeout_seconds": 60
+    },
+    {
+      "name": "train",
+      "depends_on": [
+        "prepare"
+      ],
+      "retry_limit": 3,
+      "artifact": {
+        "path": "/app/data/train.bin",
+        "sha256": "b0932568274f3805e64d9bd0f01dfdf7cf7d82cfa104071279d658bd81e8a29c"
+      },
+      "timeout_seconds": 120
+    },
+    {
+      "name": "evaluate",
+      "depends_on": [
+        "train"
+      ],
+      "retry_limit": 2,
+      "artifact": {
+        "path": "/app/data/eval.bin",
+        "sha256": "a590ae4f38d9be66e1737df743f90656839abaf682840ab1059738a7ed161956"
+      },
+      "timeout_seconds": 60
+    }
+  ]
+}

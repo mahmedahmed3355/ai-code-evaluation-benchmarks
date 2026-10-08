@@ -1,0 +1,97 @@
+{
+  "nodes": [
+    {
+      "name": "node-a1",
+      "zone": "a",
+      "ready": true,
+      "allocatable": {
+        "cpu_m": 2000,
+        "memory_mib": 4096
+      },
+      "used": {
+        "cpu_m": 500,
+        "memory_mib": 512
+      }
+    },
+    {
+      "name": "node-a2",
+      "zone": "a",
+      "ready": true,
+      "allocatable": {
+        "cpu_m": 2000,
+        "memory_mib": 4096
+      },
+      "used": {
+        "cpu_m": 1000,
+        "memory_mib": 1024
+      }
+    },
+    {
+      "name": "node-b1",
+      "zone": "b",
+      "ready": true,
+      "allocatable": {
+        "cpu_m": 2000,
+        "memory_mib": 4096
+      },
+      "used": {
+        "cpu_m": 500,
+        "memory_mib": 512
+      }
+    },
+    {
+      "name": "node-b2",
+      "zone": "b",
+      "ready": true,
+      "allocatable": {
+        "cpu_m": 2000,
+        "memory_mib": 4096
+      },
+      "used": {
+        "cpu_m": 500,
+        "memory_mib": 512
+      }
+    }
+  ],
+  "pods": [
+    {
+      "name": "payments-r1-0",
+      "workload": "payments",
+      "revision": "r1",
+      "node": "node-a1",
+      "ready": true,
+      "ready_for_seconds": 100,
+      "terminating": false,
+      "requests": {
+        "cpu_m": 500,
+        "memory_mib": 512
+      }
+    },
+    {
+      "name": "payments-r1-1",
+      "workload": "payments",
+      "revision": "r1",
+      "node": "node-a2",
+      "ready": true,
+      "ready_for_seconds": 100,
+      "terminating": false,
+      "requests": {
+        "cpu_m": 500,
+        "memory_mib": 512
+      }
+    },
+    {
+      "name": "payments-r1-2",
+      "workload": "payments",
+      "revision": "r1",
+      "node": "node-b1",
+      "ready": true,
+      "ready_for_seconds": 100,
+      "terminating": false,
+      "requests": {
+        "cpu_m": 500,
+        "memory_mib": 512
+      }
+    }
+  ]
+}

@@ -2,19 +2,23 @@ version = "1.0"
 
 artifacts = [
     "/app/build/resolved_config.txt",
+    "/app/build/config_provenance.txt",
     "/app/build/execution_plan.txt",
     "/app/artifacts/kernel_build.artifact",
+    "/app/artifacts/kernel_build.provenance",
     "/app/reports/benchmark.txt",
     "/app/configs/build.conf",
     "/app/configs/release.profile",
     "/app/configs/benchmark.conf",
     "/app/configs/local.override",
     "/app/datasets/memory_pool.csv",
+    "/app/history/build_history.csv",
 ]
 
 [metadata]
-author_name = "Mohamed"
+author_name = "Mohamed Ahmed"
 author_email = "engmohamedelshrbeny@gmail.com"
+organization = "Forge Bench"
 difficulty = "hard"
 category = "software_engineering"
 tags = [
@@ -26,10 +30,14 @@ tags = [
     "memory-reuse",
     "performance-regression",
     "configuration-debugging",
-    "performance-optimization"
+    "performance-optimization",
+    "configuration-provenance",
 ]
-expert_time_estimate_min = 30.0
-junior_time_estimate_min = 75.0
+expert_time_estimate_min = 35.0
+junior_time_estimate_min = 90.0
+difficulty_rationale = "Requires diagnosing configuration precedence and interacting allocator, reuse, synchronization, and chunking effects across multiple workloads while preserving generated-artifact consistency and independent performance checks."
+solution_rationale = "The intended repair restores the coherent stream-ordered memory-pool strategy at the regression layer and then regenerates all derived outputs through the normal validation workflow."
+verification_rationale = "The verifier independently checks workload preservation, configuration provenance, effective strategy, per-workload and aggregate budgets, generated artifact consistency, provenance digests, historical regression evidence, and benchmark/report consistency."
 
 [verifier]
 timeout_sec = 600.0

@@ -1,0 +1,12 @@
+{
+  "version": "1.0",
+  "features": [
+    "age",
+    "income",
+    "balance",
+    "tenure",
+    "transactions",
+    "utilization"
+  ],
+  "target": "target"
+}

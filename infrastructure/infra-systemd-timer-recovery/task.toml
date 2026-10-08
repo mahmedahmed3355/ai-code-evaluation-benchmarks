@@ -1,0 +1,18 @@
+[task]
+id = "infra-systemd-timer-recovery-014"
+name = "systemd timer single-run recovery"
+category = "infrastructure"
+difficulty = "hard"
+authors = [
+    { name = "mohamed ahmed", email = "engmohamedelshrbeny@gmail.com" }
+]
+organization = "Forge Bench"
+cpu_only = true
+network_required = false
+estimated_minutes = 60
+
+[task.description]
+summary = "Repair a migrated systemd maintenance job so locking, crash recovery, failure propagation, persistent scheduling, and resource/security contracts remain correct."
+difficulty_rationale = "Difficulty comes from realistic state ownership and recovery semantics interacting with systemd scheduling; shortcuts fail adversarial ownership and failure cases."
+solution_rationale = "The reference solution repairs the launcher and timer contract without modifying the maintenance application."
+verification_rationale = "Independent validation covers live-owner protection, stale-owner recovery, duplicate invocation, failed runs, persistent scheduling, timeout, identity, and resource constraints."

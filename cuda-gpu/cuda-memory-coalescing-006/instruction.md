@@ -1,37 +1,41 @@
 # CUDA Memory Coalescing Performance Regression
 
-The repository contains a simulated CUDA kernel-build pipeline used to
-evaluate memory-access performance across several supported workloads.
+A simulated CUDA kernel-build pipeline has developed a release performance regression. The application does not contain a broken kernel implementation; the incident is caused by an incorrect effective memory-access configuration.
 
-The current build is reporting a performance regression. Investigate the
-available configuration sources, workload definitions, build history, and
-generated diagnostics to determine why the effective configuration is
-producing excessive work.
-
-Restore the intended optimized memory-access configuration so that the
-generated execution plan satisfies the declared performance budget.
+Investigate the configuration layers, workload definitions, build history, and generated diagnostics. Identify which layer introduced the regression and restore the intended optimized strategy without changing the benchmark or validation machinery.
 
 ## Requirements
 
-- Preserve all supported workloads in `datasets/workload.csv`.
-- Do not remove or rename configuration sources.
-- Preserve configuration provenance and make the fix through the appropriate
-  configuration layer.
-- Do not modify the benchmark logic to bypass the performance check.
-- Do not modify the validation logic to force a passing result.
-- Do not hard-code generated artifacts or benchmark reports as a shortcut.
-- The resulting configuration must represent a coherent optimized memory
-  access strategy rather than simply suppressing the regression.
-- Regenerate the build artifacts after making the configuration change.
-- Run the available validation pipeline and ensure it completes successfully.
+- Preserve every row in `datasets/workload.csv`.
+- Preserve all configuration sources and their roles.
+- Fix the regression at the configuration layer that introduced it.
+- Preserve configuration provenance.
+- Keep the release profile and benchmark contract intact.
+- Do not modify benchmark, validation, plan-generation, or artifact-generation logic.
+- Do not modify `/tests`.
+- Do not hard-code workload names, inputs, work-unit totals, reports, or generated artifacts.
+- Do not delete a configuration source to alter precedence.
+- Do not disable, weaken, or bypass a performance check.
+- Do not replace the memory-access strategy with a different architecture.
+- Regenerate all derived outputs after the configuration repair.
+- The final configuration must satisfy both the aggregate performance budget and every per-workload budget.
+- The generated artifact must describe the actual effective configuration and plan.
+- The configuration must retain a traceable source for every effective performance setting.
+
+## Performance model
+
+The plan generator models memory transactions. Poorly coalesced, unaligned, scalar access and the disabled fast path increase work. Block size also affects the amount of work generated for each workload.
+
+The correct repair is a coherent memory-access configuration, not an isolated change to one parameter.
 
 ## Acceptance criteria
 
-The final generated execution plan must remain within the declared
-performance budget.
+The complete validation pipeline must pass.
 
-The generated artifact must accurately reflect the effective configuration
-and all supported workloads.
+The effective configuration must match the intended release memory-access contract.
 
-The benchmark report must indicate a successful result, and the complete
-validation pipeline must pass.
+All supported workloads must remain present and within their declared budgets.
+
+The artifact, configuration provenance, execution plan, and benchmark report must be internally consistent.
+
+The repair must preserve asynchronous GPU-oriented configuration semantics rather than hiding the regression.

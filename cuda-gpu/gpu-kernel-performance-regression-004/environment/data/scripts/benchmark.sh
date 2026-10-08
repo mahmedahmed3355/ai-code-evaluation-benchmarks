@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 set -euo pipefail
 
 ROOT="/app"
@@ -15,120 +14,94 @@ if [[ ! -f "$ARTIFACT" ]]; then
 fi
 
 declare -A values
-
 while IFS='=' read -r key value; do
     [[ -z "$key" ]] && continue
     [[ "$key" =~ ^# ]] && continue
     values["$key"]="$value"
 done < "$ARTIFACT"
 
-required_keys=(
-    BUILD_TYPE
-    OPT_LEVEL
-    STRATEGY
-    BLOCK_SIZE
-    CHUNK_SIZE
-    VECTOR_WIDTH
-    FAST_PATH
-    WORK_UNIT_COST
-    ARTIFACT_MODE
-    TOTAL_WORK_UNITS
-)
-
-for key in "${required_keys[@]}"; do
+for key in PROFILE STRATEGY BLOCK_SIZE CHUNK_SIZE VECTOR_WIDTH FAST_PATH WORK_UNIT_COST TOTAL_WORK_UNITS CONFIG_SHA256 PLAN_SHA256; do
     if [[ -z "${values[$key]:-}" ]]; then
         echo "ERROR: artifact is missing $key" >&2
         exit 1
     fi
 done
 
-BUILD_TYPE="${values[BUILD_TYPE]}"
-OPT_LEVEL="${values[OPT_LEVEL]}"
-STRATEGY="${values[STRATEGY]}"
-BLOCK_SIZE="${values[BLOCK_SIZE]}"
-CHUNK_SIZE="${values[CHUNK_SIZE]}"
-VECTOR_WIDTH="${values[VECTOR_WIDTH]}"
-FAST_PATH="${values[FAST_PATH]}"
-WORK_UNIT_COST="${values[WORK_UNIT_COST]}"
-ARTIFACT_MODE="${values[ARTIFACT_MODE]}"
-TOTAL_WORK_UNITS="${values[TOTAL_WORK_UNITS]}"
+CONFIG_DIGEST="$(sha256sum "$ROOT/build/resolved_config.txt" | awk '{print $1}')"
+PLAN_DIGEST="$(sha256sum "$ROOT/build/execution_plan.txt" | awk '{print $1}')"
 
-PERFORMANCE_BUDGET=500000
+if [[ "${values[CONFIG_SHA256]}" != "$CONFIG_DIGEST" ]]; then
+    echo "ERROR: configuration provenance mismatch." >&2
+    exit 1
+fi
+if [[ "${values[PLAN_SHA256]}" != "$PLAN_DIGEST" ]]; then
+    echo "ERROR: execution-plan provenance mismatch." >&2
+    exit 1
+fi
+
+declare -A plan_values
+while IFS='=' read -r key value; do
+    [[ -z "$key" ]] && continue
+    [[ "$key" =~ ^# ]] && continue
+    plan_values["$key"]="$value"
+done < "$ROOT/build/execution_plan.txt"
+
+if [[ "${values[TOTAL_WORK_UNITS]}" != "${plan_values[TOTAL_WORK_UNITS]:-}" ]]; then
+    echo "ERROR: artifact does not match execution plan." >&2
+    exit 1
+fi
+
+for index in 1 2 3; do
+    for suffix in ID INPUT_SIZE PROFILE BUDGET_KEY WORK_UNITS; do
+        key="WORKLOAD_${index}_${suffix}"
+        if [[ "${values[$key]:-}" != "${plan_values[$key]:-}" ]]; then
+            echo "ERROR: artifact workload metadata mismatch." >&2
+            exit 1
+        fi
+    done
+done
+
+source "$ROOT/configs/benchmark.conf"
 
 score=100
+status="PASS"
 
-if [[ "$OPT_LEVEL" != "3" ]]; then
-    score=$((score - 15))
-fi
+[[ "${values[PROFILE]}" == "$REQUIRED_PROFILE" ]] || score=$((score - 25))
+[[ "${values[STRATEGY]}" == "blocked" ]] || score=$((score - 25))
+[[ "${values[BLOCK_SIZE]}" == "256" ]] || score=$((score - 10))
+[[ "${values[CHUNK_SIZE]}" == "4096" ]] || score=$((score - 10))
+[[ "${values[VECTOR_WIDTH]}" == "4" ]] || score=$((score - 10))
+[[ "${values[FAST_PATH]}" == "1" ]] || score=$((score - 10))
+[[ "${values[WORK_UNIT_COST]}" == "1" ]] || score=$((score - 10))
 
-if [[ "$STRATEGY" != "blocked" ]]; then
-    score=$((score - 25))
-fi
-
-if [[ "$BLOCK_SIZE" != "256" ]]; then
-    score=$((score - 10))
-fi
-
-if [[ "$CHUNK_SIZE" != "4096" ]]; then
-    score=$((score - 10))
-fi
-
-if [[ "$VECTOR_WIDTH" != "4" ]]; then
-    score=$((score - 10))
-fi
-
-if [[ "$FAST_PATH" != "1" ]]; then
-    score=$((score - 10))
-fi
-
-if [[ "$WORK_UNIT_COST" != "1" ]]; then
-    score=$((score - 10))
-fi
-
-if [[ "$ARTIFACT_MODE" != "optimized" ]]; then
-    score=$((score - 10))
-fi
-
-if ! [[ "$TOTAL_WORK_UNITS" =~ ^[0-9]+$ ]]; then
+if ! [[ "${values[TOTAL_WORK_UNITS]}" =~ ^[0-9]+$ ]]; then
     echo "ERROR: invalid TOTAL_WORK_UNITS." >&2
     exit 1
 fi
 
-if (( TOTAL_WORK_UNITS > PERFORMANCE_BUDGET )); then
-    score=$((score - 20))
-fi
-
-if (( score < 0 )); then
-    score=0
-fi
-
-if (( score == 100 && TOTAL_WORK_UNITS <= PERFORMANCE_BUDGET )); then
-    status="PASS"
-else
-    status="REGRESSION"
-fi
+(( values[TOTAL_WORK_UNITS] <= AGGREGATE_WORK_BUDGET )) || score=$((score - 20))
+(( score < 0 )) && score=0
+(( score == 100 )) || status="REGRESSION"
 
 cat > "$REPORT" <<EOF
 GPU_KERNEL_PERFORMANCE_REPORT
-BUILD_TYPE=$BUILD_TYPE
-OPT_LEVEL=$OPT_LEVEL
-STRATEGY=$STRATEGY
-BLOCK_SIZE=$BLOCK_SIZE
-CHUNK_SIZE=$CHUNK_SIZE
-VECTOR_WIDTH=$VECTOR_WIDTH
-FAST_PATH=$FAST_PATH
-WORK_UNIT_COST=$WORK_UNIT_COST
-TOTAL_WORK_UNITS=$TOTAL_WORK_UNITS
-PERFORMANCE_BUDGET=$PERFORMANCE_BUDGET
+PROFILE=${values[PROFILE]}
+STRATEGY=${values[STRATEGY]}
+BLOCK_SIZE=${values[BLOCK_SIZE]}
+CHUNK_SIZE=${values[CHUNK_SIZE]}
+VECTOR_WIDTH=${values[VECTOR_WIDTH]}
+FAST_PATH=${values[FAST_PATH]}
+WORK_UNIT_COST=${values[WORK_UNIT_COST]}
+TOTAL_WORK_UNITS=${values[TOTAL_WORK_UNITS]}
+PERFORMANCE_BUDGET=${AGGREGATE_WORK_BUDGET}
 SCORE=$score
 STATUS=$status
 EOF
 
 echo "Benchmark completed."
-echo "Total work units: $TOTAL_WORK_UNITS"
-echo "Performance budget: $PERFORMANCE_BUDGET"
+echo "Total work units: ${values[TOTAL_WORK_UNITS]}"
+echo "Performance budget: ${AGGREGATE_WORK_BUDGET}"
 echo "Score: $score"
-echo "Report: $REPORT"
 echo "STATUS=$status"
 
 if [[ "$status" != "PASS" ]]; then

@@ -1,0 +1,29 @@
+{
+  "model_name": "fraud-detector",
+  "version": "2.4.0",
+  "stage": "staging",
+  "artifact": {
+    "path": "/app/data/model.bin",
+    "sha256": "4d6d0d961d95f757218d129f853684bdd2290c1c6fe5bc0b27b0d15ae78e861b"
+  },
+  "training": {
+    "dataset_id": "fraud",
+    "dataset_version": "2026.09",
+    "code_commit": "abc123"
+  },
+  "evaluation": {
+    "metrics": {
+      "auc": 0.94,
+      "fpr": 0.018,
+      "latency_ms": 31
+    },
+    "samples": 50000,
+    "reference": {
+      "dataset_version": "2026.09"
+    }
+  },
+  "approval": {
+    "required": true,
+    "approved": true
+  }
+}

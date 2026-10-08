@@ -1,0 +1,21 @@
+[Unit]
+Description=Orders API
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=backend
+Group=backend
+WorkingDirectory=/app
+EnvironmentFile=/etc/backend/backend.env
+RuntimeDirectory=backend
+RuntimeDirectoryMode=0755
+UMask=0007
+ExecStart=/opt/backend-venv/bin/gunicorn --workers 2 --worker-class uvicorn.workers.UvicornWorker --bind unix:/run/backend/orders.sock --access-logfile /var/log/backend/access.log --error-logfile /var/log/backend/error.log app:app
+Restart=always
+RestartSec=1
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target

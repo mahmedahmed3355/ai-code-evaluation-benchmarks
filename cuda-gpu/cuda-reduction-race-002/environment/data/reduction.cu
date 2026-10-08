@@ -95,17 +95,6 @@ void reduce_sum(
         n
     );
 
-    /*
-     * BUG:
-     *
-     * finalize_sum_kernel assumes that num_blocks <= BLOCK_SIZE.
-     * For larger inputs, the partial-sum array contains more than
-     * BLOCK_SIZE elements, but the final reduction only loads the
-     * first BLOCK_SIZE elements.
-     *
-     * The implementation therefore silently drops partial sums.
-     */
-
     finalize_sum_kernel<<<1, BLOCK_SIZE>>>(
         d_partial,
         d_output,

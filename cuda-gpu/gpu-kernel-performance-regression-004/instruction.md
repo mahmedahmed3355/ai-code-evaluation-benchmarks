@@ -1,125 +1,128 @@
 # GPU Kernel Performance Regression Investigation
 
-You are working in a small production-style kernel planning and validation
-repository.
+You are working in a production-style GPU-kernel build and execution-planning repository.
 
-A recent repository change introduced a performance regression in the
-execution plan used to process a large workload. The generated artifact still
-produces correct results, and the ordinary correctness checks may pass, but
-the resulting execution plan violates the project's performance contract.
+A recent repository change introduced a performance regression. The generated artifact can still look structurally valid and ordinary correctness checks can pass, but the execution plan violates the performance contract for the supported workloads.
 
-Your task is to investigate the repository, identify the root cause of the
-performance regression, and repair the project so that both correctness and
-efficiency requirements are satisfied.
+Your task is to investigate the complete pipeline, identify the underlying cause, and repair the repository.
 
 ## Objective
 
-Restore the intended execution strategy without replacing the existing
-pipeline or bypassing its validation.
+Restore the intended release execution behavior without replacing the existing pipeline or weakening its validation.
 
 The final repository must:
 
 - produce a valid execution artifact;
-- produce correct results;
-- satisfy the project's performance/work budget;
-- pass the complete validation workflow;
-- remain correct for the supported workload sizes;
-- preserve the existing project structure and workflow.
-
-Correctness alone is not sufficient for task completion.
+- produce a valid execution plan;
+- preserve correctness behavior;
+- satisfy every supported workload budget;
+- satisfy the aggregate performance budget;
+- preserve artifact and plan provenance;
+- retain legitimate local diagnostic configuration;
+- pass the complete validation workflow.
 
 ## Investigation
 
-Start by inspecting the repository under `/app`.
+Start by inspecting `/app`.
 
-Use the available scripts, configuration files, datasets, generated artifacts,
-diagnostic output, and logs to understand the complete execution path.
+Trace the path from configuration sources through:
 
-Do not assume that the observed performance regression is caused by a single
-constant or threshold.
+```text
+configuration sources
+        ↓
+effective configuration
+        ↓
+execution plan
+        ↓
+build artifact
+        ↓
+benchmark
+        ↓
+validation
+```
 
-Investigate:
+Use the supplied workload data, diagnostic output, and historical build evidence.
 
-- input-size handling;
-- execution-plan generation;
-- algorithm/strategy selection;
-- configuration precedence;
-- work-unit calculation;
-- generated artifact metadata;
-- correctness validation;
-- performance measurement;
-- benchmark thresholds;
-- and relevant historical or diagnostic logs.
+Do not assume that the regression is caused by one numeric threshold.
 
-Reproduce the observed behavior before deciding on a fix.
+Pay particular attention to:
 
-A successful correctness check does not establish that the implementation is
-correct for this task.
+- source precedence;
+- which settings belong to the release performance contract;
+- which local settings are compatibility or diagnostic-only;
+- workload profiles;
+- per-workload budgets;
+- aggregate budget;
+- generated plan values;
+- artifact provenance;
+- stale artifacts;
+- correctness versus efficiency.
 
-## Performance Contract
+Reproduce the regression before making the repair.
 
-The repository contains a performance/work contract that applies to the
-supported workloads.
+## Performance contract
 
-The implementation must satisfy the contract without simply weakening its
-requirements.
+The benchmark contract contains both per-workload limits and an aggregate limit.
 
-The measured work must remain within the project's intended budget for the
-provided workloads.
+Every supported workload must remain within its own budget.
 
-Solutions that merely increase the allowed budget, lower the required score,
-or bypass the performance measurement are incomplete.
+The total work must also remain within the aggregate budget.
+
+The release strategy is part of the performance contract.
+
+A correct solution must restore the intended release configuration rather than merely changing the reported score or budget.
+
+## Configuration semantics
+
+The repository contains multiple configuration sources with different responsibilities.
+
+The final configuration must preserve the release performance contract while retaining local settings that are not part of that contract.
+
+Do not delete `local.override` as a shortcut.
+
+Do not discard legitimate diagnostic settings simply because the file also contains legacy performance values.
+
+The correct behavior must remain reproducible from the repository's configuration sources.
 
 ## Requirements
 
 Your solution must:
 
-- preserve the existing execution pipeline;
-- preserve the existing interfaces;
-- preserve the intended correctness behavior;
-- preserve supported workload configurations;
-- produce an efficient execution plan;
-- satisfy both correctness and performance validation.
-
-The solution must address the underlying cause of the regression.
+- preserve the existing build and validation pipeline;
+- preserve the workload dataset;
+- preserve the public script interfaces;
+- restore the intended release execution strategy;
+- retain allowed local diagnostic configuration;
+- regenerate the execution plan;
+- regenerate the build artifact;
+- keep provenance consistent;
+- pass correctness and performance validation.
 
 ## Constraints
 
 Do not:
 
-- replace the existing pipeline with a different implementation;
-- remove or disable correctness checks;
-- remove or disable performance checks;
 - modify the test suite;
-- modify reference data;
-- hardcode expected benchmark results;
-- increase performance budgets to hide the regression;
-- lower benchmark requirements;
+- modify verifier behavior;
+- delete or rename configuration sources;
+- delete or change workload rows;
+- increase any performance budget;
+- lower any benchmark requirement;
 - fake measured work;
-- skip the benchmark stage;
+- hard-code expected workload results;
+- bypass the benchmark;
 - generate a fake artifact;
-- delete unrelated repository files.
+- replace the pipeline with an unrelated implementation;
+- rely on external services or network access.
 
-Do not solve the task by making the validator report success regardless of the
-actual execution plan.
+A solution that makes the validator report success without fixing the effective execution configuration is incomplete.
 
-## Validation
+## Completion criteria
 
-After making the fix, run the repository's normal validation workflow.
+The task is complete only when:
 
-You should verify both:
-
-1. correctness of the generated result;
-2. efficiency of the generated execution plan.
-
-The complete validation workflow must pass.
-
-A solution that only passes correctness checks while violating the performance
-contract is incomplete.
-
-A solution that passes one workload but fails another supported workload is also
-incomplete.
-
-The task is complete only when the complete validation workflow passes and the
-generated artifact satisfies the intended correctness and performance
-contracts.
+1. the effective configuration satisfies the release contract;
+2. all supported workloads satisfy their individual budgets;
+3. aggregate work remains within the project budget;
+4. the generated artifact matches the generated plan and configuration provenance;
+5. the normal validation workflow passes.

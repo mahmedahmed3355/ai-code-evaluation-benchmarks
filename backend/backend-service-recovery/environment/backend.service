@@ -1,23 +1,21 @@
 [Unit]
 Description=Backend API Service
 After=network.target
+Wants=network.target
 
 [Service]
 Type=simple
 User=root
+Group=root
 WorkingDirectory=/app
 RuntimeDirectory=backend
 RuntimeDirectoryMode=0755
 Environment="PATH=/opt/backend-venv/bin"
-ExecStart=/opt/backend-venv/bin/gunicorn \
-    --workers 2 \
-    --worker-class uvicorn.workers.UvicornWorker \
-    --bind unix:/run/backend/backend.sock \
-    --access-logfile /var/log/backend/access.log \
-    --error-logfile /var/log/backend/error.log \
-    app:app
+ExecStart=/opt/backend-venv/bin/gunicorn     --workers 2     --worker-class uvicorn.workers.UvicornWorker     --bind unix:/run/backend/backend.sock     --access-logfile /var/log/backend/access.log     --error-logfile /var/log/backend/error.log     app:app
 Restart=always
-RestartSec=2
+RestartSec=1
+TimeoutStartSec=30
+TimeoutStopSec=30
 
 [Install]
 WantedBy=multi-user.target

@@ -4,31 +4,24 @@ version = "1.0"
 
 artifacts = [
     "/app/data/stream_config.json",
-    "/app/data/workloads.json"
+    "/app/data/workloads.json",
+    "/app/data/validate.py"
 ]
 
 [metadata]
 author_name = "Mohamed Ahmed"
 author_email = "engmohamedelshrbeny@gmail.com"
-author_organization = "mohamedahmed"
+author_organization = "Forge Bench"
 
-difficulty_explanation = "The task requires diagnosing a cross-stream ordering regression involving producer and consumer CUDA events, multi-stream execution, asynchronous behavior, and dependency preservation. The agent must restore event-based ordering without replacing it with global synchronization or modifying supported workloads."
+difficulty_explanation = "The task requires diagnosing a synchronization regression from a multi-artifact CUDA-style contract. The agent must reconstruct two happens-before edges, preserve event identity and recording streams, keep asynchronous execution, and avoid the tempting global-synchronization shortcut. Workload invariants and an independent validator prevent superficial fixes."
 
-solution_explanation = "The reference solution restores the producer completion event, consumer wait dependency, consumer completion event, and finalizer wait dependency while preserving three streams and asynchronous execution."
+solution_explanation = "The reference solution restores the two missing event-wait edges and leaves the topology, events, execution policy, dependency contract, and workload manifest intact."
 
-verification_explanation = "The verifier validates the stream topology, event identifiers, cross-stream dependencies, asynchronous execution contract, supported workload set, and deterministic operation accounting."
+verification_explanation = "The verifier checks topology, event recording streams and IDs, exact dependency semantics, asynchronous execution, rejection of global synchronization, dependency-contract consistency, immutable workloads, operation totals, and agreement with the independent validator."
 
 category = "software_engineering"
 
-tags = [
-    "cuda",
-    "gpu",
-    "streams",
-    "cuda-events",
-    "synchronization",
-    "async-execution",
-    "debugging"
-]
+tags = ["cuda","gpu","streams","cuda-events","synchronization","async-execution","debugging","concurrency"]
 
 expert_time_estimate_hours = 0.75
 
@@ -42,7 +35,7 @@ collect = []
 timeout_sec = 600.0
 
 [environment]
-network_mode = "public"
+network_mode = "none"
 build_timeout_sec = 600.0
 os = "linux"
 cpus = 1

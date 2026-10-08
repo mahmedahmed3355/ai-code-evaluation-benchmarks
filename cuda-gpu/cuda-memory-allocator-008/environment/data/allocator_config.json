@@ -1,15 +1,29 @@
 {
+  "schema_version": 1,
   "allocator": {
-    "api": "cudaMallocAsync",
-    "free_api": "cudaFreeAsync",
-    "memory_pool": true,
+    "api": "cudaMalloc",
+    "free_api": "cudaFree",
+    "memory_pool": false,
     "stream_ordered_free": false,
     "cross_stream_events": false,
     "deferred_release": false,
     "release_threshold": 0
   },
   "execution": {
-    "streams": 2,
+    "streams": 1,
     "synchronize_before_release": false
+  },
+  "policy": {
+    "max_live_bytes": 524288,
+    "max_deferred_bytes": 262144
+  },
+  "provenance": {
+    "config_revision": "2026-10-01",
+    "owner": "runtime-memory"
+  },
+  "incident": {
+    "id": "CUDA-ALLOC-008",
+    "status": "regression",
+    "introduced_by": "runtime-memory-config-2026-10-01"
   }
 }

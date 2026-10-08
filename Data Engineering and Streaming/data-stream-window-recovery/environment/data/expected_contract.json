@@ -1,0 +1,7 @@
+{
+  "checkpoint_order": "state_then_offset",
+  "dedupe": "event_id",
+  "watermark": "max_event_time_minus_allowed_lateness",
+  "late_policy": "dead_letter_if_finalized",
+  "atomic_recovery": "checkpoint_and_state_must_agree"
+}

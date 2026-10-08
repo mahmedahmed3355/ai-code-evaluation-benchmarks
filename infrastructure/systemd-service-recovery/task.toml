@@ -1,0 +1,18 @@
+[task]
+id = "systemd-service-recovery-013"
+name = "systemd service recovery after configuration migration"
+category = "infrastructure"
+difficulty = "hard"
+authors = [
+    { name = "mohamed ahmed", email = "engmohamedelshrbeny@gmail.com" }
+]
+organization = "Forge Bench"
+cpu_only = true
+network_required = false
+estimated_minutes = 60
+
+[task.description]
+summary = "Repair a migrated systemd worker unit while preserving startup ordering, configuration validation, crash recovery, readiness, security, and resource contracts."
+difficulty_rationale = "Difficulty comes from interacting operational contracts and plausible but invalid repairs, not from unrelated subproblems."
+solution_rationale = "The reference repair changes only service-layer semantics and preserves the application and validation contracts."
+verification_rationale = "Independent checks exercise cold start, transient failure, restart throttling, clean stop, alternate configuration, ordering, readiness, security, and resource invariants."

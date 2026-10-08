@@ -1,0 +1,41 @@
+{
+  "model_name": "fraud-detector",
+  "production": {
+    "version": "2.3.0",
+    "artifact_sha256": "oldsha",
+    "metrics": {
+      "auc": 0.92,
+      "fpr": 0.02,
+      "latency_ms": 35
+    }
+  },
+  "staging": {
+    "version": "2.3.0"
+  },
+  "allowed_datasets": {
+    "fraud": {
+      "min_version": "2026.08",
+      "revoked": []
+    }
+  },
+  "policy": {
+    "required_metrics": {
+      "auc": {
+        "higher_is_better": true,
+        "threshold": 0.9,
+        "max_regression": 0.01
+      },
+      "fpr": {
+        "higher_is_better": false,
+        "threshold": 0.03,
+        "max_regression": 0.002
+      },
+      "latency_ms": {
+        "higher_is_better": false,
+        "threshold": 50,
+        "max_regression": 5
+      }
+    },
+    "min_samples": 10000
+  }
+}

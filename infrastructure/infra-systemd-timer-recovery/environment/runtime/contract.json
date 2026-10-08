@@ -1,0 +1,15 @@
+{
+  "service": "forge-maintenance.service",
+  "timer": "forge-maintenance.timer",
+  "user": "forge",
+  "group": "forge",
+  "command": "/usr/local/bin/forge-maintenance --run",
+  "lock_path": "/var/lib/forge/maintenance.lock",
+  "state_dir": "/var/lib/forge/maintenance",
+  "lock_format": "generation,pid",
+  "persistent": true,
+  "no_overlap": true,
+  "memory_max": "256M",
+  "cpu_weight": "50",
+  "timeout": "90s"
+}

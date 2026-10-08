@@ -6,7 +6,7 @@
       "assigned_to": "worker-a",
       "processed_offset": 124,
       "committed_offset": 120,
-      "last_recovered_offset": 124
+      "last_recovered_offset": 120
     },
     "1": {
       "assigned_to": "worker-a",
@@ -17,17 +17,17 @@
   },
   "checkpoint": {
     "generation": 7,
-    "assignment_epoch": 40,
+    "assignment_epoch": 41,
     "source": "restart",
     "offsets": {
-      "0": 124,
+      "0": 120,
       "1": 88
     }
   },
   "restart": {
     "occurred": true,
-    "recovery_generation": 8,
-    "recovery_epoch": 40,
-    "resume_policy": "resume_from_processed"
+    "recovery_generation": 7,
+    "recovery_epoch": 41,
+    "resume_policy": "resume_from_committed"
   }
 }

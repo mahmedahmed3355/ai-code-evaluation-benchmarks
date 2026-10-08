@@ -1,0 +1,16 @@
+[Unit]
+Description=Forge Worker
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+ExecStart=/bin/sh -c '/usr/local/bin/forge-worker --serve'
+Restart=no
+MemoryMax=1024M
+Nice=0
+NoNewPrivileges=no
+EnvironmentFile=/etc/forge/old-worker.env
+ExecStartPre=/usr/local/bin/forge-worker --validate-config

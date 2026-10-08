@@ -1,0 +1,15 @@
+[task]
+name = "k8s-cloud-rollout-reconciler-020"
+version = "1.0"
+description = "Production Kubernetes rollout reconciliation under scheduling, readiness, disruption-budget, topology, resource and rollback constraints."
+difficulty = "hard"
+
+[environment]
+dockerfile = "environment/Dockerfile"
+
+[tests]
+dockerfile = "tests/Dockerfile"
+command = "pytest -q /tests/test_outputs.py"
+
+[solution]
+command = "/solution/solve.sh"

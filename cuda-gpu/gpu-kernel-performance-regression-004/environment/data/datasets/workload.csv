@@ -1,4 +1,4 @@
-workload_id,input_size,expected_output,profile
-small,4096,4096,balanced
-medium,65536,65536,balanced
-large,1048576,1048576,release
+workload_id,input_size,expected_output,profile,budget_key
+small,4096,4096,balanced,SMALL_WORK_BUDGET
+medium,65536,65536,balanced,MEDIUM_WORK_BUDGET
+large,1048576,1048576,release,LARGE_WORK_BUDGET

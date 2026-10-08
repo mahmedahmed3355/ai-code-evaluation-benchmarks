@@ -1,13 +1,9 @@
-# Legacy local compatibility override
-#
-# These settings were introduced for an older execution path.
-# They should not override the production performance strategy.
-
+PROFILE=local
 STRATEGY=scalar
 BLOCK_SIZE=64
 CHUNK_SIZE=256
-
 VECTOR_WIDTH=1
 FAST_PATH=0
-
 WORK_UNIT_COST=8
+DIAGNOSTIC_MODE=1
+DIAGNOSTIC_LABEL=legacy-local

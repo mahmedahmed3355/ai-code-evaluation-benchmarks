@@ -1,0 +1,13 @@
+[Unit]
+Description=Forge maintenance job
+After=basic.target
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+ExecStart=/bin/sh -c '/usr/local/bin/forge-maintenance --run'
+TimeoutStartSec=0
+MemoryMax=512M
+CPUWeight=100
+RemainAfterExit=yes

@@ -1,0 +1,27 @@
+version = "1.0"
+[metadata]
+author_name = "Mohamed Ahmed"
+author_email = "engmohamedelshrbeny@gmail.com"
+author_organization = "Forge Bench"
+difficulty_explanation = "A production deployment incident spans systemd lifecycle, service identity, EnvironmentFile propagation, Unix-domain-socket permissions, socket naming, Nginx upstream routing, URI preservation, and restart behavior. Correctness requires reasoning across configuration boundaries and validating that a repair survives clean boot and repeated backend restarts; changing application code or weakening permissions is prohibited."
+solution_explanation = "The reference repair restores the intended service account and runtime directory contract, loads the deployment environment, fixes the Unix socket/upstream relationship, preserves API paths through Nginx, and enables reliable service startup and restart recovery without changing the application."
+verification_explanation = "The verifier independently checks booted service state, backend identity, environment propagation, socket type and permissions, Nginx configuration, health/readiness/API behavior, 404 semantics, backend-only isolation, and recovery across repeated backend restarts."
+category = "software_engineering"
+tags = ["backend", "systemd", "nginx", "gunicorn", "unix-socket", "reliability", "deployment", "debugging"]
+expert_time_estimate_hours = 2
+relevant_experience = "I build and evaluate containerized backend, infrastructure, CUDA/GPU, and AI-system engineering tasks using Harbor and Terminal-Bench workflows."
+
+[verifier]
+timeout_sec = 300.0
+environment_mode = "separate"
+
+[agent]
+timeout_sec = 1200.0
+
+[environment]
+build_timeout_sec = 600.0
+cpus = 2
+memory_mb = 2048
+storage_mb = 10240
+gpus = 0
+allow_internet = false

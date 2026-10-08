@@ -1,32 +1,29 @@
 {
+  "schema_version": 1,
   "workloads": [
     {
       "name": "embedding_batch",
-      "allocations": 8,
-      "bytes_per_allocation": 4096,
-      "producer_stream": 0,
-      "consumer_stream": 0
+      "stream": 0,
+      "bytes": 131072,
+      "lifetime": "cross_stream"
     },
     {
       "name": "attention_workspace",
-      "allocations": 12,
-      "bytes_per_allocation": 8192,
-      "producer_stream": 0,
-      "consumer_stream": 1
+      "stream": 1,
+      "bytes": 196608,
+      "lifetime": "cross_stream"
     },
     {
       "name": "vision_workspace",
-      "allocations": 6,
-      "bytes_per_allocation": 16384,
-      "producer_stream": 1,
-      "consumer_stream": 0
+      "stream": 0,
+      "bytes": 98304,
+      "lifetime": "deferred"
     },
     {
       "name": "reduction_workspace",
-      "allocations": 10,
-      "bytes_per_allocation": 2048,
-      "producer_stream": 1,
-      "consumer_stream": 1
+      "stream": 1,
+      "bytes": 65536,
+      "lifetime": "deferred"
     }
   ]
 }

@@ -1,0 +1,12 @@
+[task]
+name = "ml-temporal-evaluation-016"
+category = "machine-learning"
+difficulty = "hard"
+timeout_seconds = 180
+[task.environment]
+dockerfile = "environment/Dockerfile"
+[task.solution]
+command = "bash solution/solve.sh"
+[task.tests]
+dockerfile = "tests/Dockerfile"
+command = "bash tests/test.sh"

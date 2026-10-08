@@ -1,27 +1,24 @@
 version = "1.0"
 
 [metadata]
-author_name = "unknown"
+author_name = "Mohamed Ahmed"
 author_email = "engmohamedelshrbeny@gmail.com"
+author_organization = "Forge Bench"
 difficulty = "hard"
+difficulty_explanation = "The regression is distributed across layered configuration, a release performance contract, workload-specific budgets, generated-plan semantics, artifact provenance, and historical evidence. The agent must distinguish protected release settings from legitimate local diagnostics and repair the underlying configuration behavior rather than bypassing validation."
+solution_explanation = "The reference repair restores release precedence for protected performance settings while preserving non-protected local diagnostics, then rebuilds the plan and artifact through the normal pipeline."
+verification_explanation = "The verifier independently checks the release contract, local diagnostic preservation, workload calculations, per-workload and aggregate budgets, artifact provenance, tamper resistance, diagnostics, and the complete validation workflow."
 category = "software_engineering"
-tags = [
-    "gpu",
-    "cuda",
-    "performance",
-    "build-regression",
-    "configuration",
-    "benchmarking",
-]
-
-expert_time_estimate_min = 45.0
-junior_time_estimate_min = 120.0
+tags = ["gpu", "cuda", "performance", "build-regression", "configuration", "benchmarking", "provenance", "debugging"]
+expert_time_estimate_min = 60.0
+junior_time_estimate_min = 150.0
 
 [verifier]
 timeout_sec = 600.0
+environment_mode = "separate"
 
 [agent]
-timeout_sec = 600.0
+timeout_sec = 900.0
 
 [environment]
 build_timeout_sec = 600.0
@@ -29,9 +26,5 @@ cpus = 1
 memory_mb = 2048
 storage_mb = 10240
 gpus = 0
-allow_internet = true
+allow_internet = false
 mcp_servers = []
-
-[verifier.env]
-
-[solution.env]

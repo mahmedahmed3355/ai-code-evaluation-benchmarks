@@ -3,27 +3,67 @@ set -euo pipefail
 
 FILE="/app/src/reduction.cu"
 
-if [ ! -f "$FILE" ]; then
-    echo "ERROR: missing $FILE"
-    exit 1
-fi
+python3 - <<'PY'
+from pathlib import Path
 
-sed -i '/^[[:space:]]*if (tid < num_blocks) {$/,/^[[:space:]]*}$/c\
-    for (unsigned int i = tid;\
-         i < static_cast<unsigned int>(num_blocks);\
-         i += BLOCK_SIZE) {\
-        value += partial_sums[i];\
-    }' "$FILE"
+p = Path("/app/src/reduction.cu")
+s = p.read_text()
 
-grep -Fq 'cudaMalloc' "$FILE"
-grep -Fq 'void reduce_sum' "$FILE"
-grep -Fq 'n + BLOCK_SIZE - 1' "$FILE"
-grep -Fq 'reduce_sum_kernel<<<num_blocks, BLOCK_SIZE>>>' "$FILE"
+old = """    float* d_partial = nullptr;
 
+    cudaMalloc(
+        &d_partial,
+        num_blocks * sizeof(float)
+    );
+"""
+new = """    if (n == 0) {
+        cudaMemset(d_output, 0, sizeof(float));
+        return;
+    }
+
+    float* d_partial = nullptr;
+
+    cudaMalloc(
+        &d_partial,
+        num_blocks * sizeof(float)
+    );
+"""
+if old not in s:
+    raise SystemExit("expected allocation block not found")
+s = s.replace(old, new, 1)
+
+old = """    float value = 0.0f;
+
+    if (tid < num_blocks) {
+        value = partial_sums[tid];
+    }
+
+    shared[tid] = value;
+"""
+new = """    float value = 0.0f;
+
+    for (unsigned int i = tid;
+         i < static_cast<unsigned int>(num_blocks);
+         i += BLOCK_SIZE) {
+        value += partial_sums[i];
+    }
+
+    shared[tid] = value;
+"""
+if old not in s:
+    raise SystemExit("expected final-kernel load block not found")
+s = s.replace(old, new, 1)
+
+p.write_text(s)
+PY
+
+grep -Fq 'if (n == 0)' "$FILE"
+grep -Fq 'cudaMemset(d_output, 0, sizeof(float));' "$FILE"
 grep -Fq 'for (unsigned int i = tid;' "$FILE"
+grep -Fq 'i < static_cast<unsigned int>(num_blocks)' "$FILE"
 grep -Fq 'i += BLOCK_SIZE' "$FILE"
 grep -Fq 'value += partial_sums[i];' "$FILE"
+grep -Fq 'reduce_sum_kernel<<<num_blocks, BLOCK_SIZE>>>' "$FILE"
+grep -Fq 'finalize_sum_kernel<<<1, BLOCK_SIZE>>>' "$FILE"
 
-echo "Applied multi-block reduction fix."
-echo "Original CUDA host implementation preserved."
-echo "Verified multi-block partial-sum traversal."
+echo "Reference repair applied."

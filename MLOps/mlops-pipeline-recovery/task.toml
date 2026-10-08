@@ -1,0 +1,27 @@
+version = "1.0"
+[metadata]
+author_name = "Mohamed Ahmed"
+author_email = "engmohamedelshrbeny@gmail.com"
+author_organization = "Forge Bench"
+difficulty_explanation = "A stateful ML pipeline runner must recover from partial execution, enforce DAG dependencies, verify artifact checksums, distinguish retryable and terminal failures, remain idempotent, and avoid rerunning committed stages."
+solution_explanation = "The reference implementation replays a durable event journal into a state machine, validates dependencies and artifact integrity, executes only the next safe stage, and commits transitions atomically."
+verification_explanation = "The verifier independently models the DAG state and checks recovery after corrupted checkpoints, duplicate events, failed stages, stale artifacts, retry budgets, and deterministic scheduling."
+category = "mlops"
+tags = ["mlops", "pipeline", "recovery", "idempotency", "dag", "artifacts", "orchestration"]
+expert_time_estimate_hours = 3
+relevant_experience = "I build and evaluate containerized backend, infrastructure, CUDA/GPU, and AI-system engineering tasks using Harbor and Terminal-Bench workflows."
+
+[verifier]
+timeout_sec = 300.0
+environment_mode = "separate"
+
+[agent]
+timeout_sec = 1200.0
+
+[environment]
+build_timeout_sec = 600.0
+cpus = 2
+memory_mb = 2048
+storage_mb = 10240
+gpus = 0
+allow_internet = false

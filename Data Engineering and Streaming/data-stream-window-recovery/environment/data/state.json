@@ -1,0 +1,18 @@
+{
+  "seen_event_ids": [
+    "e001",
+    "e002"
+  ],
+  "windows": {
+    "0": {
+      "count": 2,
+      "sum": 30.0,
+      "by_key": {
+        "us": 10.0,
+        "eu": 20.0
+      }
+    }
+  },
+  "finalized_windows": [],
+  "max_event_ts": 1767225620.0
+}

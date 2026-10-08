@@ -1,0 +1,27 @@
+version = "1.0"
+[metadata]
+author_name = "Mohamed Ahmed"
+author_email = "engmohamedelshrbeny@gmail.com"
+author_organization = "Forge Bench"
+difficulty_explanation = "Implement a production secret and supply-chain scanner that distinguishes real findings from fixtures, handles encodings and ignored paths, computes stable fingerprints, detects high-entropy credentials, and emits deterministic SARIF."
+solution_explanation = "The reference scanner recursively analyzes repository text, applies explicit ignore rules, identifies credential patterns and entropy-based tokens, and produces stable SARIF results."
+verification_explanation = "The verifier independently checks findings, ignore semantics, line/column locations, fingerprints, SARIF validity, determinism, binary handling, and adversarial near-misses."
+category = "security"
+tags = ["security", "secrets", "supply-chain", "sarif", "static-analysis", "ci"]
+expert_time_estimate_hours = 2.5
+relevant_experience = "I build and evaluate containerized backend, infrastructure, CUDA/GPU, and AI-system engineering tasks using Harbor and Terminal-Bench workflows."
+
+[verifier]
+timeout_sec = 300.0
+environment_mode = "separate"
+
+[agent]
+timeout_sec = 1200.0
+
+[environment]
+build_timeout_sec = 600.0
+cpus = 2
+memory_mb = 2048
+storage_mb = 10240
+gpus = 0
+allow_internet = false

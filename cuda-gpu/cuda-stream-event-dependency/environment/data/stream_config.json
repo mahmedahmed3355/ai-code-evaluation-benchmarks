@@ -7,17 +7,35 @@
   "events": {
     "producer_completion": {
       "recorded": true,
-      "event_id": "producer_done"
+      "event_id": "producer_done",
+      "recorded_on_stream": 0
     },
     "consumer_completion": {
       "recorded": true,
-      "event_id": "consumer_done"
+      "event_id": "consumer_done",
+      "recorded_on_stream": 1
     }
   },
-  "dependencies": [],
+  "dependencies": [
+    {
+      "from_stream": 0,
+      "to_stream": 1,
+      "wait_event": "producer_done"
+    },
+    {
+      "from_stream": 1,
+      "to_stream": 2,
+      "wait_event": "consumer_done"
+    }
+  ],
   "execution": {
     "async": true,
     "global_synchronize": false,
     "cross_stream_dependencies": true
+  },
+  "dependency_contract": {
+    "producer_must_precede_consumer": true,
+    "consumer_must_precede_finalizer": true,
+    "required_wait_semantics": "cross_stream_event"
   }
 }

@@ -1,0 +1,5 @@
+build_id,config_layer,allocator,memory_pool,stream_ordered,reuse,sync_mode,pool_chunk_size,total_work_units,status
+release-2026-09-01,release.profile,async_pool,1,1,1,event,4096,5904,PASS
+release-2026-09-15,release.profile,async_pool,1,1,1,event,4096,5904,PASS
+local-2026-10-01,local.override,legacy,0,0,0,global,1024,1344829,REGRESSION
+local-2026-10-07,local.override,legacy,0,0,0,global,1024,1344829,REGRESSION

@@ -1,0 +1,12 @@
+{
+  "paths": [
+    "vendor/**",
+    "fixtures/**"
+  ],
+  "rules": [
+    "DEP001"
+  ],
+  "line_patterns": [
+    "ALLOW_SECRET_SCANNER_TEST"
+  ]
+}

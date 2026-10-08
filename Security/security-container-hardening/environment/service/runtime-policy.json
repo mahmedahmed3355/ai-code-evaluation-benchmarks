@@ -1,0 +1,10 @@
+{
+  "read_only_rootfs": false,
+  "no_new_privileges": false,
+  "capabilities_drop": [],
+  "tmpfs": [],
+  "privileged": true,
+  "network_mode": "host",
+  "pid_mode": "host",
+  "ipc_mode": "host"
+}

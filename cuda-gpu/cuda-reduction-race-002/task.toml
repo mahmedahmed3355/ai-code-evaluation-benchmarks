@@ -1,29 +1,29 @@
 version = "1.0"
 
 [metadata]
-author_name = "unknown"
+author_name = "Mohamed Ahmed"
 author_email = "engmohamedelshrbeny@gmail.com"
-difficulty = "unknown"
+author_organization = "Forge Bench"
+difficulty = "hard"
+difficulty_explanation = "The task combines two independent but related correctness boundaries: a fixed-size final reduction consuming a data-dependent number of partial sums, and the invalid zero-block CUDA launch that occurs for empty input. A correct repair must preserve the two-stage GPU design, launch configuration, interfaces, shared-memory reduction, and data types while reasoning about host-to-device control flow and kernel data coverage."
+solution_explanation = "The reference repair handles the empty-input case before launching a zero-sized grid and changes the final reduction to traverse all partial sums with a grid-stride accumulation before the existing shared-memory reduction."
+verification_explanation = "The verifier combines structural checks for architecture preservation, complete partial-sum coverage, empty-input handling, and shortcut resistance. The environment includes a CUDA runtime program covering empty input, block boundaries, non-multiple sizes, and more than 256 partial sums."
 category = "software_engineering"
-tags = []
-expert_time_estimate_min = 0.0
-junior_time_estimate_min = 0.0
+tags = ["cuda", "gpu", "parallel-reduction", "correctness", "debugging", "boundary-conditions", "shared-memory"]
+expert_time_estimate_hours = 2.0
+relevant_experience = "CUDA/GPU engineering, benchmark engineering, and reproducible AI-agent evaluation task design."
 
 [verifier]
 timeout_sec = 600.0
+environment_mode = "separate"
 
 [agent]
-timeout_sec = 600.0
+timeout_sec = 1200.0
 
 [environment]
 build_timeout_sec = 600.0
-cpus = 1
+cpus = 2
 memory_mb = 2048
 storage_mb = 10240
 gpus = 0
-allow_internet = true
-mcp_servers = []
-
-[verifier.env]
-
-[solution.env]
+allow_internet = false

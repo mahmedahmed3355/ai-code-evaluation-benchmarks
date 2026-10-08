@@ -1,4 +1,4 @@
-# Local override intentionally contains the regressed memory lifecycle.
+# Intentionally regressed local allocation lifecycle.
 ALLOCATOR=legacy
 MEMORY_POOL=0
 STREAM_ORDERED=0

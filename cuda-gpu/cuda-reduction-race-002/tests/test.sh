@@ -1,11 +1,7 @@
 #!/bin/bash
-
 set -u
 
-python3 -m pytest \
-  /tests/test_outputs.py \
-  -rA
-
+python3 -m pytest /tests/test_outputs.py -rA
 status=$?
 
 if [ "$status" -eq 0 ]; then

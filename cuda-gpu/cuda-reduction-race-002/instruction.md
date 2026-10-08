@@ -1,62 +1,82 @@
-# CUDA Reduction Correctness Debugging
+# CUDA Reduction Correctness Repair
 
-A CUDA reduction kernel in `/app/src/reduction.cu` is producing incorrect results for some input sizes.
+Repair the CUDA reduction implementation in `/app/src/reduction.cu`.
 
-Your task is to diagnose and fix the CUDA correctness issue.
+The program computes the sum of a floating-point input array in two stages. The first kernel produces one partial sum per block. The second kernel combines those partial sums.
 
-## Problem
+The implementation is intentionally close to a working implementation, but it contains correctness failures that only become visible at important boundary conditions.
 
-The program computes the sum of an input array using a CUDA parallel reduction.
+## Required behavior
 
-The implementation is expected to produce the exact same result as a CPU reference implementation.
+`reduce_sum` must:
 
-The current implementation passes some small and well-aligned inputs, but fails for certain input sizes and configurations.
+- return the sum of every input element;
+- return `0.0f` for an empty input (`n == 0`);
+- work when `n` is smaller than one block;
+- work when `n` is exactly a block boundary;
+- work when `n` is just above a block boundary;
+- work when the number of partial sums is greater than `BLOCK_SIZE`;
+- work when the number of partial sums is not a multiple of `BLOCK_SIZE`;
+- preserve the existing two-stage CUDA reduction design.
 
-Do not assume that the failure is caused by the final reduction operation alone. Inspect the complete execution path, including the CUDA kernel and its launcher.
+The supplied executable exercises all of these cases.
 
-## Requirements
-
-Fix the underlying correctness bug in the CUDA implementation.
-
-Your solution must:
-
-- Preserve the existing reduction algorithm.
-- Preserve the existing kernel interface.
-- Preserve the existing launch configuration.
-- Preserve the input and output data types.
-- Preserve the CUDA implementation; do not replace it with a CPU implementation.
-- Correctly handle input sizes that are not multiples of the block size.
-- Correctly handle inputs larger than a single CUDA block.
-- Produce the exact expected result for all provided test cases.
+## Constraints
 
 Do not modify the test files.
 
-Do not modify the expected/reference outputs.
+Do not modify the kernel interfaces:
 
-Do not hardcode results for particular input sizes.
+- `reduce_sum_kernel`
+- `finalize_sum_kernel`
+- `reduce_sum`
 
-Do not skip or remove test cases.
+Keep `BLOCK_SIZE` at 256.
 
-## Investigation
+Keep the existing launch configuration:
 
-Start by inspecting the files under `/app/src`.
+- `reduce_sum_kernel<<<num_blocks, BLOCK_SIZE>>>`
+- `finalize_sum_kernel<<<1, BLOCK_SIZE>>>`
 
-You may run the provided tests and inspect the implementation as needed.
+Keep the existing input and output types.
 
-The failure may not be immediately obvious from a single test case. Use multiple input sizes to reproduce and reason about the correctness issue.
+Keep the implementation on the GPU. Do not replace the reduction with CPU code, a host-side accumulation, a library reduction, or a different high-level framework.
 
-Pay particular attention to:
+Do not hard-code answers or special-case the supplied test sizes.
 
-- shared-memory accesses,
-- synchronization between reduction stages,
-- thread participation,
-- boundary conditions,
-- block-level versus grid-level reduction,
-- and assumptions about input sizes.
+Do not remove the first-stage block reduction.
+
+Do not replace the final shared-memory reduction with a serial host computation.
+
+Do not modify the expected/reference test behavior.
+
+## Investigation guidance
+
+Do not assume that the visible failure has only one cause.
+
+Trace the complete path from `n` to:
+
+1. the number of first-stage blocks,
+2. the allocation of the partial-sum buffer,
+3. the values produced by each first-stage block,
+4. the values loaded by the final kernel,
+5. the final shared-memory reduction,
+6. the zero-length input case.
+
+In particular, reason about the relationship between `num_blocks` and `BLOCK_SIZE`. The final kernel has a fixed number of threads, while the number of partial sums is derived from the input size.
+
+A correct repair must remain valid when `num_blocks` is larger than the number of threads in the final kernel.
+
+Also consider what a zero-block launch means when `n == 0`. The caller expects a valid reduction result rather than a CUDA launch failure.
 
 ## Validation
 
-After making your fix, run:
+From `/app`, run:
 
 ```bash
-/app/run_tests.sh
+./run_reduction.sh
+```
+
+The program compares the GPU result with a CPU reference across small inputs, block boundaries, multi-block inputs, and inputs large enough to create more than 256 partial sums.
+
+Do not change the validation program to make the implementation appear correct.

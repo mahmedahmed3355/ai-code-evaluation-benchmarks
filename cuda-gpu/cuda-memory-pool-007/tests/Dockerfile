@@ -10,6 +10,7 @@ RUN mkdir -p \
     /app/reports \
     /app/configs \
     /app/datasets \
+    /app/history \
     /logs/verifier
 
 WORKDIR /app

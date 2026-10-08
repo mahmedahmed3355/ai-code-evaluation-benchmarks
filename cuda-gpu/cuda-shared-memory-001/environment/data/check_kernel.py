@@ -17,65 +17,73 @@ def fail(message: str) -> None:
 def main() -> None:
     if not SOURCE.is_file():
         fail(f"source file not found: {SOURCE}")
-
     source = SOURCE.read_text(encoding="utf-8")
 
-    # The task must remain a CUDA kernel using shared memory.
-    if "__global__" not in source:
-        fail("CUDA kernel declaration is missing")
+    if "__global__" not in source or "__shared__" not in source:
+        fail("CUDA shared-memory kernel structure is missing")
 
-    if "__shared__" not in source:
-        fail("shared memory usage is missing")
-
-    if "atomicAdd" not in source:
-        fail("atomicAdd-based histogram update is missing")
-
-    # The kernel interface must remain unchanged.
     signature = re.compile(
         r"__global__\s+void\s+shared_histogram_kernel\s*"
-        r"\(\s*"
-        r"const\s+unsigned\s+char\s*\*\s*input\s*,\s*"
-        r"unsigned\s+int\s*\*\s*output\s*,\s*"
-        r"int\s+n\s*"
-        r"\)",
+        r"\(\s*const\s+unsigned\s+char\s*\*\s*input\s*,\s*"
+        r"unsigned\s+int\s*\*\s*output\s*,\s*int\s+n\s*\)",
         re.MULTILINE,
     )
-
     if not signature.search(source):
         fail("kernel signature was changed")
 
-    # Locate the accumulation loop.
+    required = [
+        "__shared__ unsigned int histogram[HISTOGRAM_BINS];",
+        "__shared__ unsigned int block_total;",
+        "atomicAdd(&histogram[input[i]], 1U);",
+        "unsigned int local_total = 0;",
+        "atomicAdd(&block_total, local_total);",
+        "atomicAdd(&output[threadIdx.x], histogram[threadIdx.x]);",
+        "output[HISTOGRAM_BINS] += block_total;",
+    ]
+    for token in required:
+        if token not in source:
+            fail(f"required operation is missing: {token}")
+
+    barriers = [m.start() for m in re.finditer(r"\b__syncthreads\s*\(\s*\)", source)]
+    if len(barriers) < 3:
+        fail("expected initialization, accumulation, reduction, and publication phase barriers")
+
     accumulation = source.find("atomicAdd(&histogram[input[i]], 1U);")
+    first_reduce = source.find("unsigned int local_total = 0;")
+    reduce_atomic = source.find("atomicAdd(&block_total, local_total);")
+    global_publish = source.find("atomicAdd(&output[threadIdx.x], histogram[threadIdx.x]);")
+    final_publish = source.find("output[HISTOGRAM_BINS] += block_total;")
 
-    if accumulation == -1:
-        fail("input accumulation statement not found")
+    if min(accumulation, first_reduce, reduce_atomic, global_publish, final_publish) < 0:
+        fail("required phases could not be located")
 
-    # Locate the final consumption of shared memory.
-    final_consume = source.find("atomicAdd(&output[bin], histogram[bin]);")
+    if not (accumulation < first_reduce < reduce_atomic < global_publish < final_publish):
+        fail("kernel phases are not ordered correctly")
 
-    if final_consume == -1:
-        fail("final histogram accumulation not found")
+    init_barrier = [p for p in barriers if p < accumulation]
+    post_accumulation = [p for p in barriers if accumulation < p < first_reduce]
+    post_reduction = [p for p in barriers if reduce_atomic < p < global_publish]
+    if not init_barrier:
+        fail("missing initialization barrier")
+    if not post_accumulation:
+        fail("shared histogram can be read before all accumulation writes finish")
+    if not post_reduction:
+        fail("block_total can be published before all block threads finish the reduction")
+    before_first_barrier = source[:init_barrier[-1]]
+    if "return" in before_first_barrier:
+        fail("early exit before the initialization barrier is unsafe")
 
-    if accumulation >= final_consume:
-        fail("unexpected ordering of histogram operations")
+    between_barriers = source[post_accumulation[0]:post_reduction[0]]
+    if "return" in between_barriers:
+        fail("early exit between block-wide synchronization phases is unsafe")
 
-    # The required synchronization must occur after all shared-memory
-    # producers and before the shared-memory consumer loop.
-    barrier = source.find("__syncthreads();", accumulation)
+    if re.search(r"if\s*\([^\n{}]*threadIdx\.x[^\n{}]*\)\s*\{[^{}]*__syncthreads", source, re.DOTALL):
+        fail("block-wide synchronization is inside a thread-dependent branch")
 
-    if barrier == -1:
-        fail("missing __syncthreads() after the shared-memory accumulation phase")
+    if "__threadfence" in source or "cudaDeviceSynchronize" in source:
+        fail("unrelated synchronization primitive was introduced as a substitute")
 
-    if barrier > final_consume:
-        fail("__syncthreads() occurs after the shared-memory consumer phase")
-
-    # Ensure the synchronization is not merely the initialization barrier.
-    barriers = [match.start() for match in re.finditer(r"\b__syncthreads\s*\(\s*\)", source)]
-
-    if len(barriers) < 2:
-        fail("the kernel needs a second synchronization barrier between production and consumption")
-
-    print("PASS: shared-memory synchronization fix detected")
+    print("PASS: shared-memory histogram phase ordering and synchronization are valid")
 
 
 if __name__ == "__main__":

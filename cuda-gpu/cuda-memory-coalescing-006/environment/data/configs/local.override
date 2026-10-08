@@ -1,5 +1,3 @@
-# Local developer override
-# Intentionally regresses memory-access performance.
 BLOCK_SIZE=128
 VECTOR_WIDTH=1
 COALESCED_ACCESS=0

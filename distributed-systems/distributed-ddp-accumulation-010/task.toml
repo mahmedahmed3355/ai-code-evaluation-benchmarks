@@ -1,0 +1,28 @@
+[task]
+name = "distributed-ddp-accumulation-010"
+version = "1.1"
+authors = [
+    { name = "mohamed ahmed", email = "engmohamedelshrbeny@gmail.com" }
+]
+description = "Repair sample-weighted gradient accumulation, uneven-rank synchronization, deterministic DDP rendezvous, and checkpoint/resume correctness in a two-rank PyTorch trainer."
+difficulty = "hard"
+category = "distributed-systems"
+tags = ["pytorch", "ddp", "distributed-training", "gradient-accumulation", "checkpoint-resume", "gloo", "determinism", "concurrency"]
+
+[task.runtime]
+network = false
+cpu_only = true
+time_limit_minutes = 45
+
+[task.quality]
+realism = "production-style distributed-training correctness incident"
+expected_failure_mode = "incorrect global gradient weighting, collective mismatch risk, nondeterministic rendezvous, and resume divergence"
+shortcut_resistance = true
+hidden_tests = true
+independent_verifier = true
+
+[task.solution]
+entrypoint = "solution/solve.sh"
+
+[task.verification]
+command = "/app/validate.sh"

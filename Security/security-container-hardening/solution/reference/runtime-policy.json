@@ -1,0 +1,14 @@
+{
+  "read_only_rootfs": true,
+  "no_new_privileges": true,
+  "capabilities_drop": [
+    "ALL"
+  ],
+  "tmpfs": [
+    "/tmp"
+  ],
+  "privileged": false,
+  "network_mode": "bridge",
+  "pid_mode": "private",
+  "ipc_mode": "private"
+}

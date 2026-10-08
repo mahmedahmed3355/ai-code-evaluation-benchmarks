@@ -1,9 +1,6 @@
-# Local compatibility overrides
-#
-# These values were introduced for an older build environment.
-# They are intentionally kept for compatibility with legacy tooling.
-
 OPT_LEVEL=2
 FAST_MATH=0
 VECTOR_WIDTH=2
 LTO=0
+BUILD_CACHE=/tmp/legacy-cache
+LOCAL_DIAGNOSTIC=compact

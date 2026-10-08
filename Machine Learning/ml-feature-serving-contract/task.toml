@@ -1,0 +1,18 @@
+[task]
+id = "ml-feature-serving-contract-015"
+name = "restore ML training-serving feature contract"
+category = "machine-learning"
+difficulty = "hard"
+authors = [
+    { name = "mohamed ahmed", email = "engmohamedelshrbeny@gmail.com" }
+]
+organization = "Forge Bench"
+cpu_only = true
+network_required = false
+estimated_minutes = 75
+
+[task.description]
+summary = "Repair a binary-risk inference stack so persisted feature order, preprocessing, calibration, evaluation, and artifact immutability remain consistent."
+difficulty_rationale = "Difficulty comes from interacting training/serving contract failures across schema, preprocessing, inference, evaluation, and artifact state."
+solution_rationale = "The reference implementation centralizes persisted-contract semantics and preserves the application interface."
+verification_rationale = "Tests use reordered columns, missing values, generated hidden fixtures, shifted distributions, alternate target positions, alternate artifact paths, invalid contracts, and repeated evaluation."

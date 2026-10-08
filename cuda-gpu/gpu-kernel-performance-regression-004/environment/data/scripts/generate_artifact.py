@@ -1,105 +1,61 @@
 #!/usr/bin/env python3
 
 import hashlib
-import sys
 from pathlib import Path
 
 ROOT = Path("/app")
 BUILD_DIR = ROOT / "build"
 ARTIFACT_DIR = ROOT / "artifacts"
 
-
-def parse_key_values(path: Path) -> dict[str, str]:
+def parse(path):
     values = {}
-
     for raw_line in path.read_text().splitlines():
         line = raw_line.strip()
-
         if not line or line.startswith("#") or "=" not in line:
             continue
-
         key, value = line.split("=", 1)
         values[key.strip()] = value.strip()
-
     return values
 
-
-def file_digest(path: Path) -> str:
+def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
-
-def generate_artifact() -> Path:
+def main():
     config_path = BUILD_DIR / "resolved_config.txt"
     plan_path = BUILD_DIR / "execution_plan.txt"
-
-    if not config_path.exists():
-        raise FileNotFoundError(config_path)
-
-    if not plan_path.exists():
-        raise FileNotFoundError(plan_path)
-
-    config = parse_key_values(config_path)
-    plan = parse_key_values(plan_path)
-
+    if not config_path.exists() or not plan_path.exists():
+        raise SystemExit("build inputs are incomplete")
+    config = parse(config_path)
+    plan = parse(plan_path)
     ARTIFACT_DIR.mkdir(parents=True, exist_ok=True)
-
-    artifact = ARTIFACT_DIR / "kernel_build.artifact"
-
     lines = [
         "GPU_KERNEL_BUILD_ARTIFACT",
-        "FORMAT_VERSION=1",
-        "",
-        f"CONFIG_SHA256={file_digest(config_path)}",
-        f"PLAN_SHA256={file_digest(plan_path)}",
-        "",
-        f"BUILD_TYPE={config.get('BUILD_TYPE', 'unknown')}",
-        f"OPT_LEVEL={config.get('OPT_LEVEL', 'unknown')}",
-        f"STRATEGY={config.get('STRATEGY', 'unknown')}",
-        f"BLOCK_SIZE={config.get('BLOCK_SIZE', 'unknown')}",
-        f"CHUNK_SIZE={config.get('CHUNK_SIZE', 'unknown')}",
-        f"VECTOR_WIDTH={config.get('VECTOR_WIDTH', 'unknown')}",
-        f"FAST_PATH={config.get('FAST_PATH', 'unknown')}",
-        f"WORK_UNIT_COST={config.get('WORK_UNIT_COST', 'unknown')}",
-        f"ARTIFACT_MODE={config.get('ARTIFACT_MODE', 'unknown')}",
-        "",
-        f"TOTAL_WORK_UNITS={plan.get('TOTAL_WORK_UNITS', 'unknown')}",
-        "",
+        "FORMAT_VERSION=2",
+        f"CONFIG_SHA256={digest(config_path)}",
+        f"PLAN_SHA256={digest(plan_path)}",
+        f"PROFILE={config['PROFILE']}",
+        f"BUILD_TYPE={config['BUILD_TYPE']}",
+        f"OPT_LEVEL={config['OPT_LEVEL']}",
+        f"STRATEGY={config['STRATEGY']}",
+        f"BLOCK_SIZE={config['BLOCK_SIZE']}",
+        f"CHUNK_SIZE={config['CHUNK_SIZE']}",
+        f"VECTOR_WIDTH={config['VECTOR_WIDTH']}",
+        f"FAST_PATH={config['FAST_PATH']}",
+        f"WORK_UNIT_COST={config['WORK_UNIT_COST']}",
+        f"ARTIFACT_MODE={config['ARTIFACT_MODE']}",
+        f"TOTAL_WORK_UNITS={plan['TOTAL_WORK_UNITS']}",
     ]
-
-    workload_index = 1
-
-    while True:
-        input_key = f"WORKLOAD_{workload_index}_INPUT_SIZE"
-        work_key = f"WORKLOAD_{workload_index}_WORK_UNITS"
-
-        if input_key not in plan:
+    for index in range(1, 100):
+        key = f"WORKLOAD_{index}_ID"
+        if key not in plan:
             break
-
-        lines.append(f"{input_key}={plan[input_key]}")
-        lines.append(f"{work_key}={plan[work_key]}")
-
-        workload_index += 1
-
+        for suffix in ["ID", "INPUT_SIZE", "PROFILE", "BUDGET_KEY", "WORK_UNITS"]:
+            k = f"WORKLOAD_{index}_{suffix}"
+            lines.append(f"{k}={plan[k]}")
+    artifact = ARTIFACT_DIR / "kernel_build.artifact"
     artifact.write_text("\n".join(lines) + "\n")
-
-    return artifact
-
-
-def main() -> int:
-    try:
-        artifact = generate_artifact()
-    except Exception as exc:
-        print(
-            f"ERROR: {exc}",
-            file=sys.stderr,
-        )
-        return 1
-
     print(f"Generated artifact: {artifact}")
-    print(f"Artifact SHA256: {file_digest(artifact)}")
-
     return 0
-
 
 if __name__ == "__main__":
     raise SystemExit(main())

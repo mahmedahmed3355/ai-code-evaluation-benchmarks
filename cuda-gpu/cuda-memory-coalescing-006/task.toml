@@ -2,31 +2,29 @@ version = "1.0"
 
 artifacts = [
     "/app/build/resolved_config.txt",
+    "/app/build/config_provenance.txt",
     "/app/build/execution_plan.txt",
     "/app/artifacts/kernel_build.artifact",
+    "/app/artifacts/kernel_build.provenance",
     "/app/reports/benchmark.txt",
     "/app/configs/build.conf",
     "/app/configs/release.profile",
     "/app/configs/benchmark.conf",
     "/app/configs/local.override",
-    "/app/datasets/workload.csv",
 ]
 
 [metadata]
-author_name = "Mohamed"
+author_name = "Mohamed Ahmed"
 author_email = "engmohamedelshrbeny@gmail.com"
+author_organization = "Forge Bench"
 difficulty = "hard"
+difficulty_explanation = "The agent must diagnose an effective configuration assembled from multiple layers, correlate a performance regression with build-history evidence, preserve configuration provenance, identify the layer that introduced the regression, and regenerate derived outputs. Passing requires both aggregate and per-workload budgets plus internally consistent provenance and artifact data. Editing the benchmark or generated outputs is explicitly invalid."
+solution_explanation = "The reference repair restores the optimized memory-access contract in the local override layer, which is the layer responsible for the regression, and then regenerates the derived build, artifact, provenance, and benchmark outputs."
+verification_explanation = "The verifier independently checks workload preservation, configuration-layer preservation, release-contract alignment, effective configuration provenance, per-workload and aggregate budgets, artifact consistency, provenance digest, build-history evidence, benchmark status, and preservation of the benchmark pipeline."
 category = "software_engineering"
-tags = [
-    "cuda",
-    "gpu",
-    "memory-coalescing",
-    "vectorization",
-    "performance-regression",
-    "configuration-debugging"
-]
-expert_time_estimate_min = 30.0
-junior_time_estimate_min = 60.0
+tags = ["cuda", "gpu", "memory-coalescing", "configuration-debugging", "performance-regression", "provenance", "benchmark-engineering"]
+expert_time_estimate_min = 45.0
+junior_time_estimate_min = 90.0
 
 [verifier]
 timeout_sec = 600.0
@@ -40,7 +38,7 @@ gpus = 0
 allow_internet = false
 
 [agent]
-timeout_sec = 600.0
+timeout_sec = 900.0
 
 [environment]
 build_timeout_sec = 600.0

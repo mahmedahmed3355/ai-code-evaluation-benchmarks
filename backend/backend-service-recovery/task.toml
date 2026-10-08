@@ -3,12 +3,19 @@ artifacts = []
 
 [task]
 name = "mohamedahmed/backend-service-recovery"
-description = "Recover a systemd-managed FastAPI backend and Nginx reverse proxy from a broken Unix-socket deployment."
+description = "Recover a systemd-managed FastAPI backend and Nginx reverse proxy from a broken Unix-socket deployment, including lifecycle and restart correctness."
 authors = ["Mohamed Ahmed"]
-keywords = ["backend", "infrastructure", "nginx", "systemd", "unix-socket"]
+keywords = ["backend", "infrastructure", "nginx", "systemd", "unix-socket", "gunicorn", "debugging", "reliability"]
 
 [metadata]
 author_email = "engmohamedelshrbeny@gmail.com"
+difficulty = "hard"
+category = "software_engineering"
+difficulty_explanation = "The task requires reasoning across systemd lifecycle, runtime directories, Gunicorn worker startup, Unix-domain socket addressing and permissions, Nginx reverse proxy configuration, service enablement, and restart behavior. The application is intentionally healthy, so the agent must isolate deployment-layer failures rather than rewriting application code."
+
+solution_explanation = "The reference solution restores the backend service lifecycle, runtime socket path, Nginx upstream, and restart-safe proxy behavior while preserving the original FastAPI application and architecture."
+
+verification_explanation = "The verifier independently checks systemd state, enablement, Unix socket type and path, Nginx configuration, HTTP behavior through Nginx, proxy headers, logging, and recovery after restarting the backend service."
 
 [verifier]
 timeout_sec = 600.0
@@ -17,7 +24,7 @@ collect = []
 [verifier.env]
 
 [agent]
-timeout_sec = 600.0
+timeout_sec = 900.0
 
 [environment]
 network_mode = "public"
@@ -28,4 +35,3 @@ mcp_servers = []
 [environment.env]
 
 [solution.env]
-

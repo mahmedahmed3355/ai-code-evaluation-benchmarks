@@ -1,0 +1,14 @@
+[task]
+name = "ml-model-promotion-017"
+description = "Repair a production ML model promotion gate with group-safe splitting, train-only preprocessing, validation-only checkpoint/calibration/threshold selection, and a frozen holdout audit."
+version = "1.0"
+category = "machine-learning"
+
+[environment]
+image = "python:3.11-slim"
+network = false
+cpu_only = true
+
+[verification]
+entry = "tests/test.sh"
+reference = "solution/solve.sh"

@@ -1,0 +1,11 @@
+{
+  "event": "completed_rebalance",
+  "consumer_group": "inference-workers",
+  "active_generation": 7,
+  "active_assignment_epoch": 41,
+  "owned_partitions": {
+    "0": "worker-a",
+    "1": "worker-a"
+  },
+  "status": "stable"
+}

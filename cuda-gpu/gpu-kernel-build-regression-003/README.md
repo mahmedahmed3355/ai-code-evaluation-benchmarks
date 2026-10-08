@@ -2,92 +2,76 @@
 
 ## Overview
 
-This task simulates a production-style GPU kernel build regression in which the
-repository continues to build successfully, but the generated artifact no
-longer satisfies the project's optimization contract.
+This benchmark models a production build-pipeline incident in which a GPU-kernel release artifact is generated successfully but is built from the wrong configuration. The repository also contains an artifact-integrity weakness: the benchmark can trust values embedded in an artifact without proving that the artifact belongs to the configuration currently being validated.
 
-The failure is intentionally distributed across the configuration resolution,
-build, artifact generation, diagnostic, and benchmark workflow.
+The challenge is to recover the intended build semantics rather than patching one observed value.
 
-## Objective
+## Engineering scenario
 
-Investigate the repository and restore the intended build behavior without
-replacing or bypassing the existing build and validation workflow.
+The pipeline has four configuration layers:
 
-The final implementation must:
+- `build.conf` — base build configuration;
+- `release.profile` — authoritative release optimization profile;
+- `benchmark.conf` — workload and validation requirements;
+- `local.override` — legacy compatibility settings.
 
-- produce a valid build artifact;
-- satisfy the required optimization configuration;
-- pass the benchmark contract;
-- pass the complete validation workflow;
-- remain correct when legacy configuration values change.
+The regression occurs because these layers are resolved with the wrong precedence. The validation path has a separate trust boundary around the generated artifact.
 
-## Repository Structure
+## Workflow
 
-text
-gpu-kernel-build-regression-003/
-├── environment/
-│   ├── Dockerfile
-│   └── data/
-│       ├── configs/
-│       ├── logs/
-│       └── scripts/
-├── instruction.md
-├── solution/
-│   └── solve.sh
-├── task.toml
-├── tests/
-│   ├── test_outputs.py
-│   └── test.sh
-└── README.md
-
-Main Workflow
-
-The repository follows this workflow:
-
+```text
 configuration sources
-        ↓
+        |
+        v
 configuration resolution
-        ↓
+        |
+        v
 effective configuration
-        ↓
-artifact generation
-        ↓
+        |
+        v
+artifact generation + provenance
+        |
+        v
 artifact inspection
-        ↓
-benchmark contract
-        ↓
+        |
+        v
+benchmark integrity + optimization checks
+        |
+        v
 validation result
-Validation
+```
 
-The normal validation workflow is:
+## What makes it difficult
 
-/app/scripts/validate.sh
+A superficial repair can make the first artifact look correct while leaving the system vulnerable to:
 
-The complete verifier can be executed through:
+- legacy overrides replacing release settings;
+- unrelated local settings being discarded;
+- stale artifacts surviving configuration changes;
+- artifact fields being edited without matching provenance;
+- benchmark success being inferred from self-reported artifact values.
 
-bash /tests/test.sh
+The verifier therefore exercises both normal operation and adversarial configuration/artifact states.
 
-The verifier checks repository structure, build behavior, effective
-configuration, artifact consistency, benchmark behavior, validation integrity,
-legacy configuration handling, invalid artifact rejection, and diagnostic
-behavior.
+## Environment
 
-Environment
+The task is CPU-only and does not require CUDA drivers or an NVIDIA GPU. The repository represents a GPU-kernel build pipeline at the configuration and artifact-validation layer.
 
-The task intentionally does not require:
+Internet access is not required.
 
-an NVIDIA GPU;
-CUDA drivers;
-CUDA toolkit installation;
-large GPU container images.
+## Expected engineering behavior
 
-The environment is CPU-only and uses a lightweight Python container.
+A correct solution should preserve the existing scripts and interfaces while establishing:
 
-Development Note
+1. deterministic configuration precedence;
+2. protection of release optimization fields;
+3. preservation of legitimate non-contract local settings;
+4. artifact/configuration provenance;
+5. rejection of stale or tampered artifacts;
+6. a passing end-to-end validation workflow.
 
-The task is designed around investigation and root-cause analysis rather than
-simply producing a hardcoded expected output.
+## Verification
 
-Do not modify the test suite or bypass the validation workflow when solving the
-task.
+The verifier checks repository integrity, configuration precedence, build output, artifact provenance, benchmark behavior, stale-artifact rejection, local-setting preservation, and complete validation.
+
+Do not modify the verifier to make the task pass.
