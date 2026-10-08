@@ -9,92 +9,56 @@ jobs:
   quality:
     name: Tests and Quality Checks
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
       - name: Set up uv
         uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
-
       - name: Verify locked dependencies
         run: uv lock --check
-
       - name: Install dependencies
         run: uv sync --group dev --locked
-
       - name: Validate declared runtime dependencies
         run: uv run python -m scripts.check_runtime_dependencies
-
       - name: Inspect resolved dependency tree
         run: uv tree
-
       - name: Validate benchmark task structure
         run: uv run python -m scripts.validate_task_structure
-
       - name: Validate benchmark task metadata
         run: uv run python -m scripts.validate_task_metadata
-
       - name: Generate task dependency inventory
-        run: |
-          uv run python -m scripts.generate_dependency_inventory
-
+        run: uv run python -m scripts.generate_dependency_inventory
       - name: "test: pytest"
         run: uv run python -m pytest tests/ -v
-
       - name: Run test coverage
         run: |
-          uv run python -m pytest tests/ \
-            --cov=scripts \
-            --cov-report=term-missing \
-            --cov-fail-under=70 \
-            --cov-config=.coveragerc
-
+          uv run python -m pytest tests/             --cov=scripts             --cov-report=term-missing             --cov-fail-under=70             --cov-config=.coveragerc
       - name: "lint: ruff"
         run: uv run python -m ruff check .
-
       - name: "typecheck: mypy"
         run: uv run python -m mypy scripts tests
-
       - name: Validate benchmark tasks
         run: uv run python -m scripts.validate_tasks
-
       - name: Run task isolation checks
         run: uv run python -m scripts.task_isolation
-
       - name: Validate task manifests
         run: uv run python -m scripts.task_manifest
-
       - name: Export runtime dependencies
         run: |
-          uv export \
-            --format requirements-txt \
-            --no-dev \
-            --output-file runtime-requirements.txt
-
+          uv export --format requirements-txt --no-dev --output-file runtime-requirements.txt
       - name: Dependency audit
         run: |
-          uv export \
-            --format requirements-txt \
-            --no-hashes \
-            --no-dev \
-            > runtime-requirements.txt
-
-          uv run pip-audit \
-            -r runtime-requirements.txt \
-            --no-deps
-
+          uv export --format requirements-txt --no-hashes --no-dev > runtime-requirements.txt
+          uv run pip-audit -r runtime-requirements.txt --no-deps
       - name: Check task dependency pinning
         run: uv run python -m scripts.check_task_deps
-
       - name: Fresh clone bootstrap and smoke check
         run: |
           rm -rf .venv
@@ -103,40 +67,32 @@ jobs:
   iac-checks:
     name: Docker and Kubernetes Validation
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
       - name: Set up uv
         uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
-
       - name: Install dependencies
         run: uv sync --group dev --locked
-
       - name: Run Hadolint
         uses: hadolint/hadolint-action@v3.1.0
         with:
           dockerfile: "**/Dockerfile"
           recursive: true
           failure-threshold: error
-
       - name: Install kubeconform
         run: |
-          curl -L -o kubeconform.tar.gz \
-            https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz
+          curl -L -o kubeconform.tar.gz             https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz
           tar -xzf kubeconform.tar.gz
           sudo mv kubeconform /usr/local/bin/kubeconform
           kubeconform -v
-
       - name: Run Trivy config scan for repository
         uses: aquasecurity/trivy-action@v0.36.0
         with:
@@ -146,10 +102,8 @@ jobs:
           exit-code: "1"
           severity: HIGH,CRITICAL
           ignore-unfixed: true
-
       - name: Validate Kubernetes security policy
         run: uv run python -m scripts.validate_k8s_security
-
       - name: "iac: checkov kubernetes docker policy scan"
         uses: bridgecrewio/checkov-action@v12
         with:
@@ -160,53 +114,37 @@ jobs:
           soft_fail: false
           output_format: cli,json
           output_file_path: console,checkov-report.json
-
-
       - name: Upload Checkov policy report
         uses: actions/upload-artifact@v4
         with:
           name: checkov-policy-report
           path: checkov-report.json
-
       - name: Validate Kubernetes manifests
         run: |
-          find infrastructure/kubernetes-rollout-recovery-010 \
-            \( -name "*.yaml" -o -name "*.yml" \) \
-            ! -name "kustomization.yaml" \
-            -print0 | xargs -0 -r kubeconform -strict -summary
-
-          kubectl kustomize infrastructure/kubernetes-rollout-recovery-010/base >/dev/null
-
-
+          find infrastructure/kubernetes-rollout-recovery             \( -name "*.yaml" -o -name "*.yml" \)             ! -name "kustomization.yaml"             -print0 | xargs -0 -r kubeconform -strict -summary
+          kubectl kustomize infrastructure/kubernetes-rollout-recovery/base >/dev/null
 
   terraform-checks:
     name: Terraform Validation
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.11.4"
-
       - name: Terraform format check
         run: terraform fmt -check -recursive infra
-
       - name: Terraform initialize
         working-directory: infra/examples/local
         run: terraform init -backend=false
-
       - name: Terraform validate
         working-directory: infra/examples/local
         run: terraform validate
-
       - name: Terraform plan
         working-directory: infra/examples/local
         run: terraform plan -refresh=false -input=false
-
       - name: Terraform Checkov policy scan
         uses: bridgecrewio/checkov-action@v12
         with:
@@ -219,30 +157,18 @@ jobs:
     name: Representative Task Smoke Validation
     runs-on: ubuntu-latest
     needs: quality
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Install uv
         uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
-
       - name: Install dependencies
         run: uv sync --group dev --locked
-
       - name: Validate CUDA task
-        run: |
-          uv run python -m scripts.task_smoke \
-            --task cuda-gpu/cuda-shared-memory-001
-
+        run: uv run python -m scripts.task_smoke --task cuda-gpu/cuda-shared-memory-001
       - name: Validate backend task
-        run: |
-          uv run python -m scripts.task_smoke \
-            --task backend/backend-async-job-recovery
-
+        run: uv run python -m scripts.task_smoke --task backend/backend-async-job-recovery
       - name: Validate algorithm task
-        run: |
-          uv run python -m scripts.task_smoke \
-            --task algorithms/ml-lp-simplex-optimizer
+        run: uv run python -m scripts.task_smoke --task algorithms/ml-lp-simplex-optimizer

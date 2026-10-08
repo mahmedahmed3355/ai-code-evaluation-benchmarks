@@ -14,12 +14,14 @@ COPY data/broken_kernel.cu /app/src/broken_kernel.cu
 COPY data/check_kernel.py /app/check_kernel.py
 
 RUN chmod +x /app/check_kernel.py
-RUN cat > /app/run_tests.sh <<'EOF2'
-#!/usr/bin/env bash
-set -euo pipefail
-python3 /app/check_kernel.py /app/src/broken_kernel.cu
-echo "CUDA shared-memory synchronization validation passed."
-EOF2
+
+RUN printf '%s\n' \
+    '#!/usr/bin/env bash' \
+    'set -euo pipefail' \
+    'python3 /app/check_kernel.py /app/src/broken_kernel.cu' \
+    'echo "CUDA shared-memory synchronization validation passed."' \
+    > /app/run_tests.sh
+
 RUN chmod +x /app/run_tests.sh
 
 RUN useradd --create-home --uid 10001 benchmark
